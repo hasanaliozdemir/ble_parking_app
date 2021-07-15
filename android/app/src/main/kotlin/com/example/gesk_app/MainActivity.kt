@@ -1,0 +1,6 @@
+package com.example.gesk_app
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
