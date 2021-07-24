@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
-import 'package:gesk_app/core/components/buttonIcon.dart';
+import 'package:gesk_app/core/components/customSwitch.dart';
+import 'package:get/get.dart';
 
-import 'core/components/butonMini.dart';
 
 
 class Wrapper extends StatelessWidget {
-  const Wrapper({Key key}) : super(key: key);
+  var value = false.obs;
+  Wrapper({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +16,13 @@ class Wrapper extends StatelessWidget {
     if (auth) {
       return Scaffold(
         body: Center(
-          child: ButtonMini.active(
-            text: "helo",
-            onPressed: (){
-              print("helo");
-            },
+          child: CustomSwitch(
+            activeIcon: Icon(Icons.ac_unit_outlined),
+            func: ()=>print("hello"),
+            value: value,
           )
         ),
+
         bottomNavigationBar: BottomBar()
       );
     }else{
