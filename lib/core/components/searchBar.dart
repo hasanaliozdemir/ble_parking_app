@@ -20,7 +20,7 @@ class SearchBar extends StatelessWidget {
       width: w* 279,
       height:h* 56,
       decoration: BoxDecoration(
-        border: focused.value ?  Border.all(color: blue500) : Border.all(),
+        border: focused.value ?  Border.all(color: blue500) : Border.all(color: Colors.transparent),
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
             BoxShadow(
