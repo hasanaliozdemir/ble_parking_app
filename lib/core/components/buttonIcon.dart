@@ -51,9 +51,7 @@ class ButtonIcon extends StatelessWidget {
             ], 
           ),
       ),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(color)
-      ),
+      
     );
   }
 }
