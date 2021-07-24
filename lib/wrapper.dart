@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/buttonIcon.dart';
 
+import 'core/components/butonMini.dart';
+
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key key}) : super(key: key);
@@ -13,7 +15,7 @@ class Wrapper extends StatelessWidget {
     if (auth) {
       return Scaffold(
         body: Center(
-          child: ButtonIcon(
+          child: ButtonMini.active(
             text: "helo",
             onPressed: (){
               print("helo");

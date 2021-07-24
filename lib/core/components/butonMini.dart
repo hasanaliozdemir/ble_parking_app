@@ -3,27 +3,27 @@ import 'package:gesk_app/core/colors.dart';
 import 'package:get/get.dart';
 
 // ignore: must_be_immutable
-class Button extends StatelessWidget {
+class ButtonMini extends StatelessWidget {
   Color textColor;
   Color color;
   String text;
   VoidCallback onPressed;
 
-  Button.active({@required String text, @required VoidCallback onPressed}) {
+  ButtonMini.active({@required String text, @required VoidCallback onPressed}) {
     this.text = text;
     this.color = blue500;
     this.textColor = white;
     this.onPressed = onPressed;
   }
 
-  Button.passive({@required String text, @required VoidCallback onPressed}) {
+  ButtonMini.passive({@required String text, @required VoidCallback onPressed}) {
     this.text = text;
     this.color = gray400;
     this.textColor = gray800;
     this.onPressed = onPressed;
   }
 
-  Button.backHover({@required String text, @required VoidCallback onPressed}) {
+  ButtonMini.backHover({@required String text, @required VoidCallback onPressed}) {
     this.text = text;
     this.color = blue300;
     this.textColor = white;
@@ -35,7 +35,7 @@ class Button extends StatelessWidget {
     return MaterialButton(
         onPressed: onPressed,
         child: Container(
-          width: Get.width/375* 343,
+          width: Get.width/375* 147,
           height: Get.height/812 *56,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),

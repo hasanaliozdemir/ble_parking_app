@@ -1,10 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class ButtonIcon extends StatelessWidget {
   Color textColor;
   Color color;
