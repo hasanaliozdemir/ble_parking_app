@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
-import 'package:gesk_app/core/components/customSwitch.dart';
+import 'package:gesk_app/core/components/textInput.dart';
 import 'package:get/get.dart';
 
 
 
 class Wrapper extends StatelessWidget {
-  var value = false.obs;
+
+  FocusNode focusNode = FocusNode();
+  TextEditingController controller = TextEditingController();
   Wrapper({Key key}) : super(key: key);
 
   @override
@@ -16,10 +18,10 @@ class Wrapper extends StatelessWidget {
     if (auth) {
       return Scaffold(
         body: Center(
-          child: CustomSwitch(
-            activeIcon: Icon(Icons.ac_unit_outlined),
-            func: ()=>print("hello"),
-            value: value,
+          child: TextInputSimple(
+            controller: controller,
+            focusNode: focusNode,
+            textInputAction: TextInputAction.emergencyCall,
           )
         ),
 
