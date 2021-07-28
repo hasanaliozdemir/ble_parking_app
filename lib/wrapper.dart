@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/popUp.dart';
+import 'package:gesk_app/core/components/searchBar.dart';
 import 'package:gesk_app/core/components/textInput.dart';
+import 'package:gesk_app/testScreen.dart';
+import 'package:gesk_app/views/giris/MainScreen.dart';
 import 'package:gesk_app/views/giris/SplashScreen.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +22,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     var auth = true;
     if (auth) {
-      return SplashScreen();
+      return MapScreen();
     }else{
       return Scaffold();
     }

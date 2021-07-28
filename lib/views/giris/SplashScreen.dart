@@ -17,11 +17,9 @@ class SplashScreen extends StatelessWidget {
       if (height.value == 190) {
         height.value = 250;
         height2.value = 500;
-        print(height.value);
       }else{
         height.value=190;
         height2.value=400;
-        print(height.value);
 
       }
     } );
