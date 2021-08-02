@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
+import 'package:gesk_app/models/car.dart';
+import 'package:gesk_app/views/profil/ayarlarPage.dart';
+import 'package:gesk_app/views/profil/carPage.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -13,10 +16,22 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  List<String> cars = [
-    "34 QWY 545",
-    "34 QWY 546",
-    "34 QWY 547",
+  List<Car> cars = [
+    Car(
+      plaka: "34 QWY 545",
+      renk: "Siyah",
+      model: 2021
+    ),
+    Car(
+      plaka: "34 QWY 546",
+      renk: "Siyah",
+      model: 2021
+    ),
+    Car(
+      plaka: "34 QWY 547",
+      renk: "Siyah",
+      model: 2021
+    ),
   ];
 
   var w = Get.width / 375;
@@ -189,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Center(child: SvgPicture.asset("assets/icons/carCircle.svg")),
                         ),
                         title: Text(
-                          cars[index],
+                          cars[index].plaka,
                           style: TextStyle(),
                         ),
                         trailing: IconButton(
@@ -280,6 +295,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         ListTile(
+          onTap: (){
+            Get.to(()=>AyarlarPage());
+          },
           title: Text(
             "Ayarlar",
             style: TextStyle(
@@ -329,8 +347,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ));
   }
 
-  _onPressedCar(String carName){
-    print(carName);
+  _onPressedCar(Car car){
+    Get.to(()=>CarPAge(car: car,));
   }
 
   _onPressedAddCar(){

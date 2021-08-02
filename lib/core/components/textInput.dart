@@ -7,6 +7,9 @@ import '../colors.dart';
 
 // ignore: must_be_immutable
 class TextInputSimple extends StatefulWidget {
+  Function onChange;
+  bool readOnly;
+  Function onTap;
   bool secure;
   List<TextInputFormatter> inputFormatters;
   TextInputType keyBoardType;
@@ -21,12 +24,15 @@ class TextInputSimple extends StatefulWidget {
   Function suffixFunc;
   TextInputSimple(
       {Key key,
+      Function onChange,
+      bool readOnly,
       bool secure,
       @required TextEditingController controller,
       List<TextInputFormatter> inputFormatters,
       Icon prefixIcon,
       String errorText,
       @required FocusNode focusNode,
+      Function onTap,
       Function func,
       TextInputAction textInputAction,
       String hintText,
@@ -34,6 +40,8 @@ class TextInputSimple extends StatefulWidget {
       Function suffixFunc,
       TextInputType keyBoardType})
       : super(key: key) {
+        this.onChange =onChange;
+    this.readOnly = readOnly;
     this.controller = controller;
     this.prefixIcon = prefixIcon;
     this.errorText = errorText;
@@ -46,6 +54,7 @@ class TextInputSimple extends StatefulWidget {
     this.keyBoardType = keyBoardType;
     this.inputFormatters = inputFormatters;
     this.secure = secure;
+    this.onTap =onTap;
   }
 
   @override
@@ -77,7 +86,7 @@ class _TextInputSimpleState extends State<TextInputSimple> {
           decoration: BoxDecoration(
               border: _focused.value
                   ? Border.all(color: blue500)
-                  : Border.all(color: Colors.transparent),
+                  : Border.all(color: gray600),
               boxShadow: [
                 BoxShadow(
                   color: Color(0x33000000),
@@ -92,7 +101,18 @@ class _TextInputSimpleState extends State<TextInputSimple> {
             vertical: 4,
           ),
           child: TextFormField(
+            onTap: (){
+              if (widget.onTap != null) {
+                widget.onTap();
+              }
+            },
+            onChanged: (val){
+              if(widget.onChange!=null){
+                widget.onChange();
+              }
+            },
             keyboardType: widget.keyBoardType,
+            readOnly: widget.readOnly ?? false,
             inputFormatters: widget.inputFormatters,
             textInputAction: widget.textInputAction ?? TextInputAction.done,
             focusNode: widget.focusNode,
