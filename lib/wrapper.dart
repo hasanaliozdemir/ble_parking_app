@@ -20,7 +20,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     var auth = true;
     if (auth) {
-      return ProfileScreen();
+      return MapScreen();
     }else{
       return Scaffold();
     }

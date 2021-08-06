@@ -15,11 +15,12 @@ class OthersScreen extends StatefulWidget {
 class _OthersScreenState extends State<OthersScreen> {
   String desc1 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ultricies, lorem vitae fringilla sagittis, magna mauris dictum ligula, non pharetra lacus turpis ut neque. Vestibulum nulla dolor, tristique vitae lectus et, ultricies dictum velit. Pellentesque euismod congue tortor non consectetur. Curabitur felis ipsum, dictum a congue at, rutrum viverra leo. Donec nec lobortis arcu, at gravida nulla. In ut pharetra lacus. Suspendisse ac hendrerit elit. Pellentesque pharetra tempus elit nec condimentum.Quisque dolor augue, auctor at dui ut, pulvinar ultrices mi. Aenean egestas nisi in laoreet tristique. Proin vitae quam eros. Curabitur sit amet gravida nibh, vel posuere sapien. Nam.";
   String title = "Title";
+  final _index = 3;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomBar(),
+      bottomNavigationBar: BottomBar(index: _index,),
       body: Container(
         child: Column(
           children: [

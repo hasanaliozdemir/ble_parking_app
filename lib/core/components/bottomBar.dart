@@ -1,25 +1,38 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gesk_app/views/diger/othersScreen.dart';
+import 'package:gesk_app/views/giris/MapScreen.dart';
+import 'package:gesk_app/views/profil/profileScreen.dart';
+import 'package:get/get.dart';
 
 import '../colors.dart';
 
 class BottomBar extends StatefulWidget {
-  const BottomBar({ Key key }) : super(key: key);
+  int _index;
+  BottomBar({ Key key,@required int index }){
+    this._index=index;
+  }
 
   @override
-  _BottomBarState createState() => _BottomBarState();
+  _BottomBarState createState() => _BottomBarState(_index);
 }
 
 class _BottomBarState extends State<BottomBar> {
+  _BottomBarState(int index){
+    this._index = index;
+  }
+
+  int _index;
+
   var screens = [
     
   ];
 
-  int _currentIndex = 0;
+  
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      currentIndex:  _currentIndex,
+      currentIndex:  _index,
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
@@ -44,10 +57,23 @@ class _BottomBarState extends State<BottomBar> {
             ),
           ],
           onTap: (index){
-            setState(() {
-                          _currentIndex = index;
-                        });
-          },
+            switch (index) {
+              case 0:
+                Get.to(()=>MapScreen());
+                break;
+              case 1:
+                Get.to(()=>MapScreen());
+                break;
+              case 2:
+                Get.to(()=>ProfileScreen());
+                break;
+              case 3:
+                Get.to(()=>OthersScreen());
+                break;
+              
+              default:
+            }
+          }
         );
   }
 }

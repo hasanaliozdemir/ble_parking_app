@@ -15,6 +15,8 @@ class AyarlarPage extends StatefulWidget {
 }
 
 class _AyarlarPageState extends State<AyarlarPage> {
+  final int _index =2;
+
   TextEditingController _nameController = TextEditingController();
   TextEditingController _mailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -48,7 +50,7 @@ class _AyarlarPageState extends State<AyarlarPage> {
     _passwordController.text = password;
 
     return Scaffold(
-      bottomNavigationBar: BottomBar(),
+      bottomNavigationBar: BottomBar(index: _index,),
       body: Column(
         children: [
           SizedBox(

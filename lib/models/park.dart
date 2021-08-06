@@ -10,12 +10,14 @@ enum Status{
 
 
 class Park{
+  final String id;
   final String name;
   final LatLng position;
-  final int price;
+  final double price;
   final Status status;
   final bool isWeithElectricity;
+  final double point;
 
-  Park(this.name, this.position, this.price, this.status, this.isWeithElectricity);
+  Park(this.name, this.position, this.price, this.status, this.isWeithElectricity, this.id, this.point);
   
 }

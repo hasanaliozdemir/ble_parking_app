@@ -200,7 +200,7 @@ class ParkCard extends StatelessWidget {
       child: Container(
         child: Center(
             child: Text(
-          point,
+          point.toString(),
           style: TextStyle(
             color: Colors.black,
             fontSize: 11,

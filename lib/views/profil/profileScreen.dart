@@ -33,7 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       model: 2021
     ),
   ];
-
+  final int _index = 2;
   var w = Get.width / 375;
   var h = Get.height / 812;
   String name = "Hasan Ali Özdemir";
@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomBar(),
+      bottomNavigationBar: BottomBar(index: _index,),
       body: Column(
         children: [
           SizedBox(
@@ -200,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: ListTile(
                         leading: Container(
                           width: w*48,
-                          height: h*48,
+                          height: w*48,
                           child: Center(child: SvgPicture.asset("assets/icons/carCircle.svg")),
                         ),
                         title: Text(

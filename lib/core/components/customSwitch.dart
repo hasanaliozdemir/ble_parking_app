@@ -31,7 +31,7 @@ class CustomSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => FlutterSwitch(
-        width: Get.width/375* 56,
+        width: Get.width/375* 51,
         height: Get.height/812*31,
         value: sw.value,
         onToggle: (val) {
@@ -39,6 +39,9 @@ class CustomSwitch extends StatelessWidget {
           // ignore: unnecessary_statements
           func();
         },
+        switchBorder: Border.all(color: gray400),
+        
+        inactiveColor: white,
         activeIcon: activeIcon,
         inactiveIcon: passiveIcon,
         activeColor: blue500,
