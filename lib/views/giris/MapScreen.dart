@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
@@ -7,6 +6,7 @@ import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/parkCard.dart';
 import 'package:gesk_app/core/components/searchBar.dart';
 import 'package:gesk_app/data_models/user_location.dart';
+import 'package:gesk_app/views/giris/park_detail.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,6 @@ import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/services/markerCreator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dio/dio.dart' as dp;
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 var _electricitySelected = false.obs;
@@ -30,12 +29,13 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  var _selectedMarkerId;
-  final _index=0;
+  int _selectedIndex = 0;
+  int _caroselIndex = 0;
+  final _index = 0;
 
   CarouselController carouselController = CarouselController();
   GoogleMapController _controller;
-  List<Marker> markers = [];
+  List<Marker> _markers = [];
   String _imageUrl =
       "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80";
 
@@ -59,7 +59,7 @@ class _MapScreenState extends State<MapScreen> {
                   myLocationEnabled: true,
                   mapType: MapType.terrain,
                   initialCameraPosition: cameraPosition,
-                  markers: markers.toSet(),
+                  markers: _markers.toSet(),
                   myLocationButtonEnabled: true,
                 ),
               ],
@@ -71,12 +71,20 @@ class _MapScreenState extends State<MapScreen> {
             padding: EdgeInsets.only(bottom: 24),
             child: CarouselSlider.builder(
               carouselController: carouselController,
-              itemCount: markers.length ?? 0,
+              itemCount: _markers.length ?? 0,
               options: CarouselOptions(
                 enableInfiniteScroll: false,
                 onPageChanged: (index, reason) {
+                  setState(() {
+                    _caroselIndex = index;
+                    _selectedIndex = _caroselIndex;
+                  });
+
                   _controller.animateCamera(CameraUpdate.newCameraPosition(
-                      CameraPosition(target: parks[index].position, zoom: 16)));
+                      CameraPosition(
+                          target: LatLng(
+                              _parks[index].latitude, _parks[index].longitude),
+                          zoom: 16)));
                 },
                 height: h * 128,
               ),
@@ -86,22 +94,22 @@ class _MapScreenState extends State<MapScreen> {
                   width: w * 264,
                   child: GestureDetector(
                     onTap: () {
-                      if (_selectedMarkerId != parks[itemIndex].id) {
-                        setState(() {
-                          _selectedMarkerId = parks[itemIndex].id;
-                        });
-                        carouselController.animateToPage(
-                            int.parse(_selectedMarkerId),
-                            duration: Duration(seconds: 1));
-                      }
-                      _controller.animateCamera(CameraUpdate.newCameraPosition(
-                          CameraPosition(
-                              target: parks[itemIndex].position, zoom: 16)));
+                      showModalBottomSheet(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          backgroundColor: Colors.white,
+                          context: context,
+                          builder: (context) {
+                            return ParkDetail(
+                              park: _parks[itemIndex],
+                            );
+                          });
                     },
                     child: ParkCard(
                         imageUrl: _imageUrl,
-                        point: parks[itemIndex].point,
-                        name: parks[itemIndex].name,
+                        point: _parks[itemIndex].point,
+                        name: _parks[itemIndex].name,
                         location: "maslak",
                         distance: "4.5",
                         price: "18,00₺",
@@ -132,14 +140,16 @@ class _MapScreenState extends State<MapScreen> {
                     func: () {
                       MarkerGenerator(markerWidgets(), (bitmaps) {
                         setState(() {
-                          markers = mapBitmapsToMarkers(bitmaps);
+                          _markers = mapBitmapsToMarkers(bitmaps);
                         });
                       }).generate(context);
                     },
                   )))
         ],
       ),
-      bottomNavigationBar: BottomBar(index: _index,),
+      bottomNavigationBar: BottomBar(
+        index: _index,
+      ),
     );
   }
 
@@ -149,36 +159,34 @@ class _MapScreenState extends State<MapScreen> {
 
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
-        markers = mapBitmapsToMarkers(bitmaps);
+        _markers = mapBitmapsToMarkers(bitmaps);
       });
     }).generate(context);
   }
 
   List<Marker> mapBitmapsToMarkers(List<Uint8List> bitmaps) {
-    List<Marker> markersList = [];
+    List<Marker> _markersList = [];
     bitmaps.asMap().forEach((i, bmp) {
-      final park = parks[i];
-      markersList.add(Marker(
+      final park = _parks[i];
+      _markersList.add(Marker(
           onTap: () {
             _controller
-              ..animateCamera(CameraUpdate.newCameraPosition(
-                  CameraPosition(target: park.position, zoom: 16)));
+              ..animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+                  target: LatLng(park.latitude, park.longitude), zoom: 16)));
             setState(() {
-              _selectedMarkerId = park.id;
+              _selectedIndex =
+                  _parks.indexWhere((element) => element.id == park.id);
             });
-            carouselController.animateToPage(
-                int.parse(
-                  _selectedMarkerId,
-                ),
+            carouselController.animateToPage(_selectedIndex,
                 duration: Duration(seconds: 1));
 
             // TODO: _getDistance(cameraPosition.target, park.position);
           },
-          markerId: MarkerId(park.id),
-          position: park.position,
+          markerId: MarkerId(park.id.toString()),
+          position: LatLng(park.latitude, park.longitude),
           icon: BitmapDescriptor.fromBytes(bmp)));
     });
-    return markersList;
+    return _markersList;
   }
 }
 
@@ -240,10 +248,21 @@ Widget _getMarkerWidget(double price, Status status, bool isWithElectiricity) {
 }
 
 // Example of backing data
-List<Park> parks = [
-  Park("Bandırma", LatLng(40.355499, 27.971991), 18.00, Status.admin, true, "0",2.5),
-  Park("MaCafe", LatLng(40.357547, 27.970377), 18.50, Status.selected, false, "1",3.5),
-  Park("OttoSocialHouse", LatLng(40.357235, 27.971058), 17.50, Status.owner, false,"2",4.5),
+List<Park> _parks = [
+  Park(
+    name: "Bandırma",
+    latitude: 40.355499,
+    longitude: 27.971991,
+    price: 18.00,
+    status: Status.admin,
+    isWithCam: true,
+    filledParkSpace: 4,
+    id: 0,
+    isWeithElectricity: true,
+    isWithSecurity: true,
+    point: 4.5,
+    parkSpace: 6,
+  ),
 ];
 
 Widget _buildMarkerText(Status status, price) {
@@ -254,7 +273,7 @@ Widget _buildMarkerText(Status status, price) {
     );
   } else {
     return Text(
-      price.truncate().toString()+"₺",
+      price.truncate().toString() + "₺",
       style: TextStyle(
         color: Colors.white,
         fontSize: 17,
@@ -266,9 +285,8 @@ Widget _buildMarkerText(Status status, price) {
 }
 
 List<Widget> markerWidgets() {
-  return parks
-      .map((c) =>
-          _getMarkerWidget(c.price, c.status, c.isWeithElectricity))
+  return _parks
+      .map((c) => _getMarkerWidget(c.price, c.status, c.isWeithElectricity))
       .toList();
 }
 

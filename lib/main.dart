@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
       initialData: UserLocation(latitude: 40.355,longitude:27.971 ),
       create: (context)=> LocationService().locationStream,
       child: GetMaterialApp(
+        theme: ThemeData(fontFamily: 'SF Pro Text'),
         home: Wrapper(),
       ),
     );
