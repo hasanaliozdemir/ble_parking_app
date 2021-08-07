@@ -2,29 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/core/colors.dart';
+import 'package:gesk_app/models/park.dart';
 import 'package:get/get.dart';
 
 var h = Get.height / 812;
 var w = Get.width / 375;
 
 class ParkCard extends StatelessWidget {
-  final variants;
-  final price;
-  final distance;
-  final name;
-  final location;
-  final imageUrl;
-  final point;
-  ParkCard(
-      {Key key,
-      @required this.imageUrl,
-      @required this.point,
-      @required this.name,
-      @required this.location,
-      @required this.distance,
-      @required this.price,
-      @required this.variants})
-      : super(key: key);
+  final Park park;
+  ParkCard({Key key, @required this.park});
 
   @override
   Widget build(BuildContext context) {
@@ -79,16 +65,19 @@ class ParkCard extends StatelessWidget {
       children: [
         Container(
           width: w * 80,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: variants.length,
-              itemBuilder: (context, index) {
-                return iconBox(variants[index]);
-              }),
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              park.isClosedPark ? iconBox(1) :iconBox(2),
+              park.isWithElectricity ? iconBox(3) : SizedBox(),
+              park.isWithCam ? iconBox(4) : SizedBox(),
+
+            ],
+          ),
         ),
         Spacer(),
         Text(
-          price,
+          park.price.toString()+" ₺",
           style: TextStyle(
             color: Colors.black,
             fontSize: 12,
@@ -137,7 +126,7 @@ class ParkCard extends StatelessWidget {
 
         break;
       case 4:
-        return Icon(CupertinoIcons.camera_fill);
+        return Icon(CupertinoIcons.video_camera_solid);
 
         break;
       case 5:
@@ -157,7 +146,7 @@ class ParkCard extends StatelessWidget {
         Flexible(
           flex: 16,
           child: Text(
-            name,
+            park.name,
             style: TextStyle(
               color: blue500,
               fontSize: 12,
@@ -170,7 +159,7 @@ class ParkCard extends StatelessWidget {
         Flexible(
           flex: 16,
           child: Text(
-            location,
+            park.location,
             style: TextStyle(
               color: gray900,
               fontSize: 12,
@@ -181,7 +170,8 @@ class ParkCard extends StatelessWidget {
         Flexible(
           flex: 16,
           child: Text(
-            distance,
+            "distance must fixed",
+            //TODO: distance api sor.
             style: TextStyle(
               color: gray900,
               fontSize: 12,
@@ -200,7 +190,7 @@ class ParkCard extends StatelessWidget {
       child: Container(
         child: Center(
             child: Text(
-          point.toString(),
+          park.point.toString(),
           style: TextStyle(
             color: Colors.black,
             fontSize: 11,
@@ -225,7 +215,7 @@ class ParkCard extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           image: DecorationImage(
-              image: NetworkImage(imageUrl), fit: BoxFit.cover)),
+              image: NetworkImage(park.imageUrls.first), fit: BoxFit.cover)),
     );
   }
 }

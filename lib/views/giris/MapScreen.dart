@@ -36,8 +36,7 @@ class _MapScreenState extends State<MapScreen> {
   CarouselController carouselController = CarouselController();
   GoogleMapController _controller;
   List<Marker> _markers = [];
-  String _imageUrl =
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80";
+
 
   CameraPosition cameraPosition =
       CameraPosition(target: LatLng(40.355499, 27.971991), zoom: 17);
@@ -95,6 +94,7 @@ class _MapScreenState extends State<MapScreen> {
                   child: GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
+                        isScrollControlled: true,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
@@ -106,14 +106,8 @@ class _MapScreenState extends State<MapScreen> {
                             );
                           });
                     },
-                    child: ParkCard(
-                        imageUrl: _imageUrl,
-                        point: _parks[itemIndex].point,
-                        name: _parks[itemIndex].name,
-                        location: "maslak",
-                        distance: "4.5",
-                        price: "18,00₺",
-                        variants: [1]),
+                    child: ParkCard(park: _parks[itemIndex],
+                        ),
                   ),
                 );
               },
@@ -250,7 +244,8 @@ Widget _getMarkerWidget(double price, Status status, bool isWithElectiricity) {
 // Example of backing data
 List<Park> _parks = [
   Park(
-    name: "Bandırma",
+    name: "Ma Cafe",
+    location: "Bandırma",
     latitude: 40.355499,
     longitude: 27.971991,
     price: 18.00,
@@ -258,10 +253,15 @@ List<Park> _parks = [
     isWithCam: true,
     filledParkSpace: 4,
     id: 0,
-    isWeithElectricity: true,
+    isWithElectricity: false,
     isWithSecurity: true,
     point: 4.5,
     parkSpace: 6,
+    isClosedPark: true,
+    imageUrls: [
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      "https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    ]
   ),
 ];
 
@@ -286,7 +286,7 @@ Widget _buildMarkerText(Status status, price) {
 
 List<Widget> markerWidgets() {
   return _parks
-      .map((c) => _getMarkerWidget(c.price, c.status, c.isWeithElectricity))
+      .map((c) => _getMarkerWidget(c.price, c.status, c.isWithElectricity))
       .toList();
 }
 
