@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../colors.dart';
 
+// ignore: must_be_immutable
 class BottomBar extends StatefulWidget {
   int _index;
   BottomBar({ Key key,@required int index }){

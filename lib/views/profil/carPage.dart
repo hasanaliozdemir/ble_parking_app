@@ -6,6 +6,7 @@ import 'package:gesk_app/models/car.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class CarPAge extends StatefulWidget {
   Car car;
   CarPAge({Key key, this.car}) : super(key: key);

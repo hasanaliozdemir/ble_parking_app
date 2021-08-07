@@ -217,7 +217,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
 
   Widget _buildPasswordForm() {
     var _focused = false.obs;
-    var secure = false.obs;
+    //var secure = false.obs;
     String errorText ="";
 
     return Obx(() => Container(

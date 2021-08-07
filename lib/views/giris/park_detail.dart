@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 
+
+// ignore: must_be_immutable
 class ParkDetail extends StatefulWidget {
   var _park;
   ParkDetail({@required Park park}) {

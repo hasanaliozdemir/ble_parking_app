@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gesk_app/data_models/user_location.dart';
 import 'package:gesk_app/services/location.dart';
 import 'package:get/get.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 import 'wrapper.dart';
