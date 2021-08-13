@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
+import 'package:gesk_app/core/components/bottomBar_readOnly.dart';
 import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/parkCard.dart';
+import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/core/components/searchBar.dart';
 import 'package:gesk_app/data_models/user_location.dart';
+import 'package:gesk_app/views/auth/signUp.dart';
 import 'package:gesk_app/views/giris/park_detail.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,12 +27,12 @@ var width = Get.width / 375;
 var height = Get.height / 812;
 dp.Dio dio = new dp.Dio();
 
-class MapScreen extends StatefulWidget {
+class MapScreenReadOnly extends StatefulWidget {
   @override
-  _MapScreenState createState() => _MapScreenState();
+  _MapScreenReadOnlyState createState() => _MapScreenReadOnlyState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
   int _selectedIndex = 0;
   int _caroselIndex = 0;
   final _index = 0;
@@ -93,18 +97,17 @@ class _MapScreenState extends State<MapScreen> {
                   width: w * 264,
                   child: GestureDetector(
                     onTap: () {
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          backgroundColor: Colors.white,
-                          context: context,
-                          builder: (context) {
-                            return ParkDetail(
-                              park: _parks[itemIndex],
-                            );
-                          });
+                      showDialog(context: context, builder: (context){
+          return PopUp(
+            title: "Devam etmek için giriş yapmalısınız.",
+            icon: "assets/icons/singin-popup-people.svg",
+            content: "Otopark alanını kiralamak ve otopark bariyer sistemini aktif hale getirmek için üye olunuz.",
+            single: true,
+            yesFunc: (){
+              Get.to(()=> SignUpScreen1());
+            },
+          );
+        });
                     },
                     child: ParkCard(park: _parks[itemIndex],
                         ),
@@ -141,7 +144,7 @@ class _MapScreenState extends State<MapScreen> {
                   )))
         ],
       ),
-      bottomNavigationBar: BottomBar(
+      bottomNavigationBar: BottomBarRead(
         index: _index,
       ),
     );
@@ -164,15 +167,17 @@ class _MapScreenState extends State<MapScreen> {
       final park = _parks[i];
       _markersList.add(Marker(
           onTap: () {
-            _controller
-              ..animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-                  target: LatLng(park.latitude, park.longitude), zoom: 16)));
-            setState(() {
-              _selectedIndex =
-                  _parks.indexWhere((element) => element.id == park.id);
-            });
-            carouselController.animateToPage(_selectedIndex,
-                duration: Duration(seconds: 1));
+            showDialog(context: context, builder: (context){
+          return PopUp(
+            title: "Devam etmek için giriş yapmalısınız.",
+            icon: "assets/icons/singin-popup-people.svg",
+            content: "Otopark alanını kiralamak ve otopark bariyer sistemini aktif hale getirmek için üye olunuz.",
+            single: true,
+            yesFunc: (){
+              Get.to(()=> SignUpScreen1());
+            },
+          );
+        });
 
             // TODO: _getDistance(cameraPosition.target, park.position);
           },

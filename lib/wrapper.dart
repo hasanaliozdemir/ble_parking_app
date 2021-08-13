@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gesk_app/views/auth/signUp.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
+import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
+import 'package:gesk_app/views/giris/SplashScreen.dart';
 
 
 
@@ -15,7 +18,7 @@ class Wrapper extends StatelessWidget {
     if (auth) {
       return MapScreen();
     }else{
-      return Scaffold();
+      return MapScreenReadOnly();
     }
   }
 }

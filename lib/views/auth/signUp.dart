@@ -4,6 +4,8 @@ import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:gesk_app/views/auth/signIn.dart';
+import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:get/get.dart';
 
 class SignUpScreen1 extends StatefulWidget {
@@ -335,7 +337,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   }
 
   void _backButtonFunc() {
-    print("back");
+    Get.to(()=>MapScreenReadOnly());
   }
 
   void _onTapGizlilik(){
@@ -351,6 +353,6 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   }
 
   void _turnSignIn(){
-    print("giriş yapma sayfasına");
+    Get.to(()=>SignUpScreen2());
   }
 }//widget sonu

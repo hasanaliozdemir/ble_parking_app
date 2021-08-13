@@ -4,6 +4,9 @@ import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:gesk_app/views/auth/forgot_password.dart';
+import 'package:gesk_app/views/auth/signUp.dart';
+import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:get/get.dart';
 
 class SignUpScreen2 extends StatefulWidget {
@@ -289,7 +292,7 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
   }
 
   void _backButtonFunc() {
-    print("back");
+    Get.to(()=>MapScreenReadOnly());
   }
 
 
@@ -298,10 +301,10 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
   }
 
   void _turnRegister(){
-
+    Get.to(()=>SignUpScreen1());
   }
 
   void _forgotPassword(){
-
+    Get.to(()=>ForgotPasswordPage());
   }
 }//widget sonu

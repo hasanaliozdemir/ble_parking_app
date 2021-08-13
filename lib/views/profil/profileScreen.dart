@@ -17,17 +17,17 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   List<Car> cars = [
-    Car(
+    Car.withoutID(
       plaka: "34 QWY 545",
       renk: "Siyah",
       model: 2021
     ),
-    Car(
+    Car.withoutID(
       plaka: "34 QWY 546",
       renk: "Siyah",
       model: 2021
     ),
-    Car(
+    Car.withoutID(
       plaka: "34 QWY 547",
       renk: "Siyah",
       model: 2021

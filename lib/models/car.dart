@@ -1,7 +1,21 @@
-class Car{
-   String plaka;
-   String renk;
-   int model;
+import 'package:flutter/material.dart';
 
-  Car({this.plaka, this.renk, this.model});
+class Car {
+  String plaka;
+  String renk;
+  int model;
+
+  int id;
+  String userID;
+
+  Car.withoutID({
+    @required this.plaka, 
+    @required this.renk, 
+    @required this.model});
+  Car({
+    @required this.plaka, 
+    @required this.renk, 
+    @required this.model, 
+    @required this.id, 
+    @required this.userID});
 }
