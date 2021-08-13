@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/models/park.dart';
+import 'package:gesk_app/views/reservation/date_pick.dart';
 import 'package:get/get.dart';
 
 // ignore: must_be_immutable
@@ -567,10 +568,10 @@ class _ParkDetailState extends State<ParkDetail> {
   }
 
   void _rentParkSpace(){
-
+    Get.to(()=>DatePickScreen(park: _park,));
   }
 
   void _reserveParkSpace(){
-
+    Get.to(()=>DatePickScreen());
   }
 }
