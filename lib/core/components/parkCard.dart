@@ -1,9 +1,18 @@
+import 'dart:convert' as convert;
+import 'package:gesk_app/data_models/distance.dart';
+import 'package:gesk_app/services/distanceService.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/core/colors.dart';
+import 'package:gesk_app/data_models/user_location.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'package:provider/provider.dart';
 
 var h = Get.height / 812;
 var w = Get.width / 375;
@@ -12,8 +21,13 @@ class ParkCard extends StatelessWidget {
   final Park park;
   ParkCard({Key key, @required this.park});
 
+  var distance = "".obs;
+
   @override
   Widget build(BuildContext context) {
+    var userLocation = Provider.of<UserLocation>(context);
+    _getDistance(userLocation);
+
     return Container(
       height: h * 128,
       width: w * 264,
@@ -68,16 +82,15 @@ class ParkCard extends StatelessWidget {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              park.isClosedPark ? iconBox(1) :iconBox(2),
+              park.isClosedPark ? iconBox(1) : iconBox(2),
               park.isWithElectricity ? iconBox(3) : SizedBox(),
               park.isWithCam ? iconBox(4) : SizedBox(),
-
             ],
           ),
         ),
         Spacer(),
         Text(
-          park.price.toString()+" ₺",
+          park.price.toString() + " ₺",
           style: TextStyle(
             color: Colors.black,
             fontSize: 12,
@@ -106,6 +119,12 @@ class ParkCard extends StatelessWidget {
         child: icon(variant),
       ),
     );
+  }
+
+  _getDistance(userLocation) async {
+    distance.value = await DistanceService().getDistance(
+        LatLng(park.latitude, park.longitude),
+        LatLng(userLocation.latitude, userLocation.longitude));
   }
 
   icon(index) {
@@ -169,16 +188,16 @@ class ParkCard extends StatelessWidget {
         Spacer(flex: 4),
         Flexible(
           flex: 16,
-          child: Text(
-            "distance must fixed",
-            //TODO: distance api sor.
+          child: Obx(()=>Text(
+            distance.value ?? " h",
+            
             style: TextStyle(
               color: gray900,
               fontSize: 12,
               fontFamily: "SF Pro Text",
               fontWeight: FontWeight.w600,
             ),
-          ),
+          ),)
         ),
       ],
     );

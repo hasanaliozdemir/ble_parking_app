@@ -28,30 +28,26 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           ),
           Expanded(
             flex: 160,
-            child: Align(
-                alignment: Alignment.center,
-                child: Stack(
-                  children: [
-                    Container(
-                      width: Get.width / 375 * 343,
-                      height: Get.height / 812 * 160,
-                      decoration:
-                          BoxDecoration(borderRadius: BorderRadius.circular(8)),
-                      child: SvgPicture.asset("assets/images/Card.svg"),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Image.asset("assets/images/blueCard.png"),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      
                     ),
-                    Center(
-                      child: Text(
-                        "Rezarvasyonlar",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 34,
-                          fontFamily: "SF Pro Display",
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    )
-                  ],
-                )),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: Image.asset("assets/images/grayCard.png"),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    
+                ))
+              ],
+            )
           ),
           Spacer(
             flex: 37,

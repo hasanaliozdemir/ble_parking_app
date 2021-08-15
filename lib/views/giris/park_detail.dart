@@ -102,7 +102,7 @@ class _ParkDetailState extends State<ParkDetail> {
               flex: 1,
               child: Container(
                 color: gray400,
-                height: Get.height / 812 * 1,
+                
                 width: Get.width,
               ),
             ),
@@ -185,7 +185,7 @@ class _ParkDetailState extends State<ParkDetail> {
         _buildTitle1(),
         Container(
           color: gray400,
-          height: 1,
+          height: Get.height/812*1,
         ),
         Container(
           child: Column(
@@ -261,7 +261,7 @@ class _ParkDetailState extends State<ParkDetail> {
   _buildTitle1() {
     return Container(
       width: 375,
-      height: 48,
+      
       color: Colors.white,
       padding: const EdgeInsets.only(
         top: 13,
@@ -296,7 +296,7 @@ class _ParkDetailState extends State<ParkDetail> {
   _buildTitle2() {
     return Container(
       width: 375,
-      height: 48,
+
       color: Colors.white,
       padding: const EdgeInsets.only(
         top: 13,

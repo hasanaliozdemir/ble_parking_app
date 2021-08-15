@@ -34,7 +34,7 @@ class ButtonIcon extends StatelessWidget {
           ),
           child:Row(
             children: [
-              Expanded(child: Icon(CupertinoIcons.paperplane_fill),flex: 2,),
+              Expanded(child: Icon(CupertinoIcons.location_fill,color: white,),flex: 2,),
               Expanded(child: Text(
                 text,
                 textAlign: TextAlign.center,

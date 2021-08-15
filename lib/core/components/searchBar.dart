@@ -12,13 +12,14 @@ class SearchBar extends StatelessWidget {
     var focused = false.obs;
     FocusNode searchFocus = FocusNode();
     TextEditingController searchController = TextEditingController();
-    var w = Get.width/375;
-    var h = Get.height/812;
+    String _hintText= "Adres Giriniz";
+
+    var _h = Get.height/812;
     return Obx(()=>
       Container(
       
-      width: w* 279,
-      height:h* 56,
+      
+      height:_h* 56,
       decoration: BoxDecoration(
         border: focused.value ?  Border.all(color: blue500) : Border.all(color: Colors.transparent),
         borderRadius: BorderRadius.circular(8),
@@ -44,9 +45,10 @@ class SearchBar extends StatelessWidget {
           search(searchController.text);
         },
         textInputAction: TextInputAction.search,
-        keyboardType: TextInputType.text,
+        keyboardType: TextInputType.streetAddress,
         cursorColor: blue500,
         decoration: InputDecoration(
+          hintText: _hintText,
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
           focusColor: blue500,

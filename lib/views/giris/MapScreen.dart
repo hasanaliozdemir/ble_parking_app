@@ -15,13 +15,12 @@ import 'package:gesk_app/core/funcs/triangleCreator.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/services/markerCreator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:dio/dio.dart' as dp;
 import 'package:provider/provider.dart';
 
 var _electricitySelected = false.obs;
 var width = Get.width / 375;
 var height = Get.height / 812;
-dp.Dio dio = new dp.Dio();
+
 
 class MapScreen extends StatefulWidget {
   @override
@@ -173,8 +172,6 @@ class _MapScreenState extends State<MapScreen> {
             });
             carouselController.animateToPage(_selectedIndex,
                 duration: Duration(seconds: 1));
-
-            // TODO: _getDistance(cameraPosition.target, park.position);
           },
           markerId: MarkerId(park.id.toString()),
           position: LatLng(park.latitude, park.longitude),
@@ -336,7 +333,9 @@ _buildSearchBar(context) {
       left: 16,
       child: Row(
         children: [
-          SearchBar(),
+          Container(
+            width: Get.width/375*279,
+            child: SearchBar()),
           SizedBox(
             width: 8,
           ),
@@ -362,12 +361,7 @@ _buildSearchBar(context) {
       ));
 }
 
-_getDistance(LatLng location, LatLng target) async {
-  dp.Response response = await dio.get(
-      "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C,-73.9976592&key=AIzaSyAm5L6H-LaUyOUlHNt_nMwy7b_VNRxPPLM");
 
-  print(response.data);
-}
 
 Future<Uint8List> getPerson(context) async {
   ByteData byteData =
