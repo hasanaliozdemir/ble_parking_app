@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gesk_app/views/auth/forgot_password.dart';
-import 'package:gesk_app/views/auth/newPassword.dart';
-import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 

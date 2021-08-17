@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/bloc/app_bloc.dart';
 import 'package:gesk_app/core/colors.dart';
+import 'package:gesk_app/views/profil/park/live_location_page.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class SearchBar extends StatefulWidget {
+class SearchBarAddress extends StatefulWidget {
   
-  const SearchBar({Key key}) : super(key: key);
+  const SearchBarAddress({Key key}) : super(key: key);
 
   @override
-  _SearchBarState createState() => _SearchBarState();
+  _SearchBarAddressState createState() => _SearchBarAddressState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _SearchBarAddressState extends State<SearchBarAddress> {
   TextEditingController _nameController;
 
   @override
@@ -112,6 +113,7 @@ class _SearchBarState extends State<SearchBar> {
                 applicationBloc.setSelectedLocation(
                   applicationBloc.searchResults[index].placeId);
                 
+                Get.to(()=>LiveLocationPage());
               },
             );
           },

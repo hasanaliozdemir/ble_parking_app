@@ -32,7 +32,7 @@ class _SignInScreenState extends State<SignInScreen> {
   FocusNode phoneFocus= FocusNode();
   FocusNode passwordFocus= FocusNode();
 
-  var _secure = false.obs;
+  
 
   
   @override
@@ -213,7 +213,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Widget _buildPasswordForm() {
     
-    String errorText ="";
+    
 
 
 

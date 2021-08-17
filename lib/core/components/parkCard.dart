@@ -1,4 +1,5 @@
 
+import 'package:gesk_app/bloc/app_bloc.dart';
 import 'package:gesk_app/services/distanceService.dart';
 
 
@@ -17,16 +18,24 @@ var h = Get.height / 812;
 var w = Get.width / 375;
 
 // ignore: must_be_immutable
-class ParkCard extends StatelessWidget {
+class ParkCard extends StatefulWidget {
   final Park park;
   ParkCard({Key key, @required this.park});
 
+  @override
+  _ParkCardState createState() => _ParkCardState();
+}
+
+class _ParkCardState extends State<ParkCard> {
   var distance = "".obs;
 
+  
   @override
   Widget build(BuildContext context) {
-    var userLocation = Provider.of<UserLocation>(context);
-    _getDistance(userLocation);
+    final applicationBloc = Provider.of<AppBloc>(context);
+    _getDistance(
+      applicationBloc.currentLocation
+    );
 
     return Container(
       height: h * 128,
@@ -82,15 +91,15 @@ class ParkCard extends StatelessWidget {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              park.isClosedPark ? iconBox(1) : iconBox(2),
-              park.isWithElectricity ? iconBox(3) : SizedBox(),
-              park.isWithCam ? iconBox(4) : SizedBox(),
+              widget.park.isClosedPark ? iconBox(1) : iconBox(2),
+              widget.park.isWithElectricity ? iconBox(3) : SizedBox(),
+              widget.park.isWithCam ? iconBox(4) : SizedBox(),
             ],
           ),
         ),
         Spacer(),
         Text(
-          park.price.toString() + " ₺",
+          widget.park.price.toString() + " ₺",
           style: TextStyle(
             color: Colors.black,
             fontSize: 12,
@@ -123,7 +132,7 @@ class ParkCard extends StatelessWidget {
 
   _getDistance(userLocation) async {
     distance.value = await DistanceService().getDistance(
-        LatLng(park.latitude, park.longitude),
+        LatLng(widget.park.latitude, widget.park.longitude),
         LatLng(userLocation.latitude, userLocation.longitude));
   }
 
@@ -165,7 +174,7 @@ class ParkCard extends StatelessWidget {
         Flexible(
           flex: 16,
           child: Text(
-            park.name,
+            widget.park.name,
             style: TextStyle(
               color: blue500,
               fontSize: 12,
@@ -178,7 +187,7 @@ class ParkCard extends StatelessWidget {
         Flexible(
           flex: 16,
           child: Text(
-            park.location,
+            widget.park.location,
             style: TextStyle(
               color: gray900,
               fontSize: 12,
@@ -209,7 +218,7 @@ class ParkCard extends StatelessWidget {
       child: Container(
         child: Center(
             child: Text(
-          park.point.toString(),
+          widget.park.point.toString(),
           style: TextStyle(
             color: Colors.black,
             fontSize: 11,
@@ -234,7 +243,7 @@ class ParkCard extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           image: DecorationImage(
-              image: NetworkImage(park.imageUrls.first), fit: BoxFit.cover)),
+              image: NetworkImage(widget.park.imageUrls.first), fit: BoxFit.cover)),
     );
   }
 }

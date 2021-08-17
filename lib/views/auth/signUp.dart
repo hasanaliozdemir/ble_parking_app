@@ -29,7 +29,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   FocusNode mailFocus= FocusNode();
   FocusNode passwordFocus= FocusNode();
 
-  var _secure = false.obs;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -220,8 +220,8 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   }
 
   Widget _buildPasswordForm() {
-    var _focused = false.obs;
-    //var secure = false.obs;
+    
+    
     return PasswordInput(
     controller: passwordController, 
     prefixIcon: Icon(CupertinoIcons.lock),

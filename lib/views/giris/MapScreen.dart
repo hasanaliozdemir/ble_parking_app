@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:gesk_app/bloc/app_bloc.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/parkCard.dart';
 import 'package:gesk_app/core/components/searchBar.dart';
-import 'package:gesk_app/data_models/user_location.dart';
+import 'package:gesk_app/data_models/place.dart';
 import 'package:gesk_app/views/giris/filter.dart';
 import 'package:gesk_app/views/giris/park_detail.dart';
 import 'package:get/get.dart';
@@ -34,17 +35,46 @@ class _MapScreenState extends State<MapScreen> {
   final _index = 0;
 
   CarouselController carouselController = CarouselController();
-  GoogleMapController _controller;
+  Completer<GoogleMapController> _mapcontroller = Completer();
   List<Marker> _markers = [];
 
 
   CameraPosition cameraPosition =
       CameraPosition(target: LatLng(40.355499, 27.971991), zoom: 17);
 
+  StreamSubscription locationSubscription;
+
+  @override
+  void initState() { 
+    final applicationBloc = Provider.of<AppBloc>(context,listen: false);
+    locationSubscription =  applicationBloc.selectedLocation.stream.listen((place) {
+      if (place != null) {
+        _getToPlace(place);
+      }
+    });
+
+    MarkerGenerator(markerWidgets(), (bitmaps) {
+      setState(() {
+        _markers = mapBitmapsToMarkers(bitmaps);
+      });
+    }).generate(context);
+    super.initState();
+    
+  }
+
+  @override
+  void dispose() { 
+    final applicationBloc = Provider.of<AppBloc>(context,listen: false);
+    applicationBloc.dispose();
+    locationSubscription.cancel();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    var userLocation = Provider.of<UserLocation>(context);
-
+    
+    
     return Scaffold(
       body: Stack(
         children: [
@@ -53,10 +83,11 @@ class _MapScreenState extends State<MapScreen> {
               children: <Widget>[
                 GoogleMap(
                   onMapCreated: (GoogleMapController controller) {
-                    _controller = controller;
+                    _mapcontroller.complete(controller);
                   },
                   myLocationEnabled: true,
                   mapType: MapType.terrain,
+                  mapToolbarEnabled: false,
                   initialCameraPosition: cameraPosition,
                   markers: _markers.toSet(),
                   myLocationButtonEnabled: false,
@@ -73,12 +104,12 @@ class _MapScreenState extends State<MapScreen> {
               itemCount: _markers.length ?? 0,
               options: CarouselOptions(
                 enableInfiniteScroll: false,
-                onPageChanged: (index, reason) {
+                onPageChanged: (index, reason) async{
                   setState(() {
                     _caroselIndex = index;
                     _selectedIndex = _caroselIndex;
                   });
-
+                  final GoogleMapController _controller = await _mapcontroller.future;
                   _controller.animateCamera(CameraUpdate.newCameraPosition(
                       CameraPosition(
                           target: LatLng(
@@ -147,23 +178,14 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    MarkerGenerator(markerWidgets(), (bitmaps) {
-      setState(() {
-        _markers = mapBitmapsToMarkers(bitmaps);
-      });
-    }).generate(context);
-  }
 
   List<Marker> mapBitmapsToMarkers(List<Uint8List> bitmaps) {
     List<Marker> _markersList = [];
     bitmaps.asMap().forEach((i, bmp) {
       final park = _parks[i];
       _markersList.add(Marker(
-          onTap: () {
+          onTap: () async{
+            final GoogleMapController _controller = await _mapcontroller.future;
             _controller
               ..animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
                   target: LatLng(park.latitude, park.longitude), zoom: 16)));
@@ -180,6 +202,15 @@ class _MapScreenState extends State<MapScreen> {
     });
     return _markersList;
   }
+
+  Future<void> _getToPlace(Place place) async{
+    final GoogleMapController _controller = await _mapcontroller.future;
+  _controller.animateCamera(
+    CameraUpdate.newCameraPosition(
+      CameraPosition(target: LatLng(place.geometry.location.lat,place.geometry.location.lng),zoom: 17)
+    )
+  );
+}
 }
 
 // Example of marker widget
@@ -333,6 +364,7 @@ _buildSearchBar(context) {
       top: MediaQuery.of(context).padding.top + (h * 36),
       left: 16,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: Get.width/375*279,
@@ -371,6 +403,8 @@ _buildSearchBar(context) {
           )
         ],
       ));
+
+      
 }
 
 

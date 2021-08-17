@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_svg/svg.dart';
-import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:gesk_app/wrapper.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';

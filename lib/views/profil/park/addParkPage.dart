@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/buttonIcon.dart';
 import 'package:gesk_app/core/components/searchBar.dart';
+import 'package:gesk_app/core/components/searchBarAdress.dart';
 import 'package:gesk_app/views/profil/park/live_location_page.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
@@ -34,7 +35,7 @@ class _AddParkPageState extends State<AddParkPage> {
                         child: Container(
                           alignment: Alignment.center,
                           width: Get.width/375*343,
-                          child: SearchBar()),
+                          child: SearchBarAddress()),
                       )
                     ],
                   )
