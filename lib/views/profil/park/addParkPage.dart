@@ -148,6 +148,6 @@ class _AddParkPageState extends State<AddParkPage> {
   }
 
   void _onPressedLiveLocation() {
-    Get.to(()=>LiveLocationPage());
+    Get.to(()=>LiveLocationPage(searched: false,));
   }
 }

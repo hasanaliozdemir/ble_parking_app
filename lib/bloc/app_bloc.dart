@@ -6,6 +6,7 @@ import 'package:gesk_app/data_models/place.dart';
 import 'package:gesk_app/data_models/place_search.dart';
 import 'package:gesk_app/services/geolocator_service.dart';
 import 'package:gesk_app/services/place_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppBloc with ChangeNotifier{
   final placesService = PlaceServices();
@@ -16,6 +17,7 @@ class AppBloc with ChangeNotifier{
   Position currentLocation;
   List<PlaceSearch> searchResults;
   StreamController<Place> selectedLocation = StreamController<Place>();
+  Place lastSelected;
 
   AppBloc(){
     setCurrentLocation();
@@ -32,6 +34,10 @@ class AppBloc with ChangeNotifier{
   }
 
   setSelectedLocation(String placeId) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var _place = await placesService.getPlace(placeId);
+    await prefs.setDouble("lastPlaceLat", _place.geometry.location.lat);
+    await prefs.setDouble("lastPlaceLng", _place.geometry.location.lng);
     selectedLocation.add(await placesService.getPlace(placeId));
     searchResults = null;
     notifyListeners();
@@ -44,6 +50,7 @@ class AppBloc with ChangeNotifier{
 
   @override
   void dispose() { 
+    
     selectedLocation.close();
     super.dispose();
   }

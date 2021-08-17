@@ -43,11 +43,12 @@ class _MapScreenState extends State<MapScreen> {
       CameraPosition(target: LatLng(40.355499, 27.971991), zoom: 17);
 
   StreamSubscription locationSubscription;
-
+  
   @override
   void initState() { 
     final applicationBloc = Provider.of<AppBloc>(context,listen: false);
-    locationSubscription =  applicationBloc.selectedLocation.stream.listen((place) {
+    
+    locationSubscription =  applicationBloc.selectedLocation.stream.asBroadcastStream().listen((place) {
       if (place != null) {
         _getToPlace(place);
       }
@@ -66,6 +67,7 @@ class _MapScreenState extends State<MapScreen> {
   void dispose() { 
     final applicationBloc = Provider.of<AppBloc>(context,listen: false);
     applicationBloc.dispose();
+    applicationBloc.selectedLocation.close();
     locationSubscription.cancel();
     super.dispose();
   }
