@@ -5,39 +5,31 @@ import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/passwordInput.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
-import 'package:gesk_app/views/auth/forgot_password.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
-import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:get/get.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key key}) : super(key: key);
+class NewPasswordPage extends StatefulWidget {
+  const NewPasswordPage({Key key}) : super(key: key);
 
   @override
-  _SignInScreenState createState() => _SignInScreenState();
+  _NewPasswordPageState createState() => _NewPasswordPageState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
-  @override
-  void initState() {
-    super.initState();
-    passwordFocus.addListener(_onFocusChange);
-  }
-  var _focused = false.obs;
-  var confirmed = false.obs;
-  
-  TextEditingController phoneController= TextEditingController();
-  TextEditingController passwordController= TextEditingController();
+class _NewPasswordPageState extends State<NewPasswordPage> {
 
-  FocusNode phoneFocus= FocusNode();
-  FocusNode passwordFocus= FocusNode();
-
-  var _secure = false.obs;
+  // var _focused = false.obs;
 
   
+  TextEditingController newPasswordController= TextEditingController();
+  TextEditingController newPasswordAgainController= TextEditingController();
+
+  FocusNode newPasswordFocus= FocusNode();
+FocusNode newPasswordAgainFocus= FocusNode();
+
+
+
   @override
   Widget build(BuildContext context) {
-    phoneController.text = "(+90)";
     return Scaffold(
       body: _buildBody(),
       resizeToAvoidBottomInset: false
@@ -70,7 +62,7 @@ class _SignInScreenState extends State<SignInScreen> {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          "Hoşgeldiniz",
+          "Parolamı Unuttum",
           style: TextStyle(
             color: blue200,
             fontSize: 34,
@@ -88,7 +80,7 @@ class _SignInScreenState extends State<SignInScreen> {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-            "Mevcut hesabınız ile giriş yapabilirsiniz.",
+            "Sisteme üye olmak için kullandığınız telefon numaranızı yazınız. Şifre için telefonuna SMS ile doğrulama kodu göndereceğiz.",
             style: TextStyle(
                 color: Colors.black,
                 fontSize: 17,
@@ -124,7 +116,7 @@ class _SignInScreenState extends State<SignInScreen> {
               flex: 16,
             ),
             Expanded(
-              flex: 44,
+              flex: 66,
               child: _buildDescription(),
             ),
             Spacer(
@@ -132,45 +124,24 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             Expanded(
               flex: 60,
-              child: _buildPhoneForm(),
+              child: _buildNewPassword(),
             ),
-            Spacer(
-              flex: 16,
-            ),
-            Expanded(
-              flex: 60,
-              child: _buildPasswordForm(),
-            ),
-            Spacer(flex: 8,),
-            Expanded(
-              flex: 16,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  right: 16
-                ),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: InkWell(
-                  onTap: _forgotPassword,
-                  child: Text(
-                    "Parolamı unuttum."
-                    ,style: TextStyle(
-                      color: gray900,
-                      fontWeight: FontWeight.w400
-                    ),
-                  ),
-            ),
-                ),
-              )),
             Spacer(
               flex: 40,
             ),
             Expanded(
-              flex: 56,
-              child: _buildSignInButton(),
+              flex: 60,
+              child: _buildNewPasswordAgain(),
             ),
             Spacer(
-              flex: 236,
+              flex: 162,
+            ),
+            Expanded(
+              flex: 56,
+              child: _buildResetPasswordButton(),
+            ),
+            Spacer(
+              flex: 116,
             ),
             Expanded(
               flex: 56,
@@ -187,47 +158,31 @@ class _SignInScreenState extends State<SignInScreen> {
       );
   }
 
-  Widget _buildPhoneForm() {
-    return TextInputSimple(
-      hintText: "Telefon Numarası",
-      prefixIcon: Icon(CupertinoIcons.phone),
-      controller: phoneController,
-      focusNode: phoneFocus,
-      textInputAction: TextInputAction.next,
-      keyBoardType: TextInputType.phone,
-      inputFormatters: [
-        MaskedInputFormatter(
-          '(+90) ###-###-##-##'
-        )
-      ],
+
+Widget _buildNewPassword() {
+    return PasswordInput(
+      controller: newPasswordController, 
+      focusNode: newPasswordFocus,
+      hintText: "Yeni Şifre",
+      prefixIcon: Icon(Icons.vpn_key),
       );
   }
 
-    void _onFocusChange() {
-    if (passwordFocus.hasFocus) {
-      _focused.value = true;
-    } else {
-      _focused.value = false;
-    }
-  }
-
-  Widget _buildPasswordForm() {
-    
-    String errorText ="";
-
-
-
+  Widget _buildNewPasswordAgain(){
     return PasswordInput(
-      controller: passwordController, 
-      focusNode: passwordFocus,
-      prefixIcon: Icon(CupertinoIcons.lock),
-      hintText: "Parola",
-    );
+      controller: newPasswordAgainController, 
+      focusNode: newPasswordAgainFocus,
+      hintText: "Yeni Şifre Tekrar",
+      prefixIcon: Icon(Icons.vpn_key),
+      );
   }
 
 
-  Widget _buildSignInButton() {
-    return Button.active(text: "Giriş yap", onPressed: _signIn);
+
+
+
+  Widget _buildResetPasswordButton() {
+    return Button.active(text: "Gönder", onPressed: _resetPassword);
   }
 
   Widget _buildCreateAccount() {
@@ -255,19 +210,16 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void _backButtonFunc() {
-    Get.to(()=>MapScreenReadOnly());
+    print("back");
   }
 
 
-  void _signIn(){
-    print("giriş");
+  void _resetPassword(){
+    print("sıfırla: ${newPasswordController.text}");
   }
 
   void _turnRegister(){
     Get.to(()=>SignUpScreen1());
   }
 
-  void _forgotPassword(){
-    Get.to(()=>ForgotPasswordPage());
-  }
 }//widget sonu

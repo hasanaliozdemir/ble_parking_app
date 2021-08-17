@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gesk_app/views/auth/signUp.dart';
+import 'package:gesk_app/views/auth/forgot_password.dart';
+import 'package:gesk_app/views/auth/newPassword.dart';
+import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
-import 'package:gesk_app/views/giris/SplashScreen.dart';
-import 'package:gesk_app/views/reservation/date_pick.dart';
+
 
 
 
@@ -15,11 +16,11 @@ class Wrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var auth = true;
+    var auth = false;
     if (auth) {
       return MapScreen();
     }else{
-      return DatePickScreen();
+      return MapScreenReadOnly();
     }
   }
 }

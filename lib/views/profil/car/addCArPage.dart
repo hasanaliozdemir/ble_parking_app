@@ -16,12 +16,13 @@ class _AddCArPageState extends State<AddCArPage> {
   var _filled = 0.obs;
 
   TextEditingController plakaController = TextEditingController();
-  TextEditingController renkController = TextEditingController();
   TextEditingController modelController = TextEditingController();
 
   FocusNode plakaFocus = FocusNode();
-  FocusNode renkFocus = FocusNode();
   FocusNode modelFocus = FocusNode();
+
+  var _currentSelectedColor;
+  var _currentSelectedSize;
 
   @override
   Widget build(BuildContext context) {
@@ -50,17 +51,7 @@ class _AddCArPageState extends State<AddCArPage> {
               focusNode: plakaFocus,
               hintText: "Araç Plakası",
             )),
-            Spacer(flex: 16,),
-            Expanded(flex:60,child: TextInputSimple(
-              onTap: (){
-                
-                _filled.value = _filled.value +1;
-              },
-              controller: renkController,
-              focusNode: renkFocus,
-              hintText: "Renk",
-
-            )),
+            
             Spacer(flex: 16,),
             Expanded(flex:60,child: TextInputSimple(
               onTap: (){
@@ -71,9 +62,13 @@ class _AddCArPageState extends State<AddCArPage> {
               focusNode: modelFocus,
               hintText: "Model",
             )),
+            Spacer(flex: 16,),
+            Expanded(flex:60,child: _buildColorDropDown()),
+            Spacer(flex: 16,),
+            Expanded(flex:60,child: _buildSizeDropDown()),
             Spacer(flex: 40,),
             Expanded(child: _buildConfirmButton(),flex: 56,),
-            Spacer(flex: 250,),
+            Spacer(flex: 174,),
             SizedBox(
               height: MediaQuery.of(context).padding.bottom,
             )
@@ -86,7 +81,7 @@ class _AddCArPageState extends State<AddCArPage> {
 
   Widget _buildConfirmButton(){
     return Obx((){
-      if (_filled.value>2) {
+      if (_filled.value>3) {
       return Button.active(text: "Kaydet", onPressed: _saveButtonFunc);
     } else {
       return Button.passive(text: "Kaydet", onPressed: null);
@@ -144,6 +139,87 @@ class _AddCArPageState extends State<AddCArPage> {
                 fontSize: 17,
             ),
         ),
+      ),
+    );
+  }
+
+  List<String> _colors =[
+    "Kırmızı",
+    "Mavi",
+    "Siyah",
+    "Beyaz"
+  ];
+
+  List<String> _sizes =[
+    "Sedan",
+    "SUV",
+    "Hatchback"
+  ];
+
+  Widget _buildColorDropDown(){
+    return Container(
+      height: Get.height / 812 * 44,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: gray600
+        ),
+        color: white
+      ),
+      padding: EdgeInsets.all(8),
+      width: Get.width/375*343,
+      child: DropdownButton<String>(
+        icon: Icon(CupertinoIcons.chevron_down),
+        isExpanded: true,
+        underline: SizedBox(),
+        items: _colors.map((String dropDownStringItem) {
+          return DropdownMenuItem<String>(
+            value: dropDownStringItem,
+            child: Text(dropDownStringItem),
+          );
+        }).toList(),
+        onChanged: (String newValueSelected){
+          setState(() {
+            _filled.value = _filled.value + 1;
+                    _currentSelectedColor = newValueSelected;
+                  });
+        },
+        value: _currentSelectedColor,
+        hint: Text("Renk"),
+      ),
+    );
+  }
+
+  Widget _buildSizeDropDown(){
+    return Container(
+      height: Get.height / 812 * 44,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: gray600
+        ),
+        color: white
+      ),
+      padding: EdgeInsets.all(8),
+      width: Get.width/375*343,
+      child: DropdownButton<String>(
+        icon: Icon(CupertinoIcons.chevron_down),
+        isExpanded: true,
+        underline: SizedBox(),
+        items: _sizes.map((String dropDownStringItem) {
+          return DropdownMenuItem<String>(
+            value: dropDownStringItem,
+            child: Text(dropDownStringItem),
+          );
+        }).toList(),
+        onChanged: (String newValueSelected){
+          setState(() {
+            _filled.value = _filled.value + 1;
+                    _currentSelectedSize = newValueSelected;
+                  });
+        },
+        value: _currentSelectedSize,
+        hint: Text("Boyut"),
       ),
     );
   }

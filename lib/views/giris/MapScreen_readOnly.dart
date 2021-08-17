@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:gesk_app/core/components/bottomBar.dart';
+
 import 'package:gesk_app/core/components/bottomBar_readOnly.dart';
 import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/parkCard.dart';
@@ -10,7 +9,7 @@ import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/core/components/searchBar.dart';
 import 'package:gesk_app/data_models/user_location.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
-import 'package:gesk_app/views/giris/park_detail.dart';
+
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -340,7 +339,9 @@ _buildSearchBar(context) {
       left: 16,
       child: Row(
         children: [
-          SearchBar(),
+          Container(
+            width: Get.width/375*279,
+            child: SearchBar()),
           SizedBox(
             width: 8,
           ),

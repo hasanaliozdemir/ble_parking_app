@@ -1,7 +1,6 @@
-import 'dart:convert' as convert;
-import 'package:gesk_app/data_models/distance.dart';
+
 import 'package:gesk_app/services/distanceService.dart';
-import 'package:http/http.dart' as http;
+
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ import 'package:provider/provider.dart';
 var h = Get.height / 812;
 var w = Get.width / 375;
 
+// ignore: must_be_immutable
 class ParkCard extends StatelessWidget {
   final Park park;
   ParkCard({Key key, @required this.park});

@@ -6,7 +6,8 @@ import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/models/car.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/views/profil/ayarlarPage.dart';
-import 'package:gesk_app/views/profil/carPage.dart';
+import 'package:gesk_app/views/profil/car/addCArPage.dart';
+import 'package:gesk_app/views/profil/car/carPage.dart';
 import 'package:gesk_app/views/profil/park/ParkPage.dart';
 import 'package:gesk_app/views/profil/park/addParkPage.dart';
 import 'package:get/get.dart';
@@ -449,7 +450,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   _onPressedAddCar() {
-    print("add car");
+    Get.to(()=> AddCArPage() );
   }
 
   _onPressedAddPark() {

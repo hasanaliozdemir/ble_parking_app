@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
-import 'package:gesk_app/views/diger/othersScreen.dart';
-import 'package:gesk_app/views/giris/MapScreen.dart';
-import 'package:gesk_app/views/profil/profileScreen.dart';
+
 import 'package:get/get.dart';
 
 import '../colors.dart';

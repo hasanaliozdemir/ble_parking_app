@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
+import 'package:gesk_app/core/components/passwordInput.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:gesk_app/views/auth/authCode.dart';
 import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:get/get.dart';
@@ -31,6 +33,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
 
   @override
   Widget build(BuildContext context) {
+    phoneController.text = "(+90)";
     return Scaffold(
       body: _buildBody(),
       resizeToAvoidBottomInset: false
@@ -198,9 +201,8 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       textInputAction: TextInputAction.next,
       keyBoardType: TextInputType.phone,
       inputFormatters: [
-        PhoneInputFormatter(
-          onCountrySelected:  (PhoneCountryData countryData) {
-            print(countryData.country);}
+        MaskedInputFormatter(
+          '(+90) ###-###-##-##'
         )
       ],
       );
@@ -220,52 +222,10 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   Widget _buildPasswordForm() {
     var _focused = false.obs;
     //var secure = false.obs;
-    String errorText ="";
-
-    return Obx(() => Container(
-          width: Get.width / 375 * 343,
-          height: Get.height / 812 * 44,
-          decoration: BoxDecoration(
-              border: _focused.value
-                  ? Border.all(color: blue500)
-                  : Border.all(color: Colors.transparent),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x33000000),
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
-                ),
-              ],
-              borderRadius: BorderRadius.circular(8),
-              color: white),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8,
-            vertical: 0,
-          ),
-          child: TextFormField(
-            keyboardType: TextInputType.visiblePassword,
-            textInputAction: TextInputAction.done,
-            focusNode: passwordFocus,
-            obscureText: _secure.value,
-            controller: passwordController,
-            decoration: InputDecoration(
-                hintText: "Parola",
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                focusColor: blue500,
-                prefixIcon: Icon(CupertinoIcons.lock),
-                suffixIcon: Container(
-                  height: Get.height/812 *30,
-                  child: IconButton(
-                    icon: _secure.value ? Icon(CupertinoIcons.eye_slash) : Icon(CupertinoIcons.eye),
-                    onPressed: (){
-                      _secure.value = !_secure.value;
-                    },
-                  ),
-                ),
-                errorText: errorText),
-          ),
-        ));
+    return PasswordInput(
+    controller: passwordController, 
+    prefixIcon: Icon(CupertinoIcons.lock),
+    focusNode: passwordFocus);
   }
 
   Widget _buildSecurityButton(RxBool comfirmed) {
@@ -349,10 +309,10 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   }
 
   void _signUp(){
-    print("kayıt");
+    Get.to(()=>AuthCodePage(phoneNumber: phoneController.text,));
   }
 
   void _turnSignIn(){
-    Get.to(()=>SignUpScreen2());
+    Get.to(()=>SignInScreen());
   }
 }//widget sonu

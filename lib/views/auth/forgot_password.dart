@@ -4,7 +4,6 @@ import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
-import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
 import 'package:get/route_manager.dart';
 

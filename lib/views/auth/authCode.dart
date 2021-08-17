@@ -2,12 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
+import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class AuthCodePage extends StatefulWidget {
   final String phoneNumber;
-  AuthCodePage({ Key key, this.phoneNumber }) : super(key: key);
+  AuthCodePage({ Key key, @required this.phoneNumber }) : super(key: key);
 
   @override
   _AuthCodePageState createState() => _AuthCodePageState();
@@ -15,7 +16,7 @@ class AuthCodePage extends StatefulWidget {
 
 class _AuthCodePageState extends State<AuthCodePage> {
   var authCode;
-  var phoneNumber;
+  
   var _filled = false.obs;
   @override
   Widget build(BuildContext context) {
@@ -98,7 +99,7 @@ class _AuthCodePageState extends State<AuthCodePage> {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-            "Giriş yapmak ve onaylamak için telefonunuza SMS olarak gönderilen doğrulama kodunu giriniz. $phoneNumber",
+            "Giriş yapmak ve onaylamak için telefonunuza SMS olarak gönderilen doğrulama kodunu giriniz. ${widget.phoneNumber}",
             style: TextStyle(
                 color: Colors.black,
                 fontSize: 17,
@@ -155,6 +156,7 @@ class _AuthCodePageState extends State<AuthCodePage> {
 
   void _comfirmCode(){
     print("sıfırla kod: $authCode");
+    Get.to(()=>MapScreen());
   }
 
 }

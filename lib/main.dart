@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gesk_app/data_models/user_location.dart';
 import 'package:gesk_app/services/location.dart';
+import 'package:gesk_app/views/giris/MapScreen.dart';
+import 'package:gesk_app/views/giris/SplashScreen.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
       create: (context)=> LocationService().locationStream,
       child: GetMaterialApp(
         theme: ThemeData(fontFamily: 'SF Pro Text'),
-        home: Wrapper(),
+        home: MapScreen(),
       ),
     );
   }

@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import '../colors.dart';
 
 // ignore: must_be_immutable
-class TextInputSimple extends StatefulWidget {
+class PasswordInput extends StatefulWidget {
   Function onChange;
   bool readOnly;
   Function onTap;
@@ -22,7 +22,7 @@ class TextInputSimple extends StatefulWidget {
   Icon prefixIcon;
   Icon suffixIcon;
   Function suffixFunc;
-  TextInputSimple(
+  PasswordInput(
       {Key key,
       Function onChange,
       bool readOnly,
@@ -58,10 +58,12 @@ class TextInputSimple extends StatefulWidget {
   }
 
   @override
-  _TextInputSimpleState createState() => _TextInputSimpleState();
+  _PasswordInputState createState() => _PasswordInputState();
 }
 
-class _TextInputSimpleState extends State<TextInputSimple> {
+class _PasswordInputState extends State<PasswordInput> {
+  var _secure = true.obs;
+
   @override
   void initState() {
     super.initState();
@@ -115,7 +117,7 @@ class _TextInputSimpleState extends State<TextInputSimple> {
                 widget.func();
               }
             },
-            obscureText: widget.secure ?? false,
+            obscureText: _secure.value,
             controller: widget.controller,
             decoration: InputDecoration(
                 hintText: widget.hintText,
@@ -130,19 +132,11 @@ class _TextInputSimpleState extends State<TextInputSimple> {
   }
 
   _buildSuffix() {
-    if (widget.suffixIcon == null) {
-      return null;
-    } else {
-      return IconButton(
-        icon: widget.suffixIcon,
-        onPressed: () {
-          if (widget.suffixFunc != null) {
-            setState(() {
-              widget.suffixFunc();
-            });
-          }
-        },
+    return IconButton(
+      icon: _secure.value ? Icon(CupertinoIcons.eye_slash_fill) : Icon(CupertinoIcons.eye_fill), 
+      onPressed: (){
+        _secure.value = !_secure.value;
+      }
       );
-    }
-  }
+}
 }

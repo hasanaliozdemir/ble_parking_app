@@ -37,7 +37,9 @@ class CustomSwitch extends StatelessWidget {
         onToggle: (val) {
           sw.value = val;
           // ignore: unnecessary_statements
-          func();
+          if(func!=null){
+            func();
+          }
         },
         switchBorder: Border.all(color: gray400),
         

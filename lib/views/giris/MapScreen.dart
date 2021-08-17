@@ -6,6 +6,7 @@ import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/parkCard.dart';
 import 'package:gesk_app/core/components/searchBar.dart';
 import 'package:gesk_app/data_models/user_location.dart';
+import 'package:gesk_app/views/giris/filter.dart';
 import 'package:gesk_app/views/giris/park_detail.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
@@ -352,10 +353,21 @@ _buildSearchBar(context) {
                   ),
                 ],
                 borderRadius: BorderRadius.circular(8)),
-            child: Icon(
-              CupertinoIcons.slider_horizontal_3,
-              color: blue500,
-            ),
+            child: IconButton(
+              icon: Icon(CupertinoIcons.slider_horizontal_3), 
+              onPressed: (){
+                showModalBottomSheet(
+                        isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          backgroundColor: Colors.white,
+                          context: context,
+                          builder: (context) {
+                            return FilterDetail();
+                          });
+              }
+              )
           )
         ],
       ));
