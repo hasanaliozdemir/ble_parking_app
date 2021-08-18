@@ -16,7 +16,7 @@ class AppBloc with ChangeNotifier{
   // variables
   Position currentLocation;
   List<PlaceSearch> searchResults;
-  StreamController<Place> selectedLocation = StreamController<Place>();
+  StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
   Place lastSelected;
 
   AppBloc(){

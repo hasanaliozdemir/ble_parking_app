@@ -166,6 +166,11 @@ Widget _buildMarkerText(Status status, price) {
   }
 }
 
+Widget markerWidget() {
+  return _getMarkerWidget(0, Status.owner,false);
+      
+}
+
 Color _markerColor(Status status) {
   switch (status) {
     case Status.deselected:

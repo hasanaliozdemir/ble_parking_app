@@ -47,8 +47,8 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() { 
     final applicationBloc = Provider.of<AppBloc>(context,listen: false);
-    
-    locationSubscription =  applicationBloc.selectedLocation.stream.asBroadcastStream().listen((place) {
+    locationSubscription =  applicationBloc.selectedLocation.stream.asBroadcastStream()
+    .listen((place) {
       if (place != null) {
         _getToPlace(place);
       }
