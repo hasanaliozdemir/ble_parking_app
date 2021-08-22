@@ -2,21 +2,26 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:gesk_app/data_models/address.dart';
 import 'package:gesk_app/data_models/place.dart';
 import 'package:gesk_app/data_models/place_search.dart';
+import 'package:gesk_app/services/addressService.dart';
 import 'package:gesk_app/services/geolocator_service.dart';
 import 'package:gesk_app/services/place_service.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppBloc with ChangeNotifier{
   final placesService = PlaceServices();
   final geolocatorServices = GeolocatorService();
+  final addressServices = AdressService();
 
 
   // variables
   Position currentLocation;
   List<PlaceSearch> searchResults;
   StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
+  StreamController<Address> selectedAddress = StreamController<Address>.broadcast();
   Place lastSelected;
 
   AppBloc(){
@@ -34,10 +39,9 @@ class AppBloc with ChangeNotifier{
   }
 
   setSelectedLocation(String placeId) async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     var _place = await placesService.getPlace(placeId);
-    await prefs.setDouble("lastPlaceLat", _place.geometry.location.lat);
-    await prefs.setDouble("lastPlaceLng", _place.geometry.location.lng);
+    lastSelected = _place;
     selectedLocation.add(await placesService.getPlace(placeId));
     searchResults = null;
     notifyListeners();
@@ -48,9 +52,15 @@ class AppBloc with ChangeNotifier{
     notifyListeners();
   }
 
+  setSelectedAddress(LatLng latLng) async{
+    var _loc = await addressServices.getFormatedAddress(latLng);
+    selectedAddress.add(_loc);
+    notifyListeners();
+  }
+
   @override
   void dispose() { 
-    
+    selectedAddress.close();
     selectedLocation.close();
     super.dispose();
   }

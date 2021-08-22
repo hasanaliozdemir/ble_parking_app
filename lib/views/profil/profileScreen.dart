@@ -31,8 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<Park> parks = [
     Park(
         isClosedPark: true,
-        longitude: 124.325,
-        latitude: 43.54353,
+        longitude: 27.971991,
+        latitude: 40.355499,
         location: "Bandırma",
         isWithElectricity: true,
         status: Status.selected,

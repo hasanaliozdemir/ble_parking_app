@@ -5,12 +5,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/bloc/app_bloc.dart';
 import 'package:gesk_app/core/colors.dart';
+import 'package:gesk_app/core/components/button.dart';
+import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/core/funcs/triangleCreator.dart';
 
 import 'package:gesk_app/data_models/location.dart';
 
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/services/markerCreator.dart';
+import 'package:gesk_app/views/profil/park/addParkPage.dart';
+import 'package:gesk_app/views/profil/park/choseAddress.dart';
 import 'package:get/get.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -39,7 +43,21 @@ class _LiveLocationPageState extends State<LiveLocationPage> {
   @override
   void initState() {
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
-
+    if (searched == false) {
+      cameraPosition = CameraPosition(
+          target: LatLng(applicationBloc.currentLocation.latitude,
+              applicationBloc.currentLocation.longitude),
+          zoom: 16);
+      currentLocation = Location(
+          lat: applicationBloc.currentLocation.latitude,
+          lng: applicationBloc.currentLocation.longitude);
+    } else {
+      cameraPosition = CameraPosition(
+          target: LatLng(applicationBloc.currentLocation.latitude,
+              applicationBloc.currentLocation.longitude),
+          zoom: 16);
+      _getPlace();
+    }
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
         _markers = mapBitmapsToMarkers(bitmaps);
@@ -61,30 +79,58 @@ class _LiveLocationPageState extends State<LiveLocationPage> {
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
 
-    if (searched == false) {
-      cameraPosition = CameraPosition(
-          target: LatLng(applicationBloc.currentLocation.latitude,
-              applicationBloc.currentLocation.longitude),
-          zoom: 16);
-      currentLocation = Location(
-          lat: applicationBloc.currentLocation.latitude,
-          lng: applicationBloc.currentLocation.longitude);
-    } else {
-      cameraPosition = CameraPosition(
-          target: LatLng(applicationBloc.currentLocation.latitude,
-              applicationBloc.currentLocation.longitude),
-          zoom: 16);
-      _getPlace();
-    }
+    
 
     return Scaffold(
-      body: GoogleMap(
-        initialCameraPosition: cameraPosition,
-        onMapCreated: (GoogleMapController controller) {
-          _mapController.complete(controller);
-        },
-        markers: _markers.toSet(),
-      ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).padding.top,
+          ),
+          Spacer(flex: 20,),
+          Expanded(
+            flex: 44,
+            child: Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: _buildBackButton(),
+                ),
+                Center(
+                  child: Text(
+                    "Otopark Adresi Ekle",
+                    style: TextStyle(
+                      color: black,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "SF Pro Text"
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Spacer(flex: 6,),
+          Expanded(
+            flex: 590,
+            child: GoogleMap(
+              initialCameraPosition: cameraPosition,
+              markers: _markers.toSet(),
+              mapToolbarEnabled: false,
+              myLocationButtonEnabled: false,
+            ),
+          ),
+          Expanded(
+            flex: 100,
+            child: Container(
+              child: Button.active(text: "Bu adresi kullan", onPressed: _useThisAddress),
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).padding.bottom,
+          )
+        ],
+      )
     );
   }
 
@@ -194,5 +240,54 @@ class _LiveLocationPageState extends State<LiveLocationPage> {
         ),
       );
     }
+  }
+
+  Widget _buildBackButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Container(
+        child: GestureDetector(
+          onTap: () => _backButtonFunc(),
+          child: Row(
+            children: [
+              Icon(CupertinoIcons.left_chevron, color: blue500),
+              Text(
+                "Geri",
+                style: TextStyle(fontSize: 17, color: blue500),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _backButtonFunc() {
+    Get.to(()=>AddParkPage());
+  }
+
+  void _useThisAddress(){
+    showDialog(context: context, builder: (context){
+      return PopUp(
+      title: "Otopark Konumunun Belirlenmesi", 
+      content: "Otoparkınız Evpark sistemine bu adres ile kaydedilecektir. Bu adresi kaydetmek için emin misiniz ?", 
+      yesFunc: (){
+        _yesFunc();
+      }, 
+      single: false, 
+      noFunc: _noFunc,
+      icon: "assets/icons/maps.svg");
+    });
+  }
+
+  void _yesFunc(){
+    Get.to(()=>ChoseAddressPage(
+      latLng: LatLng(currentLocation.lat,currentLocation.lng),
+    ));
+  }
+
+  void _noFunc(){
+    Navigator.pop(context);
+    
   }
 }

@@ -104,8 +104,10 @@ class PopUp extends StatelessWidget {
         Get.width/375 * 343,
         child: Row(
           children: [
-            Expanded(child: ButtonMini.passive(text: "Hayır", onPressed: _yesFunc)),
-            Expanded(child: ButtonMini.active(text: "Evet", onPressed: _noFunc),),
+            Expanded(child: ButtonMini.passive(text: "Hayır", onPressed: _noFunc)),
+            Expanded(child: ButtonMini.active(text: "Evet", onPressed: (){
+              _yesFunc();
+            }),),
           ],
         ),
       );

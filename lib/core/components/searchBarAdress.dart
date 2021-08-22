@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/bloc/app_bloc.dart';
 import 'package:gesk_app/core/colors.dart';
+import 'package:gesk_app/data_models/place.dart';
+import 'package:gesk_app/services/place_service.dart';
+import 'package:gesk_app/views/profil/park/choseAddress.dart';
 import 'package:gesk_app/views/profil/park/live_location_page.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class SearchBarAddress extends StatefulWidget {
@@ -109,11 +115,14 @@ class _SearchBarAddressState extends State<SearchBarAddress> {
             return ListTile(
               leading: SvgPicture.asset("assets/icons/adressPin.svg"),
               title: Text(applicationBloc.searchResults[index].description),
-              onTap: (){
+              onTap: ()async{
+                var _placeId = applicationBloc.searchResults[index].placeId;
                 applicationBloc.setSelectedLocation(
                   applicationBloc.searchResults[index].placeId);
+                  
+                Place place = await PlaceServices().getPlace(_placeId) ;
                 
-                Get.to(()=>LiveLocationPage());
+                Get.to(()=> ChoseAddressPage(latLng: LatLng(place.geometry.location.lat,place.geometry.location.lng),) );
               },
             );
           },
