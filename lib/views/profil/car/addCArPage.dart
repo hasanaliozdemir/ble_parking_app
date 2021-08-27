@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:gesk_app/core/components/textInput.dart';
+import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
@@ -225,7 +226,7 @@ class _AddCArPageState extends State<AddCArPage> {
   }
 
   void _backButtonFunc() {
-    print("back");
+    Get.to(()=>ProfileScreen());
   }
 
   void _saveButtonFunc(){

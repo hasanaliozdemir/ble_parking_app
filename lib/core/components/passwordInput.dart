@@ -82,53 +82,76 @@ class _PasswordInputState extends State<PasswordInput> {
 
   @override
   Widget build(BuildContext context) {
+    return Container(
+      width: Get.width / 375 * 343,
+      height: Get.height / 812 * 60,
+      padding: EdgeInsets.only(
+        
+      ),
+      child: Stack(
+        children: [
+          Obx(()=>Container(
+            width: Get.width / 375 * 343,
+            height: Get.height / 812 * 44,
+            decoration: BoxDecoration(
+            border: _focused.value
+                ? Border.all(color: blue500)
+                : Border.all(color: gray600),
+            //boxShadow: [BoxShadow(color: Color(0x33000000),blurRadius: 10,offset: Offset(0, 4),),],
+            borderRadius: BorderRadius.circular(8),
+            color: white),
+            padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 4,
+        ),
+          ),),
+          _buildObx()
+        ],
+      ),
+    );
+  }
+
+  Obx _buildObx() {
     return Obx(() => Container(
-          width: Get.width / 375 * 343,
-          height: Get.height / 812 * 44,
-          decoration: BoxDecoration(
-              border: _focused.value
-                  ? Border.all(color: blue500)
-                  : Border.all(color: gray600),
-              //boxShadow: [BoxShadow(color: Color(0x33000000),blurRadius: 10,offset: Offset(0, 4),),],
-              borderRadius: BorderRadius.circular(8),
-              color: white),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8,
-            vertical: 4,
-          ),
-          child: TextFormField(
-            onTap: (){
-              if (widget.onTap != null) {
-                widget.onTap();
-              }
-            },
-            onChanged: (val){
-              if(widget.onChange!=null){
-                widget.onChange();
-              }
-            },
-            keyboardType: widget.keyBoardType,
-            readOnly: widget.readOnly ?? false,
-            inputFormatters: widget.inputFormatters,
-            textInputAction: widget.textInputAction ?? TextInputAction.done,
-            focusNode: widget.focusNode,
-            onFieldSubmitted: (term) {
-              if (widget.func != null) {
-                widget.func();
-              }
-            },
-            obscureText: _secure.value,
-            controller: widget.controller,
-            decoration: InputDecoration(
-                hintText: widget.hintText,
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                focusColor: blue500,
-                prefixIcon: widget.prefixIcon,
-                suffixIcon: _buildSuffix(),
-                errorText: widget.errorText),
-          ),
-        ));
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 4,
+      ),
+      
+      
+      child: TextFormField(
+        onTap: (){
+          if (widget.onTap != null) {
+            widget.onTap();
+          }
+        },
+        onChanged: (val){
+          if(widget.onChange!=null){
+            widget.onChange();
+          }
+        },
+        keyboardType: widget.keyBoardType,
+        readOnly: widget.readOnly ?? false,
+        inputFormatters: widget.inputFormatters,
+        textInputAction: widget.textInputAction ?? TextInputAction.done,
+        focusNode: widget.focusNode,
+        onFieldSubmitted: (term) {
+          if (widget.func != null) {
+            widget.func();
+          }
+        },
+        obscureText: _secure.value,
+        controller: widget.controller,
+        decoration: InputDecoration(
+            hintText: widget.hintText,
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            focusColor: blue500,
+            prefixIcon: widget.prefixIcon,
+            suffixIcon: _buildSuffix(),
+            errorText: widget.errorText),
+      ),
+    ));
   }
 
   _buildSuffix() {

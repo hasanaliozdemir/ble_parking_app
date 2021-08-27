@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
+import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:gesk_app/models/car.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
@@ -25,17 +26,25 @@ class _CarPAgeState extends State<CarPAge> {
 
   FocusNode _plakaFocus = FocusNode();
   FocusNode _modelFocus = FocusNode();
-  FocusNode _renkFocus = FocusNode();
+  
 
   var edit1 = true.obs;
   var edit2 = true.obs;
   var edit3 = true.obs;
+  var edit4 = true.obs;
+
+  var _filled = 0.obs;
+
+  var _currentSelectedColor;
+  var _currentSelectedSize;
 
   @override
   Widget build(BuildContext context) {
     String plaka = car.plaka;
     String model = car.model.toString();
     String renk = car.renk;
+    
+
     _plakaController.text = plaka ?? "null";
     _modelController.text = model ?? "null";
     _renkController.text = renk ?? "null";
@@ -89,24 +98,7 @@ class _CarPAgeState extends State<CarPAge> {
             ),
             Expanded(
               flex: 60,
-              child: TextInputSimple(
-                readOnly: edit2.value,
-                suffixIcon: Icon(edit2.value
-                    ? CupertinoIcons.pen
-                    : CupertinoIcons.check_mark),
-                suffixFunc: () {
-                  setState(() {
-                    edit2.value = !edit2.value;
-                    car.renk = _renkController.text;
-                  });
-                },
-                prefixIcon: Icon(
-                  CupertinoIcons.question,
-                  color: blue500,
-                ),
-                focusNode: _renkFocus,
-                controller: _renkController,
-              ),
+              child: _buildColorDropDown()
             ),
             Spacer(
               flex: 24,
@@ -133,7 +125,21 @@ class _CarPAgeState extends State<CarPAge> {
               ),
             ),
             Spacer(
-              flex: 120,
+              flex: 24,
+            ),
+            Expanded(
+              flex: 60,
+              child: _buildSizeDropDown()
+            ),
+            Spacer(
+              flex: 32,
+            ),
+            Expanded(
+              flex: 56,
+              child: _buildButton(),
+            ),
+            Spacer(
+              flex: 44,
             ),
             Expanded(
                 flex: 18,
@@ -159,7 +165,7 @@ class _CarPAgeState extends State<CarPAge> {
                   ),
                 )),
             Spacer(
-              flex: 136,
+              flex: 40,
             ),
             SizedBox(
               height: MediaQuery.of(context).padding.bottom,
@@ -169,6 +175,129 @@ class _CarPAgeState extends State<CarPAge> {
       ),
     );
   }
+
+  List<String> _colors =[
+    "Kırmızı",
+    "Mavi",
+    "Siyah",
+    "Beyaz"
+  ];
+
+  List<String> _sizes =[
+    "Sedan",
+    "SUV",
+    "Hatchback"
+  ];
+
+  Widget _buildColorDropDown(){
+    return Container(
+      height: Get.height / 812 * 44,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: gray600
+        ),
+        color: white
+      ),
+      padding: EdgeInsets.all(8),
+      width: Get.width/375*343,
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Container(
+                child: Icon(CupertinoIcons.eyedropper,color: blue500,),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 9,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DropdownButton<String>(
+        
+        icon: Icon(CupertinoIcons.pen,color: gray900,),
+        isExpanded: true,
+        underline: SizedBox(),
+        items: _colors.map((String dropDownStringItem) {
+              return DropdownMenuItem<String>(
+                value: dropDownStringItem,
+                child: Text(dropDownStringItem),
+              );
+        }).toList(),
+        onChanged: (String newValueSelected){
+              setState(() {
+                _filled.value = _filled.value + 1;
+                        _currentSelectedColor = newValueSelected;
+                        car.renk = _currentSelectedColor;
+                      });
+        },
+        value: _currentSelectedColor,
+        hint: Text("${car.renk}",style: TextStyle(color: black),),
+      ),
+            ),
+          ),
+        ],
+      )
+    );
+  }
+
+  Widget _buildSizeDropDown(){
+    return Container(
+      height: Get.height / 812 * 44,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: gray600
+        ),
+        color: white
+      ),
+      padding: EdgeInsets.all(8),
+      width: Get.width/375*343,
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Container(
+                child: Icon(CupertinoIcons.arrow_left_right_circle,color: blue500,),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 9,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DropdownButton<String>(
+        
+        icon: Icon(CupertinoIcons.pen,color: gray900,),
+        isExpanded: true,
+        underline: SizedBox(),
+        items: _sizes.map((String dropDownStringItem) {
+              return DropdownMenuItem<String>(
+                value: dropDownStringItem,
+                child: Text(dropDownStringItem),
+              );
+        }).toList(),
+        onChanged: (String newValueSelected){
+              setState(() {
+                _filled.value = _filled.value + 1;
+                        _currentSelectedSize = newValueSelected;
+                        car.size = _currentSelectedSize;
+                      });
+        },
+        value: _currentSelectedSize,
+        hint: Text("${car.size}",style: TextStyle(color: black),),
+      ),
+            ),
+          ),
+        ],
+      )
+    );
+  }
+
+
 
   Widget _buildPano() {
     return Container(
@@ -239,6 +368,14 @@ class _CarPAgeState extends State<CarPAge> {
     );
   }
 
+  Widget _buildButton(){
+    if (_filled>0) {
+      return Button.active(text: "Kaydet", onPressed: _saveCar);
+    } else {
+      return Button.passive(text: "Kaydet", onPressed: null);
+    }
+  }
+
   void _backButtonFunc() {
     Get.to(()=>ProfileScreen());
   }
@@ -269,6 +406,10 @@ class _CarPAgeState extends State<CarPAge> {
   void _deleteFunc(){
     print("delete car");
     Get.to(()=>ProfileScreen());
+  }
+
+  void _saveCar(){
+
   }
 
   void _cancleFunc(){

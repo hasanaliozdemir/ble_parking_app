@@ -23,9 +23,9 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   List<Car> cars = [
-    Car.withoutID(plaka: "34 QWY 545", renk: "Siyah", model: 2021),
-    Car.withoutID(plaka: "34 QWY 546", renk: "Siyah", model: 2021),
-    Car.withoutID(plaka: "34 QWY 547", renk: "Siyah", model: 2021),
+    Car.withoutID(plaka: "34 QWY 545", renk: "Siyah", model: 2021,size: "Sedan"),
+    Car.withoutID(plaka: "34 QWY 546", renk: "Siyah", model: 2021,size: "Sedan"),
+    Car.withoutID(plaka: "34 QWY 547", renk: "Siyah", model: 2021,size: "Sedan"),
   ];
 
   List<Park> parks = [
@@ -359,86 +359,99 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Theme _buildAraclarim() {
     return Theme(
       data: ThemeData().copyWith(dividerColor: Colors.transparent),
-      child: ExpansionTile(
-        title: Text(
-          "Araçlarım",
-          style: TextStyle(
-            color: blue500,
-            fontSize: 17,
-            fontFamily: "SF Pro Text",
-            fontWeight: FontWeight.w600,
-          ),
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: Color(0x19000000),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+            ),
+        ],
         ),
-        leading: Container(
-          width: w * 48,
-          height: h * 48,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Color(0xfff2f2f7),
-          ),
-          child: Icon(
-            CupertinoIcons.car_detailed,
-            color: blue500,
-          ),
-        ),
-        trailing: Icon(
-          CupertinoIcons.chevron_down,
-          color: blue500,
-        ),
-        children: [
-          ListView.separated(
-              shrinkWrap: true,
-              separatorBuilder: (context, i) {
-                return Container(
-                  height: h * 1,
-                  width: w * 343,
-                  color: gray400,
-                );
-              },
-              itemCount: cars.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  width: w * 343,
-                  child: ListTile(
-                    leading: Container(
-                      width: w * 48,
-                      height: w * 48,
-                      child: Center(
-                          child:
-                              SvgPicture.asset("assets/icons/carCircle.svg")),
-                    ),
-                    title: Text(
-                      cars[index].plaka,
-                      style: TextStyle(),
-                    ),
-                    trailing: IconButton(
-                      onPressed: () => _onPressedCar(cars[index]),
-                      icon: Icon(
-                        CupertinoIcons.chevron_forward,
-                        color: blue500,
-                      ),
-                    ),
-                  ),
-                );
-              }),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            width: w * 343,
-            decoration: BoxDecoration(
-                color: blue500,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(8))),
-            child: ListTile(
-              onTap: () => _onPressedAddCar(),
-              title: Text(
-                "Araç Ekle",
-                style: TextStyle(color: white),
-              ),
-              leading: Icon(CupertinoIcons.add_circled),
+        child: ExpansionTile(
+          backgroundColor: white,
+          title: Text(
+            "Araçlarım",
+            style: TextStyle(
+              color: blue500,
+              fontSize: 17,
+              fontFamily: "SF Pro Text",
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ],
+          leading: Container(
+            width: w * 48,
+            height: h * 48,
+            decoration: BoxDecoration(
+              
+              borderRadius: BorderRadius.circular(8),
+              color: Color(0xfff2f2f7),
+            ),
+            child: Icon(
+              CupertinoIcons.car_detailed,
+              color: blue500,
+            ),
+          ),
+          trailing: Icon(
+            CupertinoIcons.chevron_down,
+            color: blue500,
+          ),
+          children: [
+            ListView.separated(
+                shrinkWrap: true,
+                separatorBuilder: (context, i) {
+                  return Container(
+                    height: h * 1,
+                    width: w * 343,
+                    color: gray400,
+                  );
+                },
+                itemCount: cars.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: w * 343,
+                    child: ListTile(
+                      leading: Container(
+                        width: w * 48,
+                        height: w * 48,
+                        child: Center(
+                            child:
+                                SvgPicture.asset("assets/icons/carCircle.svg")),
+                      ),
+                      title: Text(
+                        cars[index].plaka,
+                        style: TextStyle(),
+                      ),
+                      trailing: IconButton(
+                        onPressed: () => _onPressedCar(cars[index]),
+                        icon: Icon(
+                          CupertinoIcons.chevron_forward,
+                          color: blue500,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              width: w * 343,
+              decoration: BoxDecoration(
+                  color: blue500,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8))),
+              child: ListTile(
+                onTap: () => _onPressedAddCar(),
+                title: Text(
+                  "Araç Ekle",
+                  style: TextStyle(color: white),
+                ),
+                leading: Icon(CupertinoIcons.add_circled,color: white,),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

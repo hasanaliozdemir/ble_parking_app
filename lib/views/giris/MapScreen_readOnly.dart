@@ -44,8 +44,13 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
       CameraPosition(target: LatLng(40.355499, 27.971991), zoom: 17);
 
   @override
+  void dispose() { 
+    
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var userLocation = Provider.of<UserLocation>(context);
 
     return Scaffold(
       body: Stack(
@@ -67,51 +72,53 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
             ),
           ),
           _buildSearchBar(context),
-          Container(
-            alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.only(bottom: 24),
-            child: CarouselSlider.builder(
-              carouselController: carouselController,
-              itemCount: _markers.length ?? 0,
-              options: CarouselOptions(
-                enableInfiniteScroll: false,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _caroselIndex = index;
-                    _selectedIndex = _caroselIndex;
-                  });
+          Align(
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.only(bottom: 24),
+              child: CarouselSlider.builder(
+                carouselController: carouselController,
+                itemCount: _markers.length ?? 0,
+                options: CarouselOptions(
+                  enableInfiniteScroll: false,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _caroselIndex = index;
+                      _selectedIndex = _caroselIndex;
+                    });
 
-                  _controller.animateCamera(CameraUpdate.newCameraPosition(
-                      CameraPosition(
-                          target: LatLng(
-                              _parks[index].latitude, _parks[index].longitude),
-                          zoom: 16)));
-                },
-                height: h * 128,
-              ),
-              itemBuilder: (context, itemIndex, pageIndex) {
-                return Container(
+                    _controller.animateCamera(CameraUpdate.newCameraPosition(
+                        CameraPosition(
+                            target: LatLng(
+                                _parks[index].latitude, _parks[index].longitude),
+                            zoom: 16)));
+                  },
                   height: h * 128,
-                  width: w * 264,
-                  child: GestureDetector(
-                    onTap: () {
-                      showDialog(context: context, builder: (context){
-          return PopUp(
-            title: "Devam etmek için giriş yapmalısınız.",
-            icon: "assets/icons/singin-popup-people.svg",
-            content: "Otopark alanını kiralamak ve otopark bariyer sistemini aktif hale getirmek için üye olunuz.",
-            single: true,
-            yesFunc: (){
-              Get.to(()=> SignUpScreen1());
-            },
-          );
-        });
-                    },
-                    child: ParkCard(park: _parks[itemIndex],
-                        ),
-                  ),
-                );
+                ),
+                itemBuilder: (context, itemIndex, pageIndex) {
+                  return Container(
+                    height: h * 128,
+                    width: w * 264,
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(context: context, builder: (context){
+            return PopUp(
+              title: "Devam etmek için giriş yapmalısınız.",
+              icon: "assets/icons/singin-popup-people.svg",
+              content: "Otopark alanını kiralamak ve otopark bariyer sistemini aktif hale getirmek için üye olunuz.",
+              single: true,
+              yesFunc: (){
+                Get.to(()=> SignUpScreen1(),fullscreenDialog: true);
               },
+            );
+        });
+                      },
+                      child: ParkCard(park: _parks[itemIndex],
+                          ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
           Positioned(
@@ -246,6 +253,46 @@ Widget _getMarkerWidget(double price, Status status, bool isWithElectiricity) {
 
 // Example of backing data
 List<Park> _parks = [
+  Park(
+    name: "Ma Cafe",
+    location: "Bandırma",
+    latitude: 40.355499,
+    longitude: 27.971991,
+    price: 18.00,
+    status: Status.admin,
+    isWithCam: true,
+    filledParkSpace: 4,
+    id: 0,
+    isWithElectricity: false,
+    isWithSecurity: true,
+    point: 4.5,
+    parkSpace: 6,
+    isClosedPark: true,
+    imageUrls: [
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      "https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    ]
+  ),
+  Park(
+    name: "Ma Cafe",
+    location: "Bandırma",
+    latitude: 40.355499,
+    longitude: 27.971991,
+    price: 18.00,
+    status: Status.admin,
+    isWithCam: true,
+    filledParkSpace: 4,
+    id: 0,
+    isWithElectricity: false,
+    isWithSecurity: true,
+    point: 4.5,
+    parkSpace: 6,
+    isClosedPark: true,
+    imageUrls: [
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      "https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    ]
+  ),
   Park(
     name: "Ma Cafe",
     location: "Bandırma",

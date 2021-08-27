@@ -28,7 +28,8 @@ class SplashScreen extends StatelessWidget {
     Timer(
       Duration(seconds: 5), 
       (){
-        Get.to(()=>Wrapper());
+        
+        Get.to(()=>Wrapper(),fullscreenDialog: true);
       });
 
     return Scaffold(

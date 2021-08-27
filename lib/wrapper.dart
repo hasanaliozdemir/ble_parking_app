@@ -13,7 +13,7 @@ class Wrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var auth = false;
+    var auth = true;
     if (auth) {
       return MapScreen();
     }else{

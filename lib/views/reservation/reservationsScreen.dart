@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/models/reservation.dart';
@@ -13,6 +14,16 @@ class ReservationsScreen extends StatefulWidget {
 }
 
 class _ReservationsScreenState extends State<ReservationsScreen> {
+  List<Reservation> ownerList = List<Reservation>();
+  List<Reservation> carList = List<Reservation>();
+  var _turned = false.obs;
+
+  @override
+  void initState() { 
+    super.initState();
+    _orderReservations();
+  }
+
   final int _index = 1;
   @override
   Widget build(BuildContext context) {
@@ -26,69 +37,118 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           Spacer(
             flex: 56,
           ),
-          Expanded(
-            flex: 160,
-            child: _buildCards()
-          ),
+          Expanded(flex: 160, child: _buildCards()),
           Spacer(
             flex: 37,
           ),
           Expanded(
             flex: 432,
-            child: _buildReservations(),
+            child: Obx((){
+              if (_turned.value == false) {
+                return _buildCarReservations();
+              }else{
+                return _buildOwnerReservations();
+              }
+            }),
           )
         ],
       ),
     );
   }
 
-  Row _buildCards() {
-    return Row(
-            children: [
-              Expanded(
+  Widget _buildCards() {
+    return Obx(() => Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  if (_turned.value != false) {
+                    _turned.value = false;
+                  }
+                },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Image.asset("assets/images/blueCard.png"),
+                  child: _turned.value
+                      ? SvgPicture.asset("assets/images/grayCard2.svg")
+                      : Image.asset(
+                          "assets/images/blueCard.png",
+                        ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    
                   ),
                 ),
               ),
-              Expanded(
-                child: Container(
-                  child: Image.asset("assets/images/grayCard.png"),
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  
-              ))
-            ],
-          );
+            ),
+            Expanded(
+                child: GestureDetector(
+              onTap: () {
+                if (_turned.value != true) {
+                  _turned.value = true;
+                }
+              },
+              child: Container(
+                child: _turned.value
+                    ? SvgPicture.asset("assets/images/blueCard2.svg")
+                    : Image.asset("assets/images/grayCard.png"),
+                padding: EdgeInsets.symmetric(horizontal: 16),
+              ),
+            ))
+          ],
+        ));
   }
 
-  _buildReservations() {
+  _buildOwnerReservations() {
     return ListView.builder(
       shrinkWrap: false,
-      itemCount: reservations.length ?? 0,
+      itemCount: ownerList.length ?? 0,
       itemBuilder: (context, index) {
-        var _reservation = reservations[index];
+        var _reservation = ownerList[index];
         _getReservationTexts();
         return Padding(
           padding: EdgeInsets.all(8),
           child: Container(
             height: Get.height / 812 * 56,
             decoration: BoxDecoration(
-              border: Border.all(color: gray500,width: 1),
-              borderRadius: BorderRadius.circular(8)
-            ),
+                border: Border.all(color: gray500, width: 1),
+                borderRadius: BorderRadius.circular(8)),
             child: ListTile(
               leading: _buildLeading(),
               title: Text(
                 "",
                 style: TextStyle(
-                  fontFamily: "SF Pro Text",
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600
-                ),
+                    fontFamily: "SF Pro Text",
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _buildCarReservations() {
+    return ListView.builder(
+      shrinkWrap: false,
+      itemCount: carList.length ?? 0,
+      itemBuilder: (context, index) {
+        var _reservation = carList[index];
+        _getReservationTexts();
+        return Padding(
+          padding: EdgeInsets.all(8),
+          child: Container(
+            height: Get.height / 812 * 56,
+            decoration: BoxDecoration(
+                border: Border.all(color: gray500, width: 1),
+                borderRadius: BorderRadius.circular(8)),
+            child: ListTile(
+              leading: _buildLeading(),
+              title: Text(
+                "",
+                style: TextStyle(
+                    fontFamily: "SF Pro Text",
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -99,13 +159,17 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
 
   Container _buildLeading() {
     return Container(
-              alignment: Alignment.centerLeft,
-              width: Get.width / 375 * 36,
-              height: Get.width / 375 * 36,
-              decoration: BoxDecoration(
-                  color: gray400, borderRadius: BorderRadius.circular(8)),
-              child: Center(child: Icon(CupertinoIcons.bell_circle,color: blue500,)),
-            );
+      alignment: Alignment.centerLeft,
+      width: Get.width / 375 * 36,
+      height: Get.width / 375 * 36,
+      decoration:
+          BoxDecoration(color: gray400, borderRadius: BorderRadius.circular(8)),
+      child: Center(
+          child: Icon(
+        CupertinoIcons.bell_circle,
+        color: blue500,
+      )),
+    );
   }
 
   List<Reservation> reservations = [
@@ -119,7 +183,17 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
         owner: false)
   ];
 
-  _getReservationTexts() async{
+  _orderReservations(){
+    reservations.forEach((element) {
+      if (element.owner == true) {
+        ownerList.add(element);
+      }else{
+        carList.add(element);
+      }
+    });
+  }
 
+  _getReservationTexts() async {
+    
   }
 }

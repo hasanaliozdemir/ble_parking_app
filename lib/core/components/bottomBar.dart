@@ -38,8 +38,8 @@ class _BottomBarState extends State<BottomBar> {
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.home,color: gray800,),
-              activeIcon: Icon(CupertinoIcons.home,color: blue500,),
+              icon: Icon(CupertinoIcons.house_fill,color: gray800,),
+              activeIcon: Icon(CupertinoIcons.house_fill,color: blue500,),
               label: "Anasayfa"
             ),
             BottomNavigationBarItem(

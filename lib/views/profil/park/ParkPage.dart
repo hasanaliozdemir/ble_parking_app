@@ -283,6 +283,7 @@ class _ParkPageState extends State<ParkPage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8),
         child: ExpansionTile(
+          initiallyExpanded: true,
           title: Text(
             "Tekil Park Alanı",
             style: TextStyle(

@@ -9,6 +9,7 @@ import 'package:gesk_app/views/auth/authCode.dart';
 import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:get/get.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class SignUpScreen1 extends StatefulWidget {
   const SignUpScreen1({Key key}) : super(key: key);
@@ -29,14 +30,13 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   FocusNode mailFocus= FocusNode();
   FocusNode passwordFocus= FocusNode();
 
-  
+  PhoneNumber phoneNumber = PhoneNumber(isoCode: 'TR');
 
   @override
   Widget build(BuildContext context) {
-    phoneController.text = "(+90)";
     return Scaffold(
       body: _buildBody(),
-      resizeToAvoidBottomInset: false
+      resizeToAvoidBottomInset: false,
     );
   }
 
@@ -45,7 +45,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Container(
         child: GestureDetector(
-          onTap: () => _backButtonFunc(),
+          onTap: _backButtonFunc,
           child: Row(
             children: [
               Icon(CupertinoIcons.left_chevron, color: blue500),
@@ -193,19 +193,49 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   }
 
   Widget _buildPhoneForm() {
-    return TextInputSimple(
-      hintText: "Telefon Numarası",
-      prefixIcon: Icon(CupertinoIcons.phone),
-      controller: phoneController,
-      focusNode: phoneFocus,
-      textInputAction: TextInputAction.next,
-      keyBoardType: TextInputType.phone,
-      inputFormatters: [
-        MaskedInputFormatter(
-          '(+90) ###-###-##-##'
-        )
-      ],
-      );
+    return Container(
+      width: Get.width/375*343,
+      height: Get.height/812*60,
+      child: Stack(
+        children: [
+          Container(
+            width: Get.width / 375 * 343,
+          height: Get.height / 812 * 44,
+            decoration: BoxDecoration(
+              color: white,
+              border: Border.all(color: gray600),
+              borderRadius: BorderRadius.circular(8)
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal:8.0),
+            child: InternationalPhoneNumberInput(
+              onInputChanged: (PhoneNumber number){
+                print(number.phoneNumber);
+                phoneNumber = number;
+              },
+              countries: [
+                "TR"
+              ],
+              formatInput: true,
+              autoValidateMode: AutovalidateMode.disabled,
+              hintText: "Telefon Numarası",
+              maxLength: 10,
+              validator: (String val){
+                if (val.length ==10) {
+                  return val;
+                }else {
+                  return "non";
+                }
+              },
+              inputDecoration: InputDecoration(
+                border: InputBorder.none
+              ),
+              ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildMailForm() {
@@ -223,6 +253,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
     
     
     return PasswordInput(
+    hintText: "Parola",
     controller: passwordController, 
     prefixIcon: Icon(CupertinoIcons.lock),
     focusNode: passwordFocus);

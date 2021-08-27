@@ -273,13 +273,19 @@ class _ParkDetailState extends State<ParkDetail> {
         children: [
           SizedBox(
             width: 343,
-            child: Text(
-              "Otopark Özellikleri",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 17,
-                fontFamily: "SF Pro Text",
-                fontWeight: FontWeight.w600,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Otopark Özellikleri",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontFamily: "SF Pro Text",
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
           ),

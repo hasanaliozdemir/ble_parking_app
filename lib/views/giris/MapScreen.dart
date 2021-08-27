@@ -284,7 +284,7 @@ List<Park> _parks = [
     isWithCam: true,
     filledParkSpace: 4,
     id: 0,
-    isWithElectricity: false,
+    isWithElectricity: true,
     isWithSecurity: true,
     point: 4.5,
     parkSpace: 6,
@@ -348,12 +348,15 @@ Widget _electricityIcon(bool active) {
   if (active && _electricitySelected.value) {
     return Container(
       decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(16), color: white),
+          BoxDecoration(borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: gray400),
+          color: white),
       width: width * 24,
       height: height * 24,
       child: Icon(
-        CupertinoIcons.bolt_circle,
+        CupertinoIcons.bolt_fill,
         color: blue500,
+        size: 16,
       ),
     );
   } else {
@@ -369,14 +372,15 @@ _buildSearchBar(context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            height: Get.height/812*56,
             width: Get.width/375*279,
             child: SearchBar()),
           SizedBox(
             width: 8,
           ),
           Container(
-            width: 56,
-            height: 56,
+            width: Get.height/812*56,
+            height: Get.height/812*56,
             decoration: BoxDecoration(
                 color: white,
                 boxShadow: [
@@ -388,7 +392,7 @@ _buildSearchBar(context) {
                 ],
                 borderRadius: BorderRadius.circular(8)),
             child: IconButton(
-              icon: Icon(CupertinoIcons.slider_horizontal_3), 
+              icon: Icon(CupertinoIcons.slider_horizontal_3,color: blue500,size: 22,), 
               onPressed: (){
                 showModalBottomSheet(
                         isScrollControlled: true,

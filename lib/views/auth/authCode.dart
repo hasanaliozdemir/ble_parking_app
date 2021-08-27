@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
+import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -130,17 +131,26 @@ class _AuthCodePageState extends State<AuthCodePage> {
         },
         keyboardType: TextInputType.number,
         cursorColor: blue500,
+        autoDisposeControllers: true,
+        boxShadows: [
+          BoxShadow(
+            color: gray400
+          ),
+          
+        ],
         pinTheme: PinTheme(
-          inactiveFillColor: gray900,
-          selectedFillColor: gray900,
+          inactiveFillColor: gray400,
+          selectedFillColor: gray400,
           shape: PinCodeFieldShape.box,
+          
           fieldHeight: Get.height/812*64,
           fieldWidth: Get.width/375*48,
           borderRadius: BorderRadius.circular(4),
           
-          inactiveColor: gray900,
-          activeColor: Colors.transparent,
-          activeFillColor: brown100
+          inactiveColor: gray500,
+          
+          activeColor: blue500,
+          activeFillColor: blue500
         ),
         onCompleted: (String val){
           _filled.value = true;
@@ -151,7 +161,7 @@ class _AuthCodePageState extends State<AuthCodePage> {
   }
 
   void _backButtonFunc() {
-    print("back");
+    Get.to(()=>MapScreenReadOnly(),fullscreenDialog: true);
   }
 
   void _comfirmCode(){

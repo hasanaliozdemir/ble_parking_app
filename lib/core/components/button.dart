@@ -45,16 +45,18 @@ class Button extends StatelessWidget {
             horizontal: 24,
             vertical: 17,
           ),
-          child:Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 17,
-                fontFamily: "SF Pro Text",
-                fontWeight: FontWeight.w600,
+          child:Center(
+            child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 17,
+                  fontFamily: "SF Pro Text",
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
+          ),
         ));
   }
 }
