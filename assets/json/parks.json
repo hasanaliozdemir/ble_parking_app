@@ -1,0 +1,22 @@
+[
+    {
+        "isClosedPark": true,
+        "isWithCam": true,
+        "isWithSecurity": false,
+        "isWithElectricity": true,
+        "id": 0,
+        "name": "Ma Cafe",
+        "price": 18.0,
+        "status": 0,
+        "point": 4.5,
+        "parkSpace": 4,
+        "filledParkSpace": 2,
+        "longitude": 27.971991,
+        "latitude": 40.355499,
+        "imageUrls": [
+            "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+            "https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+        ],
+        "location": "Bandırma"
+    }
+]

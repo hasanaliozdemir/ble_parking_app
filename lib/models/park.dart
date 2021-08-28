@@ -16,7 +16,7 @@ class Park {
   final int filledParkSpace;
   final double longitude;
   final double latitude;
-  final List<String> imageUrls;
+  final List imageUrls;
   final String location;
 
   Park(
@@ -36,4 +36,51 @@ class Park {
       @required this.isWithSecurity,
       @required this.parkSpace,
       @required this.filledParkSpace});
+
+  factory Park.fromJson(Map<String,dynamic> json){
+    _organizeStatus(int stat){
+    switch (stat) {
+      case 0:
+        return Status.admin;
+        break;
+      case 1:
+        return Status.deselected;
+        break;
+      case 2:
+        return Status.selected;
+        break;
+      case 3:
+        return Status.disable;
+        break;
+      case 4:
+        return Status.owner;
+        break;
+      
+      default:
+      return Status.disable;
+    }
+  }
+
+    return Park(
+      location: json['location'], 
+      imageUrls: json['imageUrls'], 
+      isClosedPark: json['isClosedPark'], 
+      longitude: json['longitude'], 
+      latitude: json['latitude'], 
+      name: json['name'], 
+      price: json['price'], 
+      status: _organizeStatus(json['status']), 
+      isWithElectricity: json['isWithElectricity'], 
+      id: json['id'], 
+      point: json['point'], 
+      isWithCam: json['isWithCam'], 
+      isWithSecurity: json['isWithSecurity'], 
+      parkSpace: json['parkSpace'], 
+      filledParkSpace: json['filledParkSpace']
+      );
+  }
+
+  
 }
+
+

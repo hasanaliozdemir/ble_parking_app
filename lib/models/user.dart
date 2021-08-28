@@ -1,16 +1,27 @@
 class User{
-  final String userId;
-  final String name;
-  final String phoneNumber;
-  final String mail;
-  final String password;
+   String userId;
+   String name;
+   String phoneNumber;
+   String mail;
+   String password;
 
-  final String userImageUrl;
+   String userImageUrl;
 
-  final List<String> carsId;
-  final List<String> parksId;
+   List<String> carsId;
+   List<String> parksId;
 
-  User(this.name, this.phoneNumber, this.mail, this.password, this.userImageUrl, this.carsId, this.parksId, this.userId);
+  User({this.name, this.phoneNumber, this.mail, this.password, this.userImageUrl, this.carsId, this.parksId, this.userId});
 
+  factory User.fromJson(Map<String,dynamic> json){
+    return User(
+      userId: json["userId"],
+      name: json["name"],
+      phoneNumber: json["phoneNumber"],
+      mail: json["mail"],
+      userImageUrl: json["userImageUrl"],
+      carsId: json["carsId"],
+      parksId: json["parksId"]
+    );
+  }
 
 }

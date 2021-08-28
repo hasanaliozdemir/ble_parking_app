@@ -1,0 +1,29 @@
+[
+    {
+        "plate" : "34 THK 375",
+        "color": "Kırmızı",
+        "model" : 2020,
+        "size" : "Sedan",
+
+        "ownerId" : "1789",
+        "carId" : "0"
+    },
+    {
+        "plate" : "34 THK 376",
+        "color": "Siyah",
+        "model" : 2020,
+        "size" : "Sedan",
+
+        "ownerId" : "1789",
+        "carId" : "1"
+    },
+    {
+        "plate" : "34 THK 377",
+        "color": "Beyaz",
+        "model" : 2020,
+        "size" : "Sedan",
+
+        "ownerId" : "1789",
+        "carId" : "2"
+    }
+]

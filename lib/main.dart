@@ -3,6 +3,7 @@ import 'package:gesk_app/bloc/app_bloc.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/SplashScreen.dart';
 import 'package:gesk_app/views/profil/tpa/addTpa.dart';
+import 'package:gesk_app/views/reservation/reservation_detail.dart';
 
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       ],
       child: GetMaterialApp(
         theme: ThemeData(fontFamily: 'SF Pro Text'),
-        home: SplashScreen(),
+        home: ReservationDetail(),
       ),
     );
   }

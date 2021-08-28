@@ -1,0 +1,16 @@
+{
+    "userId": "1789",
+    "name": "Hasan Ali Özdemir",
+    "phoneNumber": "+905350690177",
+    "mail": "hasan.aliozdemir10@gmail.com",
+    "password": "123456",
+    "carsId": [
+        "0",
+        "1",
+        "2"
+    ],
+    "parksId": [
+        "0"
+    ],
+    "userImageUrl": "https://media-exp1.licdn.com/dms/image/C4D03AQGYcK6j7HPXOA/profile-displayphoto-shrink_200_200/0/1606888856127?e=1632355200&v=beta&t=-tbOl92SK-ZO87X1OIRg5uroCA4eOLcQ_up8DFsOSyA"
+}
