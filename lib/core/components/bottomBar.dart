@@ -61,16 +61,16 @@ class _BottomBarState extends State<BottomBar> {
           onTap: (index){
             switch (index) {
               case 0:
-                Get.to(()=>MapScreen());
+                Get.to(()=>MapScreen(),fullscreenDialog: true);
                 break;
               case 1:
-                Get.to(()=>ReservationsScreen());
+                Get.to(()=>ReservationsScreen(),fullscreenDialog: true);
                 break;
               case 2:
-                Get.to(()=>ProfileScreen());
+                Get.to(()=>ProfileScreen(),fullscreenDialog: true);
                 break;
               case 3:
-                Get.to(()=>OthersScreen());
+                Get.to(()=>OthersScreen(),fullscreenDialog: true);
                 break;
               
               default:

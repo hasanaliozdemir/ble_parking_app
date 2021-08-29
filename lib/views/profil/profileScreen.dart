@@ -173,206 +173,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: ListView(
           children: [
             _buildAraclarim(),
+            _space(),
             _buildOtoparklarim(),
+            _space(),
             _buildGecmisParklarim(),
+            _space(),
             _buildAyarlar(),
+            _space(),
             _buildCikis(),
           ],
         ));
   }
 
-  ListTile _buildCikis() {
-    return ListTile(
-      title: Text(
-        "Çıkış",
-        style: TextStyle(
-          color: gray900,
-          fontSize: 17,
-          fontFamily: "SF Pro Text",
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      leading: Container(
-        width: w * 48,
-        height: h * 48,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Color(0xfff2f2f7),
-        ),
-        child: Icon(
-          CupertinoIcons.person_crop_circle_badge_xmark,
-          color: blue500,
-        ),
-      ),
+  Widget _space(){
+    return SizedBox(
+      height: Get.height/812*16,
     );
   }
 
-  ListTile _buildAyarlar() {
-    return ListTile(
-      onTap: () {
-        Get.to(() => AyarlarPage());
-      },
-      title: Text(
-        "Ayarlar",
-        style: TextStyle(
-          color: blue500,
-          fontSize: 17,
-          fontFamily: "SF Pro Text",
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      leading: Container(
-        width: w * 48,
-        height: h * 48,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Color(0xfff2f2f7),
-        ),
-        child: Icon(
-          CupertinoIcons.gear_alt_fill,
-          color: blue500,
-        ),
-      ),
-    );
-  }
-
-  Theme _buildGecmisParklarim() {
-    return Theme(
-      data: ThemeData().copyWith(dividerColor: Colors.transparent),
-      child: ExpansionTile(
-        title: Text(
-          "Geçmiş Parklarım",
-          style: TextStyle(
-            color: blue500,
-            fontSize: 17,
-            fontFamily: "SF Pro Text",
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        leading: Container(
-          width: w * 48,
-          height: h * 48,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Color(0xfff2f2f7),
-          ),
-          child: Icon(
-            CupertinoIcons.arrowshape_turn_up_left_circle_fill,
-            color: blue500,
-          ),
-        ),
-        trailing: Icon(
-          CupertinoIcons.chevron_down,
-          color: blue500,
-        ),
-      ),
-    );
-  }
-
-  Theme _buildOtoparklarim() {
-    return Theme(
-      data: ThemeData().copyWith(dividerColor: Colors.transparent),
-      child: ExpansionTile(
-        title: Text(
-          "Otoparklarım",
-          style: TextStyle(
-            color: blue500,
-            fontSize: 17,
-            fontFamily: "SF Pro Text",
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        leading: Container(
-          width: w * 48,
-          height: h * 48,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Color(0xfff2f2f7),
-          ),
-          child: Icon(
-            CupertinoIcons.square_stack_3d_up_fill,
-            color: blue500,
-          ),
-        ),
-        trailing: Icon(
-          CupertinoIcons.chevron_down,
-          color: blue500,
-        ),
-        children: [
-          ListView.separated(
-              shrinkWrap: true,
-              separatorBuilder: (context, i) {
-                return Container(
-                  height: h * 1,
-                  width: w * 343,
-                  color: gray400,
-                );
-              },
-              itemCount: parks.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  width: w * 343,
-                  child: ListTile(
-                    leading: Container(
-                      width: w * 48,
-                      height: w * 48,
-                      child: Center(
-                          child:
-                              SvgPicture.asset("assets/icons/park_icon.svg")),
-                    ),
-                    title: Text(
-                      parks[index].name,
-                      style: TextStyle(),
-                    ),
-                    trailing: IconButton(
-                      onPressed: () => _onPressedPark(parks[index]),
-                      icon: Icon(
-                        CupertinoIcons.chevron_forward,
-                        color: blue500,
-                      ),
-                    ),
-                  ),
-                );
-              }),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            width: w * 343,
-            decoration: BoxDecoration(
-                color: blue500,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(8))),
-            child: ListTile(
-              onTap: () => _onPressedAddPark(),
-              title: Text(
-                "Otopark Ekle",
-                style: TextStyle(color: white),
-              ),
-              leading: Icon(CupertinoIcons.add_circled),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Theme _buildAraclarim() {
-    return Theme(
-      data: ThemeData().copyWith(dividerColor: Colors.transparent),
+  Widget _buildCikis() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal:16.0),
       child: Container(
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: Color(0x19000000),
-                blurRadius: 10,
-                offset: Offset(0, 4),
-            ),
-        ],
-        ),
-        child: ExpansionTile(
-          backgroundColor: white,
+          borderRadius: BorderRadius.circular(8),
+            color: white,
+            boxShadow: [
+              BoxShadow(
+                  color: Color(0x19000000),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+              ),
+          ],
+          ),
+        child: ListTile(
           title: Text(
-            "Araçlarım",
+            "Çıkış",
+            style: TextStyle(
+              color: gray900,
+              fontSize: 17,
+              fontFamily: "SF Pro Text",
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          leading: Container(
+            width: w * 48,
+            height: h * 48,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: Color(0xfff2f2f7),
+            ),
+            child: Icon(
+              CupertinoIcons.person_crop_circle_badge_xmark,
+              color: blue500,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAyarlar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal:16.0),
+      child: Container(decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+            color: white,
+            boxShadow: [
+              BoxShadow(
+                  color: Color(0x19000000),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+              ),
+          ],
+          ),
+        child: ListTile(
+          onTap: () {
+            Get.to(() => AyarlarPage());
+          },
+          title: Text(
+            "Ayarlar",
             style: TextStyle(
               color: blue500,
               fontSize: 17,
@@ -384,73 +264,272 @@ class _ProfileScreenState extends State<ProfileScreen> {
             width: w * 48,
             height: h * 48,
             decoration: BoxDecoration(
-              
               borderRadius: BorderRadius.circular(8),
               color: Color(0xfff2f2f7),
             ),
             child: Icon(
-              CupertinoIcons.car_detailed,
+              CupertinoIcons.gear_alt_fill,
               color: blue500,
             ),
           ),
-          trailing: Icon(
-            CupertinoIcons.chevron_down,
-            color: blue500,
+        ),
+      ),
+    );
+  }
+
+  Theme _buildGecmisParklarim() {
+    return Theme(
+      data: ThemeData().copyWith(dividerColor: Colors.transparent),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal:16.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: white,
+            boxShadow: [
+              BoxShadow(
+                  color: Color(0x19000000),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+              ),
+          ],
           ),
-          children: [
-            ListView.separated(
-                shrinkWrap: true,
-                separatorBuilder: (context, i) {
-                  return Container(
-                    height: h * 1,
-                    width: w * 343,
-                    color: gray400,
-                  );
-                },
-                itemCount: cars.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: w * 343,
-                    child: ListTile(
-                      leading: Container(
-                        width: w * 48,
-                        height: w * 48,
-                        child: Center(
-                            child:
-                                SvgPicture.asset("assets/icons/carCircle.svg")),
-                      ),
-                      title: Text(
-                        cars[index].plaka,
-                        style: TextStyle(),
-                      ),
-                      trailing: IconButton(
-                        onPressed: () => _onPressedCar(cars[index]),
-                        icon: Icon(
-                          CupertinoIcons.chevron_forward,
-                          color: blue500,
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              width: w * 343,
-              decoration: BoxDecoration(
-                  color: blue500,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(8),
-                      bottomRight: Radius.circular(8))),
-              child: ListTile(
-                onTap: () => _onPressedAddCar(),
-                title: Text(
-                  "Araç Ekle",
-                  style: TextStyle(color: white),
-                ),
-                leading: Icon(CupertinoIcons.add_circled,color: white,),
+          child: ExpansionTile(
+            title: Text(
+              "Geçmiş Parklarım",
+              style: TextStyle(
+                color: blue500,
+                fontSize: 17,
+                fontFamily: "SF Pro Text",
+                fontWeight: FontWeight.w600,
               ),
             ),
+            leading: Container(
+              width: w * 48,
+              height: h * 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Color(0xfff2f2f7),
+              ),
+              child: Icon(
+                CupertinoIcons.arrowshape_turn_up_left_circle_fill,
+                color: blue500,
+              ),
+            ),
+            trailing: Icon(
+              CupertinoIcons.chevron_down,
+              color: blue500,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Theme _buildOtoparklarim() {
+    return Theme(
+      data: ThemeData().copyWith(dividerColor: Colors.transparent),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal:16.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: white,
+            boxShadow: [
+              BoxShadow(
+                  color: Color(0x19000000),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+              ),
           ],
+          ),
+          child: ExpansionTile(
+            title: Text(
+              "Otoparklarım",
+              style: TextStyle(
+                color: blue500,
+                fontSize: 17,
+                fontFamily: "SF Pro Text",
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            leading: Container(
+              width: w * 48,
+              height: h * 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Color(0xfff2f2f7),
+              ),
+              child: Icon(
+                CupertinoIcons.square_stack_3d_up_fill,
+                color: blue500,
+              ),
+            ),
+            trailing: Icon(
+              CupertinoIcons.chevron_down,
+              color: blue500,
+            ),
+            children: [
+              ListView.separated(
+                  shrinkWrap: true,
+                  separatorBuilder: (context, i) {
+                    return Container(
+                      height: h * 1,
+                      width: w * 343,
+                      color: gray400,
+                    );
+                  },
+                  itemCount: parks.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      width: w * 343,
+                      child: ListTile(
+                        leading: Container(
+                          width: w * 48,
+                          height: w * 48,
+                          child: Center(
+                              child:
+                                  SvgPicture.asset("assets/icons/park_icon.svg")),
+                        ),
+                        title: Text(
+                          parks[index].name,
+                          style: TextStyle(),
+                        ),
+                        trailing: IconButton(
+                          onPressed: () => _onPressedPark(parks[index]),
+                          icon: Icon(
+                            CupertinoIcons.chevron_forward,
+                            color: blue500,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                width: w * 343,
+                decoration: BoxDecoration(
+                    color: blue500,
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(8),
+                        bottomRight: Radius.circular(8))),
+                child: ListTile(
+                  onTap: () => _onPressedAddPark(),
+                  title: Text(
+                    "Otopark Ekle",
+                    style: TextStyle(color: white),
+                  ),
+                  leading: Icon(CupertinoIcons.add_circled),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Theme _buildAraclarim() {
+    return Theme(
+      data: ThemeData().copyWith(dividerColor: Colors.transparent),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal:16.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: white,
+            boxShadow: [
+              BoxShadow(
+                  color: Color(0x19000000),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+              ),
+          ],
+          ),
+          child: ExpansionTile(
+            
+            
+            title: Text(
+              "Araçlarım",
+              style: TextStyle(
+                color: blue500,
+                fontSize: 17,
+                fontFamily: "SF Pro Text",
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            leading: Container(
+              width: w * 48,
+              height: h * 48,
+              decoration: BoxDecoration(
+                
+                borderRadius: BorderRadius.circular(8),
+                color: Color(0xfff2f2f7),
+              ),
+              child: Icon(
+                CupertinoIcons.car_detailed,
+                color: blue500,
+              ),
+            ),
+            trailing: Icon(
+              CupertinoIcons.chevron_down,
+              color: blue500,
+            ),
+            children: [
+              ListView.separated(
+                  shrinkWrap: true,
+                  separatorBuilder: (context, i) {
+                    return Container(
+                      height: h * 1,
+                      width: w * 343,
+                      color: gray400,
+                    );
+                  },
+                  itemCount: cars.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      width: w * 343,
+                      child: ListTile(
+                        leading: Container(
+                          width: w * 48,
+                          height: w * 48,
+                          child: Center(
+                              child:
+                                  SvgPicture.asset("assets/icons/carCircle.svg")),
+                        ),
+                        title: Text(
+                          cars[index].plaka,
+                          style: TextStyle(),
+                        ),
+                        trailing: IconButton(
+                          onPressed: () => _onPressedCar(cars[index]),
+                          icon: Icon(
+                            CupertinoIcons.chevron_forward,
+                            color: blue500,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                width: w * 343,
+                decoration: BoxDecoration(
+                    color: blue500,
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(8),
+                        bottomRight: Radius.circular(8))),
+                child: ListTile(
+                  onTap: () => _onPressedAddCar(),
+                  title: Text(
+                    "Araç Ekle",
+                    style: TextStyle(color: white),
+                  ),
+                  leading: Icon(CupertinoIcons.add_circled,color: white,),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

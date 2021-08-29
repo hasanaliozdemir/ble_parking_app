@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       ],
       child: GetMaterialApp(
         theme: ThemeData(fontFamily: 'SF Pro Text'),
-        home: ReservationDetail(),
+        home:SplashScreen(),
       ),
     );
   }

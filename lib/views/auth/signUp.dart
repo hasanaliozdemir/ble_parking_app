@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/passwordInput.dart';
@@ -7,9 +8,11 @@ import 'package:gesk_app/core/components/textInput.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:gesk_app/views/auth/authCode.dart';
 import 'package:gesk_app/views/auth/signIn.dart';
+import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen1 extends StatefulWidget {
   const SignUpScreen1({Key key}) : super(key: key);
@@ -19,6 +22,7 @@ class SignUpScreen1 extends StatefulWidget {
 }
 
 class _SignUpScreen1State extends State<SignUpScreen1> {
+  var dataService = DataService();
   var confirmed = false.obs;
   TextEditingController nameAndSurnameController = TextEditingController();
   TextEditingController phoneController= TextEditingController();
@@ -211,7 +215,6 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
             padding: const EdgeInsets.symmetric(horizontal:8.0),
             child: InternationalPhoneNumberInput(
               onInputChanged: (PhoneNumber number){
-                print(number.phoneNumber);
                 phoneNumber = number;
               },
               countries: [
@@ -220,7 +223,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
               formatInput: true,
               autoValidateMode: AutovalidateMode.disabled,
               hintText: "Telefon Numarası",
-              maxLength: 10,
+              maxLength: 13,
               validator: (String val){
                 if (val.length ==10) {
                   return val;
@@ -339,11 +342,40 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
     print("hizmet");
   }
 
-  void _signUp(){
-    Get.to(()=>AuthCodePage(phoneNumber: phoneController.text,));
+  void _signUp() async {
+    _showLoading();
+    var _newUser = await dataService.registerUser(nameAndSurnameController.text, passwordController.text, phoneNumber.phoneNumber, mailController.text);
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.setString("userId", _newUser.userId);
+    var _conf = await dataService.confirm(_newUser.userId);
+    if (_conf) {
+      Get.to(()=>MapScreen(),fullscreenDialog: true);
+    }else{
+      Navigator.pop(context);
+    }
+    
   }
 
   void _turnSignIn(){
     Get.to(()=>SignInScreen());
+  }
+
+  void _showLoading(){
+    showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
   }
 }//widget sonu

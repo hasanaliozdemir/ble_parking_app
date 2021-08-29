@@ -7,9 +7,14 @@ import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 
 
 
+// ignore: must_be_immutable
 class Wrapper extends StatelessWidget {
+  bool auth;
+  Wrapper({Key key,bool auth}) : super(key: key){
+    auth = this.auth;
+  }
 
-  Wrapper({Key key}) : super(key: key);
+  
 
   @override
   Widget build(BuildContext context) {

@@ -3,10 +3,24 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/wrapper.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   
   const SplashScreen({Key key}) : super(key: key);
+
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+
+  var _auth;
+@override
+void initState() { 
+  super.initState();
+  _getAuth();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +43,7 @@ class SplashScreen extends StatelessWidget {
       Duration(seconds: 5), 
       (){
         
-        Get.to(()=>Wrapper(),fullscreenDialog: true);
+        Get.to(()=>Wrapper(auth:_auth),fullscreenDialog: true);
       });
 
     return Scaffold(
@@ -59,5 +73,12 @@ class SplashScreen extends StatelessWidget {
       ),
       )
     );
+  }
+
+  _getAuth()async{
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+    _auth = _prefs.getBool("auth");
+
   }
 }

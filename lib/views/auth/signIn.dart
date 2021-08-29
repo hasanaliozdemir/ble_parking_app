@@ -1,14 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/passwordInput.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:gesk_app/views/auth/auther.dart';
 import 'package:gesk_app/views/auth/forgot_password.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
+import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
+import 'package:gesk_app/wrapper.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key key}) : super(key: key);
@@ -32,7 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
   FocusNode phoneFocus= FocusNode();
   FocusNode passwordFocus= FocusNode();
 
-  
+  var dataService =DataService();
 
   
   @override
@@ -259,8 +264,18 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
 
-  void _signIn(){
-    print("giriş");
+  void _signIn() async{
+    _showLoading();
+    var _newUser = await dataService.login(phoneController.text, passwordController.text);
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.setString("userId", _newUser.userId);
+
+    var _conf = await dataService.confirm(_newUser.userId);
+    if (_conf) {
+      Get.to(()=>MapScreen(),fullscreenDialog: true);
+    }else{
+      Navigator.pop(context);
+    }
   }
 
   void _turnRegister(){
@@ -269,5 +284,24 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _forgotPassword(){
     Get.to(()=>ForgotPasswordPage());
+  }
+
+  void _showLoading(){
+    showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
   }
 }//widget sonu
