@@ -5,12 +5,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 class DataService {
-  final String _url = "159.146.47.86";
-  final int _port = 39140;
+  final String _setInfoUrl = "https://www.erenkomurcu.com/setInfo/";
+  final String _getInfoUrl = "https://www.erenkomurcu.com/getInfo/";
 
   Future<User> registerUser(
-      String name, String password, String phone, String mail) async {
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/setInfo");
+      {String name, String password, String phone, String mail}) async {
+    Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "register": {
         "name": name,
@@ -32,14 +32,15 @@ class DataService {
   }
 
   Future<Car> addCar(
-      String userId, String plate, String modelYear, String color) async {
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/setInfo");
+      {String userId, String plate, String modelYear, String color,String size}) async {
+    Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "addCar": {
-        "userID": userId,
+        "ownerId": int.parse(userId),
         "plate": plate,
-        "phomodelYearne": modelYear,
-        "color": color
+        "modelYear": modelYear,
+        "color": color,
+        "carSize": size
       }
     };
 
@@ -54,8 +55,8 @@ class DataService {
     return _car;
   }
 
-  Future<String> deleteCar(String carId) async {
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/setInfo");
+  Future<String> deleteCar({String carId}) async {
+    Uri _uri = Uri.parse(_setInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
       "deleteCar": {"carId": carId}
@@ -71,14 +72,15 @@ class DataService {
   }
 
   Future<Car> editCar(
-      String carId, String plate, String modelYear, String color) async {
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/setInfo");
+      {String carId, String plate, String modelYear, String color,String carSize}) async {
+    Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "editCar": {
-        "carId": carId,
+        "carId": int.parse(carId),
         "plate": plate,
-        "phomodelYearne": modelYear,
-        "color": color
+        "modelYear": modelYear,
+        "color": color,
+        "carSize": carSize
       }
     };
 
@@ -88,13 +90,13 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    var _car = Car.fromJson(_responseJson["editCar"]);
+    var _car = Car.fromJson(_responseJson["editCar"][0]);
 
     return _car;
   }
 
   Future<Park> addPark(
-      String userId,
+      {String userId,
       bool isClosedPark,
       bool isWithCam,
       bool isWithSecurity,
@@ -106,39 +108,42 @@ class DataService {
       int filledParkSpace,
       double longitude,
       double latitude,
-      String location) async {
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/setInfo");
+      String location}) async {
+    Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "addPark": {
-        "ownerId": userId,
+        "ownerId": int.parse(userId),//TODO: Bütün ıd ler int olcak
         "isClosedPark": isClosedPark,
         "isWithCam": isWithCam,
         "isWithSecurity": isWithSecurity,
         "isWithElectricity": isWithElectricity,
         "name": name,
-        "price": price,
-        "status": status,
-        "parkSpace": parkSpace,
-        "filledParkSpace": filledParkSpace,
-        "longitude": longitude,
+        "status": 0,
+        "parkSpace": 1,
+        "filledParkSpace":0,
+        "longtitude": longitude,
         "latitude": latitude,
-        "location": location,
+        "location": location
       }
     };
 
+    
     var _postJson = convert.jsonEncode(_payloadBody);
 
     var _response = await http.post(_uri, body: _postJson);
 
-    var _responseJson = convert.jsonDecode(_response.body);
+    var _responseJson = convert.jsonDecode(_response.body)["addPark"] as List;
+    List<Park> _parks = List<Park>();
 
-    var _park = Park.fromJson(_responseJson["addPark"]);
+    _responseJson.forEach((element) {_parks.add(Park.fromJson(element));}); 
+
+    var _park = _parks.last;
 
     return _park;
   }
 
-  Future<String> deletePark(String parkId)async{
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/setInfo");
+  Future<String> deletePark({String parkId}) async {
+    Uri _uri = Uri.parse(_setInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
       "deletePark": {"parkId": parkId}
@@ -153,9 +158,8 @@ class DataService {
     return _responseJson["deletePark"];
   }
 
-
   Future<Park> editPark(
-      String userId,
+      {String userId,
       String parkId,
       bool isClosedPark,
       bool isWithCam,
@@ -168,12 +172,12 @@ class DataService {
       int filledParkSpace,
       double longitude,
       double latitude,
-      String location) async {
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/setInfo");
+      String location}) async {
+    Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
-      "addPark": {
-        "parkId": parkId,
-        "ownerId": userId,
+      "editPark": {
+        "parkId": int.parse(parkId),
+        "ownerId": int.parse(userId),
         "isClosedPark": isClosedPark,
         "isWithCam": isWithCam,
         "isWithSecurity": isWithSecurity,
@@ -195,13 +199,13 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    var _park = Park.fromJson(_responseJson["addPark"]);
+    var _park = Park.fromJson(_responseJson["editPark"]);
 
     return _park;
   }
 
-  Future<User> login(String phoneNumber, String password) async {
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/getInfo");
+  Future<User> login({String phoneNumber, String password}) async {
+    Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "login": {
         "password": password,
@@ -217,11 +221,13 @@ class DataService {
 
     var _user = User.fromJson(_responseJson["login"]);
 
+    print(_user.userId);
+    print(_user.name);
     return _user;
   }
 
-  Future<List<Car>> getCars(List<int> carsId) async{
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/getInfo");
+  Future<List<Car>> getCars({List<int> carsId}) async {
+    Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "getUserCars": {
         "carsId": carsId,
@@ -236,16 +242,17 @@ class DataService {
 
     var _carsJson = _responseJson["getuserCars"] as List;
 
-  List<Car> _cars = _carsJson.map((carJson) => Car.fromJson(carJson)).toList();
+    List<Car> _cars =
+        _carsJson.map((carJson) => Car.fromJson(carJson)).toList();
 
     return _cars;
   }
 
-  Future<Car> getCar(String carId) async{
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/getInfo");
+  Future<Car> getCar({String carId}) async {
+    Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "getCar": {
-        "carId": carId,
+        "carId": int.parse(carId),
       }
     };
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -259,8 +266,8 @@ class DataService {
     return _car;
   }
 
-  Future<User> getUser(String userId) async{
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/getInfo");
+  Future<User> getUser({String userId}) async {
+    Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "getUser": {
         "userId": userId,
@@ -272,13 +279,13 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    var _user = User.fromJson(_responseJson["getUser"][0]);
+    var _user = User.simpleFromJson(_responseJson["getUser"][0]);
 
     return _user;
   }
 
-  Future<Park> getPark(String parkId) async{
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/getInfo");
+  Future<Park> getPark({String parkId}) async {
+    Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "getPark": {
         "parkId": parkId,
@@ -295,11 +302,11 @@ class DataService {
     return _park;
   }
 
-  Future<bool> confirm(String userId) async{
-    Uri _uri = Uri(scheme: "https", host: _url, port: _port, path: "/getInfo");
+  Future<bool> confirm({String userId}) async {
+    Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "confirm": {
-        "userId": userId,
+        "userId": int.parse(userId),
       }
     };
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -313,4 +320,33 @@ class DataService {
     return _status;
   }
 
+  Future<Map<String, dynamic>> getUserInstance({String userId}) async {
+    Uri _uri = Uri.parse(_getInfoUrl);
+    Map<String, dynamic> _payloadBody = {
+      "getUserInstance": {
+        "userId": int.parse(userId),
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    var _refcars = _responseJson["getUserInstance"]["cars"] as List;
+    List<Car> _cars = List<Car>();
+    List<Park> _parks = List<Park>();
+    var _refparks = _responseJson["getUserInstance"]["parks"] as List;
+
+    _refcars.forEach((element) {
+      _cars.add(Car.fromJson(element));
+    });
+    _refparks.forEach((element) {
+      _parks.add(Park.fromJson(element));
+    });
+
+    Map<String, dynamic> _result = {"cars": _cars, "parks": _parks};
+    return _result;
+  }
 }

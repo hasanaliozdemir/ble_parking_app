@@ -6,7 +6,7 @@ import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/passwordInput.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
-import 'package:gesk_app/views/auth/auther.dart';
+
 import 'package:gesk_app/views/auth/forgot_password.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
@@ -266,12 +266,13 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _signIn() async{
     _showLoading();
-    var _newUser = await dataService.login(phoneController.text, passwordController.text);
+    var _newUser = await dataService.login(phoneNumber:phoneController.text, password:passwordController.text);
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setString("userId", _newUser.userId);
 
-    var _conf = await dataService.confirm(_newUser.userId);
+    var _conf = await dataService.confirm(userId: _newUser.userId);
     if (_conf) {
+      _prefs.setBool("auth", true);
       Get.to(()=>MapScreen(),fullscreenDialog: true);
     }else{
       Navigator.pop(context);

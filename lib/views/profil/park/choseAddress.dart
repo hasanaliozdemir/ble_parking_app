@@ -326,15 +326,11 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
       address: Address(
         latLng: address.latLng,
         formattedAddress: address.formattedAddress,
-        sokak: address.sokak,
         mahalle: address.mahalle,
-        il: address.il,
-        ilce: address.ilce,
-        ulke: address.ulke,
-        postaKodu: address.postaKodu,
         numara: numberController.text,
         kat: floorController.text
       ),
+      
     ));
   }
 

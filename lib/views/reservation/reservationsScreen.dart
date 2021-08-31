@@ -180,17 +180,11 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
         end: "19.00",
         parkId: 0,
         tpaId: 0,
-        owner: false)
+        ownerId: "1")
   ];
 
   _orderReservations(){
-    reservations.forEach((element) {
-      if (element.owner == true) {
-        ownerList.add(element);
-      }else{
-        carList.add(element);
-      }
-    });
+    
   }
 
   _getReservationTexts() async {

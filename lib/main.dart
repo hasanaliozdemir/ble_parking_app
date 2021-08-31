@@ -7,6 +7,7 @@ import 'package:gesk_app/views/reservation/reservation_detail.dart';
 
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,5 +29,10 @@ class MyApp extends StatelessWidget {
         home:SplashScreen(),
       ),
     );
+  }
+
+  setID()async{
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.setString("userId", "1");
   }
 }

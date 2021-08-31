@@ -5,8 +5,7 @@ import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/passwordInput.dart';
 import 'package:gesk_app/core/components/textInput.dart';
-import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
-import 'package:gesk_app/views/auth/authCode.dart';
+import 'package:gesk_app/models/user.dart';
 import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
@@ -25,14 +24,14 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   var dataService = DataService();
   var confirmed = false.obs;
   TextEditingController nameAndSurnameController = TextEditingController();
-  TextEditingController phoneController= TextEditingController();
-  TextEditingController mailController= TextEditingController();
-  TextEditingController passwordController= TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController mailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   FocusNode nameFocus = FocusNode();
-  FocusNode phoneFocus= FocusNode();
-  FocusNode mailFocus= FocusNode();
-  FocusNode passwordFocus= FocusNode();
+  FocusNode phoneFocus = FocusNode();
+  FocusNode mailFocus = FocusNode();
+  FocusNode passwordFocus = FocusNode();
 
   PhoneNumber phoneNumber = PhoneNumber(isoCode: 'TR');
 
@@ -66,7 +65,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
 
   Widget _buildHello() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
@@ -84,13 +83,13 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
 
   Widget _buildDescription() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Text(
-          "Üye olmak için gerekli olan bilgilerinizi doldurunuz.",
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 17,
-          ),
+        "Üye olmak için gerekli olan bilgilerinizi doldurunuz.",
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 17,
+        ),
       ),
     );
   }
@@ -102,139 +101,134 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       hintText: "İsim Soyisim",
       controller: nameAndSurnameController,
       focusNode: nameFocus,
-      func: (){
+      func: () {
         FocusScope.of(context).requestFocus(phoneFocus);
       },
-      );
+    );
   }
 
-  Widget _buildBody(){
+  Widget _buildBody() {
     return Container(
-        child: Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).padding.top,
-            ),
-            Spacer(
-              flex: 8,
-            ),
-            Expanded(
-              flex: 44,
-              child: _buildBackButton(),
-            ),
-            Spacer(
-              flex: 8,
-            ),
-            Expanded(
-              flex: 41,
-              child: _buildHello(),
-            ),
-            Spacer(
-              flex: 16,
-            ),
-            Expanded(
-              flex: 44,
-              child: _buildDescription(),
-            ),
-            Spacer(
-              flex: 16,
-            ),
-            Expanded(
-              flex: 60,
-              child: _buildNameForm(),
-            ),
-            Spacer(
-              flex: 16,
-            ),
-            Expanded(
-              flex: 60,
-              child: _buildPhoneForm(),
-            ),
-            Spacer(
-              flex: 16,
-            ),
-            Expanded(
-              flex: 60,
-              child: _buildMailForm(),
-            ),
-            Spacer(
-              flex: 16,
-            ),
-            Expanded(
-              flex: 60,
-              child: _buildPasswordForm(),
-            ),
-            Spacer(
-              flex: 24,
-            ),
-            Expanded(
-              flex: 24,
-              child: _buildSecurityButton(confirmed),
-            ),
-            Spacer(
-              flex: 40,
-            ),
-            Expanded(
-              flex: 56,
-              child: _buildSignUpButton(),
-            ),
-            Spacer(
-              flex: 40,
-            ),
-            Expanded(
-              flex: 56,
-              child: _buildAlreadyHaveAccount(),
-            ),
-            Spacer(
-              flex: 30,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).padding.bottom,
-            )
-          ],
-        ),
-      );
+      child: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).padding.top,
+          ),
+          Spacer(
+            flex: 8,
+          ),
+          Expanded(
+            flex: 44,
+            child: _buildBackButton(),
+          ),
+          Spacer(
+            flex: 8,
+          ),
+          Expanded(
+            flex: 41,
+            child: _buildHello(),
+          ),
+          Spacer(
+            flex: 16,
+          ),
+          Expanded(
+            flex: 44,
+            child: _buildDescription(),
+          ),
+          Spacer(
+            flex: 16,
+          ),
+          Expanded(
+            flex: 60,
+            child: _buildNameForm(),
+          ),
+          Spacer(
+            flex: 16,
+          ),
+          Expanded(
+            flex: 60,
+            child: _buildPhoneForm(),
+          ),
+          Spacer(
+            flex: 16,
+          ),
+          Expanded(
+            flex: 60,
+            child: _buildMailForm(),
+          ),
+          Spacer(
+            flex: 16,
+          ),
+          Expanded(
+            flex: 60,
+            child: _buildPasswordForm(),
+          ),
+          Spacer(
+            flex: 24,
+          ),
+          Expanded(
+            flex: 24,
+            child: _buildSecurityButton(confirmed),
+          ),
+          Spacer(
+            flex: 40,
+          ),
+          Expanded(
+            flex: 56,
+            child: _buildSignUpButton(),
+          ),
+          Spacer(
+            flex: 40,
+          ),
+          Expanded(
+            flex: 56,
+            child: _buildAlreadyHaveAccount(),
+          ),
+          Spacer(
+            flex: 30,
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).padding.bottom,
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildPhoneForm() {
     return Container(
-      width: Get.width/375*343,
-      height: Get.height/812*60,
+      width: Get.width / 375 * 343,
+      height: Get.height / 812 * 60,
       child: Stack(
         children: [
           Container(
             width: Get.width / 375 * 343,
-          height: Get.height / 812 * 44,
+            height: Get.height / 812 * 44,
             decoration: BoxDecoration(
-              color: white,
-              border: Border.all(color: gray600),
-              borderRadius: BorderRadius.circular(8)
-            ),
+                color: white,
+                border: Border.all(color: gray600),
+                borderRadius: BorderRadius.circular(8)),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal:8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: InternationalPhoneNumberInput(
-              onInputChanged: (PhoneNumber number){
+              onInputChanged: (PhoneNumber number) {
                 phoneNumber = number;
               },
-              countries: [
-                "TR"
-              ],
+              countries: ["TR"],
               formatInput: true,
               autoValidateMode: AutovalidateMode.disabled,
               hintText: "Telefon Numarası",
               maxLength: 13,
-              validator: (String val){
-                if (val.length ==10) {
+              validator: (String val) {
+                if (val.length == 10) {
                   return val;
-                }else {
+                } else {
                   return "non";
                 }
               },
-              inputDecoration: InputDecoration(
-                border: InputBorder.none
-              ),
-              ),
+              inputDecoration: InputDecoration(border: InputBorder.none),
+            ),
           )
         ],
       ),
@@ -249,57 +243,46 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       prefixIcon: Icon(CupertinoIcons.mail),
       keyBoardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
-      );
+    );
   }
 
   Widget _buildPasswordForm() {
-    
-    
     return PasswordInput(
-    hintText: "Parola",
-    controller: passwordController, 
-    prefixIcon: Icon(CupertinoIcons.lock),
-    focusNode: passwordFocus);
+        hintText: "Parola",
+        controller: passwordController,
+        prefixIcon: Icon(CupertinoIcons.lock),
+        focusNode: passwordFocus);
   }
 
   Widget _buildSecurityButton(RxBool comfirmed) {
-    return Obx(()=>
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Checkbox(value: comfirmed.value, onChanged: (val){
-            comfirmed.value = val;
-          }),
-          InkWell(
-            onTap: 
-              _onTapGizlilik
-            ,
-            child: Text(
-              "Gizlilik",
-              style: TextStyle(
-                color: blue500,
-                fontWeight: FontWeight.w600
+    return Obx(() => Container(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Checkbox(
+                  value: comfirmed.value,
+                  onChanged: (val) {
+                    comfirmed.value = val;
+                  }),
+              InkWell(
+                onTap: _onTapGizlilik,
+                child: Text(
+                  "Gizlilik",
+                  style: TextStyle(color: blue500, fontWeight: FontWeight.w600),
+                ),
               ),
-            ),
+              Text(" ve "),
+              InkWell(
+                onTap: _onTapHizmet,
+                child: Text(
+                  "Hizmet Sözleşmelerini",
+                  style: TextStyle(color: blue500, fontWeight: FontWeight.w600),
+                ),
+              ),
+              Text(" kabul ediyorum.")
+            ],
           ),
-          Text(
-            " ve "
-          ),
-          InkWell(
-            onTap: _onTapHizmet,
-            child: Text(
-              "Hizmet Sözleşmelerini",
-              style: TextStyle(color: blue500,fontWeight: FontWeight.w600),
-            ),
-          ),
-          Text(
-            " kabul ediyorum."
-          )
-        ],
-      ),
-    )
-    );
+        ));
   }
 
   Widget _buildSignUpButton() {
@@ -312,17 +295,12 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            "Mevcur bir hesabınız var mı ? "
-          ),
+          Text("Mevcur bir hesabınız var mı ? "),
           InkWell(
             onTap: _turnSignIn,
             child: Text(
               "Oturumu Aç",
-              style: TextStyle(
-                color: blue500,
-                fontWeight: FontWeight.w600
-              ),
+              style: TextStyle(color: blue500, fontWeight: FontWeight.w600),
             ),
           )
         ],
@@ -331,51 +309,58 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   }
 
   void _backButtonFunc() {
-    Get.to(()=>MapScreenReadOnly());
+    Get.to(() => MapScreenReadOnly());
   }
 
-  void _onTapGizlilik(){
+  void _onTapGizlilik() {
     print("gizlilik");
   }
 
-  void _onTapHizmet(){
+  void _onTapHizmet() {
     print("hizmet");
   }
 
   void _signUp() async {
     _showLoading();
-    var _newUser = await dataService.registerUser(nameAndSurnameController.text, passwordController.text, phoneNumber.phoneNumber, mailController.text);
+    User _newUser = await dataService.registerUser(
+        name:nameAndSurnameController.text,
+        password:passwordController.text,
+        phone:phoneNumber.phoneNumber,
+        mail:mailController.text);
+
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setString("userId", _newUser.userId);
-    var _conf = await dataService.confirm(_newUser.userId);
-    if (_conf) {
-      Get.to(()=>MapScreen(),fullscreenDialog: true);
-    }else{
+
+    bool _conf = await dataService.confirm(userId: _newUser.userId);
+
+    if (_conf != null) {
+      // TODO: false dönüyor
+      _prefs.setBool("auth", true);
+
+      Get.to(() => MapScreen(), fullscreenDialog: true);
+    } else {
       Navigator.pop(context);
     }
-    
   }
 
-  void _turnSignIn(){
-    Get.to(()=>SignInScreen());
+  void _turnSignIn() {
+    Get.to(() => SignInScreen());
   }
 
-  void _showLoading(){
+  void _showLoading() {
     showDialog(
-      barrierDismissible: false,
-      context: context, 
-    builder: (context){
-      return Center(
-        child: Container(
-          width: Get.width/375*50,
-          height: Get.width/375*50,
-          decoration: BoxDecoration(
-            color: white,
-            borderRadius: BorderRadius.circular(8)
-          ),
-          child: CircularProgressIndicator.adaptive(),
-        ),
-      );
-    });
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return Center(
+            child: Container(
+              width: Get.width / 375 * 50,
+              height: Get.width / 375 * 50,
+              decoration: BoxDecoration(
+                  color: white, borderRadius: BorderRadius.circular(8)),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          );
+        });
   }
 }//widget sonu

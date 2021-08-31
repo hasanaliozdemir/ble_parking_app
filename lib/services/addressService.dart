@@ -1,32 +1,44 @@
 import 'package:gesk_app/data_models/address.dart';
+import 'package:gesk_app/data_models/addressComponent.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
-class AdressService{
+class AdressService {
   final _key = "AIzaSyAm5L6H-LaUyOUlHNt_nMwy7b_VNRxPPLM";
 
-  Future<Address> getFormatedAddress(LatLng location)async{
-    var url = Uri.parse("https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&language=tr_TR&key=$_key");
-  
+  Future<Address> getFormatedAddress(LatLng location) async {
+    var url = Uri.parse(
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&language=tr_TR&key=$_key");
+
     var response = await http.get(url);
 
     var json = convert.jsonDecode(response.body);
 
+    var _comps = json["results"][0]["address_components"] as List;
+
+    List<AddressComponent> _adressComponents = List<AddressComponent>();
+
+    _comps.forEach((element) {
+      _adressComponents.add(AddressComponent.fromJson(element));
+    });
+
     
 
-    return  Address(
-      formattedAddress: json['results'][0]['formatted_address'],
-      sokak: json['results'][0]['address_components'][1]['short_name'],
-      mahalle: json['results'][0]['address_components'][2]['short_name'],
-      ilce: json['results'][0]['address_components'][3]['short_name'],
-      il: json['results'][0]['address_components'][4]['short_name'],
-      ulke: json['results'][0]['address_components'][5]['short_name'],
-      postaKodu: json['results'][0]['address_components'][6]['short_name'],
+    _getAdressComp(String type) {
+      return _adressComponents[_adressComponents
+              .indexWhere((element) => (element.types.contains(type)))]
+          .shortName;
+    }
+
+    
+    return Address(
+      mahalle: _getAdressComp("administrative_area_level_4"),
+      formattedAddress: json["results"][0]["formatted_address"],
       numara: "",
       kat: "",
-
-      latLng: LatLng(json['results'][0]['geometry']['location']['lat'],json['results'][0]['geometry']['location']['lng']),
+      latLng: LatLng(json['results'][0]['geometry']['location']['lat'],
+          json['results'][0]['geometry']['location']['lng']),
     );
   }
 }

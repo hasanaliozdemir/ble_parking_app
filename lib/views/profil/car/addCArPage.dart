@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddCArPage extends StatefulWidget {
   const AddCArPage({ Key key }) : super(key: key);
@@ -14,6 +16,7 @@ class AddCArPage extends StatefulWidget {
 }
 
 class _AddCArPageState extends State<AddCArPage> {
+  var dataService = DataService();
   var _filled = 0.obs;
 
   TextEditingController plakaController = TextEditingController();
@@ -229,7 +232,41 @@ class _AddCArPageState extends State<AddCArPage> {
     Get.to(()=>ProfileScreen());
   }
 
-  void _saveButtonFunc(){
+  void _saveButtonFunc()async{
+    _showLoading();
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
 
+    var _res = dataService.addCar(
+      userId: _prefs.getString("userId"),
+      plate: plakaController.text,
+      modelYear: modelController.text,
+      color: _currentSelectedColor,
+      size: _currentSelectedSize
+      
+    );
+    if (_res == null) {
+      Navigator.pop(context);
+    } else {
+      Get.to(()=> ProfileScreen(),fullscreenDialog: true);
+    }
+  }
+
+  void _showLoading(){
+    showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
   }
 }

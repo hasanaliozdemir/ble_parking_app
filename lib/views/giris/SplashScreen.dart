@@ -39,12 +39,7 @@ void initState() {
       }
     } );
 
-    Timer(
-      Duration(seconds: 5), 
-      (){
-        
-        Get.to(()=>Wrapper(auth:_auth),fullscreenDialog: true);
-      });
+    _timer();
 
     return Scaffold(
       body: Obx(()=> Center(
@@ -79,6 +74,19 @@ void initState() {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
     _auth = _prefs.getBool("auth");
+    
+    if (_auth==null) {
+      _auth = false;
+    }
+    
+  }
 
+  _timer(){
+    Timer(
+      Duration(seconds: 3), 
+      (){
+        print("help im here");
+        Get.to(()=>Wrapper(auth:_auth),fullscreenDialog: true);
+      });
   }
 }

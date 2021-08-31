@@ -11,14 +11,14 @@ import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 class Wrapper extends StatelessWidget {
   bool auth;
   Wrapper({Key key,bool auth}) : super(key: key){
-    auth = this.auth;
+    this.auth = auth;
   }
 
   
 
   @override
   Widget build(BuildContext context) {
-    var auth = true;
+    
     if (auth) {
       return MapScreen();
     }else{

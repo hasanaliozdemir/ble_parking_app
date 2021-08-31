@@ -1,16 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
+import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/models/car.dart';
 import 'package:gesk_app/models/park.dart';
+import 'package:gesk_app/models/user.dart';
+import 'package:gesk_app/views/giris/SplashScreen.dart';
 import 'package:gesk_app/views/profil/ayarlarPage.dart';
 import 'package:gesk_app/views/profil/car/addCArPage.dart';
 import 'package:gesk_app/views/profil/car/carPage.dart';
 import 'package:gesk_app/views/profil/park/ParkPage.dart';
 import 'package:gesk_app/views/profil/park/addParkPage.dart';
+import 'package:gesk_app/wrapper.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -22,33 +28,18 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  List<Car> cars = [
-    Car.withoutID(plaka: "34 QWY 545", renk: "Siyah", model: 2021,size: "Sedan"),
-    Car.withoutID(plaka: "34 QWY 546", renk: "Siyah", model: 2021,size: "Sedan"),
-    Car.withoutID(plaka: "34 QWY 547", renk: "Siyah", model: 2021,size: "Sedan"),
-  ];
+  User _currentUser;
+  var dataService = DataService();
+  List<Car> cars = List<Car>();
+  List<Park> parks = List<Park>();
 
-  List<Park> parks = [
-    Park(
-        isClosedPark: true,
-        longitude: 27.971991,
-        latitude: 40.355499,
-        location: "Bandırma",
-        isWithElectricity: true,
-        status: Status.selected,
-        isWithCam: true,
-        parkSpace: 6,
-        name: "Bandırma Otopark",
-        price: 12.5,
-        filledParkSpace: 3,
-        isWithSecurity: false,
-        id: 123,
-        point: 3,
-        imageUrls: [
-          "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-          "https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-        ])
-  ];
+  @override
+  void initState() { 
+    super.initState();
+    _getInfo();
+  }
+
+  
 
   final int _index = 2;
   var w = Get.width / 375;
@@ -58,62 +49,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String imageUrl =
       "https://media-exp1.licdn.com/dms/image/C4D03AQGYcK6j7HPXOA/profile-displayphoto-shrink_200_200/0/1606888856127?e=1632355200&v=beta&t=-tbOl92SK-ZO87X1OIRg5uroCA4eOLcQ_up8DFsOSyA";
 
+  bool _loaded = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomBar(
-        index: _index,
-      ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).padding.top,
-          ),
-          Spacer(
-            flex: 56,
-          ),
-          Expanded(
-            flex: 220,
-            child: Column(
-              children: [
-                Spacer(
-                  flex: 32,
-                ),
-                Expanded(
-                  child: _buildPhotoFrame(),
-                  flex: 96,
-                ),
-                Spacer(
-                  flex: 16,
-                ),
-                Expanded(
-                  child: _buildNameBar(),
-                  flex: 22,
-                ),
-                Spacer(
-                  flex: 8,
-                ),
-                Expanded(
-                  child: _buildPhoneNumber(),
-                  flex: 22,
-                ),
-                Spacer(
-                  flex: 24,
-                )
-              ],
-            ),
-          ),
-          Spacer(
-            flex: 16,
-          ),
-          Expanded(
-            flex: 337,
-            child: _buildOptions(),
-          ),
-        ],
-      ),
-    );
+    if (_loaded) {
+      return _buildScaffold(context);
+    }else{
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    }
   }
+
+  Scaffold _buildScaffold(BuildContext context) {
+    return Scaffold(
+    bottomNavigationBar: BottomBar(
+      index: _index,
+    ),
+    body: Column(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).padding.top,
+        ),
+        Spacer(
+          flex: 56,
+        ),
+        Expanded(
+          flex: 220,
+          child: Column(
+            children: [
+              Spacer(
+                flex: 32,
+              ),
+              Expanded(
+                child: _buildPhotoFrame(),
+                flex: 96,
+              ),
+              Spacer(
+                flex: 16,
+              ),
+              Expanded(
+                child: _buildNameBar(),
+                flex: 22,
+              ),
+              Spacer(
+                flex: 8,
+              ),
+              Expanded(
+                child: _buildPhoneNumber(),
+                flex: 22,
+              ),
+              Spacer(
+                flex: 24,
+              )
+            ],
+          ),
+        ),
+        Spacer(
+          flex: 16,
+        ),
+        Expanded(
+          flex: 337,
+          child: _buildOptions(),
+        ),
+      ],
+    ),
+  );
+  }
+
+
 
   _buildPhotoFrame() {
     return Container(
@@ -142,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _buildNameBar() {
     return Container(
       child: Text(
-        name,
+        (_currentUser==null) ? "" : _currentUser.name,
         textAlign: TextAlign.center,
         style: TextStyle(
           color: black,
@@ -157,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _buildPhoneNumber() {
     return Container(
       child: Text(
-        phoneNumber,
+        (_currentUser==null) ? "" : _currentUser.phoneNumber,
         textAlign: TextAlign.center,
         style: TextStyle(
           color: gray900,
@@ -207,6 +213,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
           ),
         child: ListTile(
+          onTap: (){
+            showDialog(context: context, builder: (context){
+              return PopUp(title: "Çıkış", 
+              content: "Hesabınızdan çıkış yapmak istiyor musunuz ?", 
+              yesFunc: logOut,
+              noFunc: (){
+                Navigator.pop(context);
+              }, 
+              single: false, 
+              icon: "assets/icons/person2.svg");
+            });
+          },
           title: Text(
             "Çıkış",
             style: TextStyle(
@@ -379,7 +397,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: gray400,
                     );
                   },
-                  itemCount: parks.length,
+                  itemCount: (parks==null) ? 0 : parks.length,
                   itemBuilder: (context, index) {
                     return Container(
                       width: w * 343,
@@ -485,7 +503,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: gray400,
                     );
                   },
-                  itemCount: cars.length,
+                  itemCount: (cars==null)? 0: cars.length,
                   itemBuilder: (context, index) {
                     return Container(
                       width: w * 343,
@@ -536,6 +554,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   _onPressedCar(Car car) {
+
+
     Get.to(() => CarPAge(
           car: car,
         ));
@@ -550,8 +570,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   _onPressedPark(Park park) {
-    Get.to(()=>ParkPage(
-      park: park
-    ));
+    Get.to(()=> ParkPage(park: park,));
   }
+
+  _getInfo()async{
+    
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var _userId =_prefs.getString("userId");
+    _currentUser = await dataService.getUser(userId: _userId);
+    
+    var _map = await dataService.getUserInstance(userId: _userId);
+    setState(() {
+          cars =_map["cars"];
+    parks=_map["parks"];
+        });
+    
+    setState(() {
+          _loaded = true;
+        });
+  }
+
+  void _showLoading()async{
+
+    Future.delayed(Duration.zero,(){
+      showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
+    });
+  }
+
+  void logOut()async{
+    Navigator.pop(context);
+    _showLoading();
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.setBool("auth", false);
+    Get.to(()=>SplashScreen(),fullscreenDialog: true);
+  }
+
+
 }

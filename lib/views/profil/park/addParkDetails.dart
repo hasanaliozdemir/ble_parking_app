@@ -3,26 +3,33 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:gesk_app/data_models/address.dart';
+import 'package:gesk_app/data_models/location.dart';
 import 'package:gesk_app/views/profil/park/addParkPage.dart';
+import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddParkDetails extends StatefulWidget {
   final Address address;
+  final Location location;
 
-  const AddParkDetails({Key key, this.address}) : super(key: key);
+  const AddParkDetails({Key key, this.address,this.location}) : super(key: key);
 
   @override
-  _AddParkDetailsState createState() => _AddParkDetailsState(address);
+  _AddParkDetailsState createState() => _AddParkDetailsState(address: address,location: location);
 }
 
 class _AddParkDetailsState extends State<AddParkDetails> {
+  final Location location;
   final Address address;
+  var dataService = DataService();
 
   TextEditingController _parkNameController = TextEditingController();
   TextEditingController _tpaNumberController = TextEditingController();
@@ -45,7 +52,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
 
   final ImagePicker _picker = ImagePicker();
 
-  _AddParkDetailsState(this.address);
+  _AddParkDetailsState({this.address,this.location});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -251,15 +258,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
           title: Container(
             alignment: Alignment.topCenter,
             child: Text(
-              address.mahalle +
-                  " Mahallesi, " +
-                  address.sokak +
-                  " No:" +
-                  address.numara +
-                  " " +
-                  address.ilce +
-                  ", " +
-                  address.il,
+              address.formattedAddress,
               style: TextStyle(
                   color: gray900,
                   fontWeight: FontWeight.w500,
@@ -470,5 +469,47 @@ class _AddParkDetailsState extends State<AddParkDetails> {
     });
   }
 
-  void _savePark() {}
+  void _savePark()async {
+    _showLoading();
+
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var _userId = _prefs.getString("userId");
+
+    
+    var _newPark = await dataService.addPark(
+      userId: _userId, 
+      isClosedPark:_isClosed.value,
+      isWithCam: _isCam.value, 
+      isWithSecurity: _isWithSecurity.value, 
+      isWithElectricity: _isWithElectricity.value, 
+      name: _parkNameController.text, 
+      longitude: address.latLng.longitude, 
+      latitude: address.latLng.latitude, 
+      location: address.mahalle);
+
+    if(_newPark.name != null){
+      Get.to(()=> ProfileScreen(),fullscreenDialog: true);
+    }else{
+      Navigator.pop(context);
+    }
+  }
+
+  void _showLoading(){
+    showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
+  }
 }

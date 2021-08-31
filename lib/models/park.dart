@@ -18,6 +18,7 @@ class Park {
   final double latitude;
   final List imageUrls;
   final String location;
+  String info;
 
   Park(
       {
@@ -35,7 +36,9 @@ class Park {
       @required this.isWithCam,
       @required this.isWithSecurity,
       @required this.parkSpace,
-      @required this.filledParkSpace});
+      @required this.filledParkSpace,
+      this.info
+      });
 
   factory Park.fromJson(Map<String,dynamic> json){
     _organizeStatus(int stat){
@@ -65,7 +68,7 @@ class Park {
       location: json['location'], 
       imageUrls: json['imageUrls'], 
       isClosedPark: json['isClosedPark'], 
-      longitude: json['longitude'], 
+      longitude: json['longtitude'], 
       latitude: json['latitude'], 
       name: json['name'], 
       price: json['price'], 
@@ -76,7 +79,8 @@ class Park {
       isWithCam: json['isWithCam'], 
       isWithSecurity: json['isWithSecurity'], 
       parkSpace: json['parkSpace'], 
-      filledParkSpace: json['filledParkSpace']
+      filledParkSpace: json['filledParkSpace'],
+      
       );
   }
 

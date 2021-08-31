@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/textInput.dart';
@@ -17,6 +18,8 @@ class CarPAge extends StatefulWidget {
 }
 
 class _CarPAgeState extends State<CarPAge> {
+  var dataService = DataService();
+
   _CarPAgeState(this.car);
   Car car;
 
@@ -81,6 +84,7 @@ class _CarPAgeState extends State<CarPAge> {
                     setState(() {
                       edit1.value = !edit1.value;
                       car.plaka = _plakaController.text;
+                      _filled.value =_filled.value+1;
                     });
                   },
                   prefixIcon: Icon(
@@ -114,6 +118,7 @@ class _CarPAgeState extends State<CarPAge> {
                   setState(() {
                     car.model = int.parse(_modelController.text); 
                     edit3.value = !edit3.value;
+                    _filled.value =_filled.value+1;
                   });
                 },
                 prefixIcon: Icon(
@@ -403,16 +408,56 @@ class _CarPAgeState extends State<CarPAge> {
     });
   }
 
-  void _deleteFunc(){
-    print("delete car");
-    Get.to(()=>ProfileScreen());
+  void _deleteFunc() async{
+    _showLoading();
+    var _res = dataService.deleteCar(
+      carId: car.id);
+    if (_res!=null) {
+      Get.to(()=>ProfileScreen(),fullscreenDialog: true);
+    }else{
+      Navigator.pop(context);
+      Navigator.pop(context);
+    }
+    
   }
 
   void _saveCar(){
-
+    _showLoading();
+    var _res = dataService.editCar(
+      carId: car.id, 
+      plate: car.plaka, 
+      modelYear:car.model.toString(),
+      color: _currentSelectedColor.toString(),
+      carSize: _currentSelectedSize.toString()
+      );
+    if (_res == null) {
+      Navigator.pop(context);
+    } else {
+      Get.to(()=> ProfileScreen(),fullscreenDialog: true);
+    }
+  
   }
 
   void _cancleFunc(){
     Navigator.pop(context);
+  }
+
+  void _showLoading(){
+    showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
   }
 }
