@@ -44,6 +44,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     phoneController.text = "(+90)";
     return Scaffold(
+      
       body: _buildBody(),
       resizeToAvoidBottomInset: false
     );
@@ -268,7 +269,7 @@ class _SignInScreenState extends State<SignInScreen> {
     _showLoading();
     var _newUser = await dataService.login(phoneNumber:phoneController.text, password:passwordController.text);
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _prefs.setString("userId", _newUser.userId);
+    _prefs.setInt("userId", _newUser.userId);
 
     var _conf = await dataService.confirm(userId: _newUser.userId);
     if (_conf) {

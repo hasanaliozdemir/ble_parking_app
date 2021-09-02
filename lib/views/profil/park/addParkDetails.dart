@@ -56,6 +56,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -119,10 +120,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                           Spacer(
                             flex: 16,
                           ),
-                          Expanded(
-                            flex: 44,
-                            child: _buildTpaNumber(),
-                          ),
+                          // Expanded(flex: 44,child: _buildTpaNumber(),),
                           Spacer(
                             flex: 16,
                           ),

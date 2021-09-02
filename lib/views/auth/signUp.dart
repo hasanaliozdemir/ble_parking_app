@@ -313,11 +313,11 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   }
 
   void _onTapGizlilik() {
-    print("gizlilik");
+    print("gizlilik"); // TODO: Gizlilik sözleşmesi
   }
 
   void _onTapHizmet() {
-    print("hizmet");
+    print("hizmet"); //TODO: Hizmet sözleşmesi
   }
 
   void _signUp() async {
@@ -329,7 +329,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
         mail:mailController.text);
 
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _prefs.setString("userId", _newUser.userId);
+    _prefs.setInt("userId", _newUser.userId);
 
     bool _conf = await dataService.confirm(userId: _newUser.userId);
 

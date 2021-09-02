@@ -78,6 +78,7 @@ class _MapScreenState extends State<MapScreen> {
     
     
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Container(

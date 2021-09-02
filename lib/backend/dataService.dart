@@ -1,5 +1,7 @@
 import 'package:gesk_app/models/car.dart';
 import 'package:gesk_app/models/park.dart';
+import 'package:gesk_app/models/reservation.dart';
+import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -55,7 +57,7 @@ class DataService {
     return _car;
   }
 
-  Future<String> deleteCar({String carId}) async {
+  Future<String> deleteCar({int carId}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
@@ -72,11 +74,11 @@ class DataService {
   }
 
   Future<Car> editCar(
-      {String carId, String plate, String modelYear, String color,String carSize}) async {
+      {int carId, String plate, String modelYear, String color,String carSize}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "editCar": {
-        "carId": int.parse(carId),
+        "carId": carId,
         "plate": plate,
         "modelYear": modelYear,
         "color": color,
@@ -142,7 +144,7 @@ class DataService {
     return _park;
   }
 
-  Future<String> deletePark({String parkId}) async {
+  Future<String> deletePark({int parkId}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
@@ -284,7 +286,7 @@ class DataService {
     return _user;
   }
 
-  Future<Park> getPark({String parkId}) async {
+  Future<Park> getPark({int parkId}) async {
     Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "getPark": {
@@ -302,11 +304,11 @@ class DataService {
     return _park;
   }
 
-  Future<bool> confirm({String userId}) async {
+  Future<bool> confirm({int userId}) async {
     Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "confirm": {
-        "userId": int.parse(userId),
+        "userId": userId,
       }
     };
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -348,5 +350,97 @@ class DataService {
 
     Map<String, dynamic> _result = {"cars": _cars, "parks": _parks};
     return _result;
+  }
+
+  Future<Tpa> addTpa({int parkId, String tpaName, double hourlyPrice, String maxCarSize})async{
+    Uri _uri = Uri.parse(_setInfoUrl);
+
+    print(parkId);
+    print(tpaName);
+    print(hourlyPrice);
+    print(maxCarSize);
+
+    Map<String, dynamic> _payloadBody = {
+      "addTpa": {
+        "parkId": parkId,
+        "tpaName": tpaName,
+        "hourlyPrice" : hourlyPrice,
+        "maxCarSize" : maxCarSize
+        }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    return Tpa.fromJson(_responseJson["addTpa"][0]);
+  }
+
+  Future<Tpa> editTpa({int tpaId,int parkId, String tpaName, double hourlyPrice, String maxCarSize})async{
+    Uri _uri = Uri.parse(_setInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "editTpa": {
+        "tpaId": tpaId,
+        "parkId": parkId,
+        "tpaName": tpaName,
+        "hourlyPrice" : hourlyPrice,
+        "maxCarSize" : maxCarSize
+        }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    return Tpa.fromJson(_responseJson["editTpa"]);
+
+  }
+
+  Future<String> deleteTpa({int tpaId})async{
+    Uri _uri = Uri.parse(_setInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "deleteTpa": {
+        "tpaId": tpaId,
+        }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    return _responseJson["deleteTpa"];
+  }
+
+  Future<List<Tpa>> getTpas(int parkId)async{
+    Uri _uri = Uri.parse(_getInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "getTpas": {
+        "command" : "partial",
+        "parkId": parkId,
+        }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    var _ref = _responseJson["getTpas"] as List;
+
+    List<Tpa> _tpas = List<Tpa>();
+
+    _ref.forEach((element) { _tpas.add(Tpa.fromJson(element));});
+
+    return _tpas;
   }
 }

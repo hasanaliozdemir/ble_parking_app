@@ -53,6 +53,7 @@ class _CarPAgeState extends State<CarPAge> {
     _renkController.text = renk ?? "null";
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         child: Column(
           children: [

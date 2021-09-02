@@ -6,8 +6,8 @@ class Car {
   int model;
   String size;
 
-  String id;
-  String userID;
+  int id;
+  int userID;
 
   Car.withoutID(
       {@required this.plaka,
@@ -32,8 +32,8 @@ class Car {
     }
 
     return Car(
-        userID: json["ownerId"].toString(),
-        id: json["carId"].toString(), //TODO: erenle konuş
+        userID: json["ownerId"],
+        id: json["carId"], //TODO: erenle konuş
         size: json["carSize"], //TODO: erenle konuş
         model: _checkInt(json["modelYear"]),
         renk: json["color"],

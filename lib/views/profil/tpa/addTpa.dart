@@ -1,24 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:gesk_app/core/custom_icon_icons.dart';
 import 'package:gesk_app/data_models/time_range.dart';
+import 'package:gesk_app/models/park.dart';
+import 'package:gesk_app/views/profil/park/ParkPage.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
 
 class AddTpaPage extends StatefulWidget {
-  const AddTpaPage({Key key}) : super(key: key);
+  final Park park;
+  const AddTpaPage({Key key, this.park}) : super(key: key);
 
   @override
-  _AddTpaPageState createState() => _AddTpaPageState();
+  _AddTpaPageState createState() => _AddTpaPageState(park);
 }
 
 class _AddTpaPageState extends State<AddTpaPage> {
+  final Park park;
   var _isWithElectricity = false.obs;
   var _filled = 0.obs;
+
+  DataService _dataService = DataService();
 
   int selectedHourStart = 0;
   int selectedHourEnd = 0;
@@ -36,9 +43,12 @@ class _AddTpaPageState extends State<AddTpaPage> {
 
   var _currentSelectedSize;
   var _selectTimeRange = "Kiralama saat aralığı";
+
+  _AddTpaPageState(this.park);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: _buildBody(),
     );
   }
@@ -113,10 +123,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
         Spacer(
           flex: 16,
         ),
-        Expanded(
-          flex: 44,
-          child: _buildElectricity(),
-        ),
+        // Expanded(flex: 44,child: _buildElectricity(),),
         Spacer(
           flex: 16,
         ),
@@ -665,11 +672,46 @@ class _AddTpaPageState extends State<AddTpaPage> {
     return _widgetList;
   }
 
-  _saveTpa(){
-    print("save");
+  _saveTpa()async{
+    _showLoading();
+
+    var _res = await _dataService.addTpa( 
+      parkId: park.id, 
+      tpaName: _tpaNameController.text,
+      hourlyPrice: double.parse(_priceController.text),
+      maxCarSize: _currentSelectedSize.toString() );
+
+    if(_res.parkId!=null){
+      Get.to(()=>ProfileScreen(),fullscreenDialog: true);
+    }else{
+      Navigator.pop(context);
+    }
   }
 
   void _backButtonFunc() {
     Get.to(() => ProfileScreen());
   }
+
+  void _showLoading()async{
+
+    Future.delayed(Duration.zero,(){
+      showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
+    });
+  }
+
 }

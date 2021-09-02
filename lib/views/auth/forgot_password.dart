@@ -4,6 +4,7 @@ import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
 import 'package:get/route_manager.dart';
 
@@ -199,12 +200,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   void _backButtonFunc() {
-    print("back");
+    Get.to(()=>SignInScreen(),fullscreenDialog: true);
   }
 
 
   void _resetPassword(){
-    print("sıfırla: ${phoneController.text}");
+    print("sıfırla: ${phoneController.text}"); //Şifre sıfırlama kodu gönderilip kontrol edilcek
   }
 
   void _turnRegister(){

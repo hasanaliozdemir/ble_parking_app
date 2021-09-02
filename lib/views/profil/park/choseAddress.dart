@@ -85,6 +85,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         body: Column(
       children: [
         SizedBox(

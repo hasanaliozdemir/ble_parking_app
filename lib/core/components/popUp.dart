@@ -13,13 +13,15 @@ class PopUp extends StatelessWidget {
   bool _single;
   String _title;
   String _content;
-  PopUp({@required String title,@required String content,@required Function yesFunc,Function noFunc,@required bool single,@required var icon}) {
+  Icon _realIcon;
+  PopUp({@required String title,@required String content,@required Function yesFunc,Function noFunc,@required bool single,String icon, Icon realIcon}) {
     this._title = title;
     this._content = content;
     this._yesFunc = yesFunc;
     this._noFunc=noFunc;
     this._single = single;
     this._icon = icon;
+    this._realIcon = realIcon;
   }
 
   @override
@@ -39,7 +41,7 @@ class PopUp extends StatelessWidget {
               flex: 24,
             ),
             Expanded(
-              child: buildIcon(_icon),
+              child: buildIcon(_icon,_realIcon),
               flex: 170,
             ),
             Spacer(
@@ -114,7 +116,7 @@ class PopUp extends StatelessWidget {
     }
   }
 
-  Widget buildIcon(String icon){
+  Widget buildIcon(String icon,Icon realIcon){
     return Center(
       child: Stack(
         children: [
@@ -126,15 +128,31 @@ class PopUp extends StatelessWidget {
           )
           
           ),
-          Center(child: Center(child: Container(
+          _buildImage(icon,realIcon)
+        ],
+      ),
+    );
+  }
+
+  _buildImage(String icon,Icon realIcon){
+    if (realIcon==null) {
+      return Center(child: Center(child: Container(
             height: Get.height/812*116,
             width: Get.width/375*116,
             child: SvgPicture.asset(icon,
             fit: BoxFit.cover,
             color: blue600,),
-          )))
-        ],
-      ),
-    );
+          )));
+    } else {
+      return Center(
+        child: Center(
+          child: Container(
+            height: Get.height/812*116,
+            width: Get.width/375*116,
+            child: realIcon,
+          ),
+        ),
+      );
+    }
   }
 }

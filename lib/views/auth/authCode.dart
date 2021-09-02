@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
+import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:get/get.dart';
@@ -161,11 +162,11 @@ class _AuthCodePageState extends State<AuthCodePage> {
   }
 
   void _backButtonFunc() {
-    Get.to(()=>MapScreenReadOnly(),fullscreenDialog: true);
+    Get.to(()=>SignInScreen(),fullscreenDialog: true);
   }
 
   void _comfirmCode(){
-    print("sıfırla kod: $authCode");
+    print("sıfırla kod: $authCode"); //TODO: Burda kod doğrulancak
     Get.to(()=>MapScreen());
   }
 

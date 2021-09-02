@@ -33,6 +33,7 @@ class _ReservationDetailState extends State<ReservationDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       bottomNavigationBar: BottomBar(
         index: 1,
       ),

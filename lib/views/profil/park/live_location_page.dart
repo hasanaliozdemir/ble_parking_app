@@ -82,6 +82,7 @@ class _LiveLocationPageState extends State<LiveLocationPage> {
     
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           SizedBox(

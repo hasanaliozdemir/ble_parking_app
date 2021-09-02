@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/customSwitch.dart';
+import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/data_models/address.dart';
-import 'package:gesk_app/data_models/place.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/services/addressService.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
+import 'package:gesk_app/views/profil/tpa/addTpa.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -23,34 +25,17 @@ class ParkPage extends StatefulWidget {
 }
 
 class _ParkPageState extends State<ParkPage> {
+  DataService dataService = DataService();
   final Park park;
   Address parkAddress;
   String formattedAddress;
 
-  List<Tpa> tpaList = [
-    Tpa(
-        avaliable: true.obs,
-        tapId: 0,
-        tpaName: "A-126",
-        hourlyPrice: 18,
-        isWithElectricity: true),
-    Tpa(
-        avaliable: true.obs,
-        tapId: 0,
-        tpaName: "A-127",
-        hourlyPrice: 18,
-        isWithElectricity: true),
-    Tpa(
-        avaliable: true.obs,
-        tapId: 1,
-        tpaName: "A-128",
-        hourlyPrice: 18,
-        isWithElectricity: true)
-  ];
+  List<Tpa> tpaList = List<Tpa>();
 
   @override
   void initState() {
     _getAddress();
+    _getTpas();
     super.initState();
   }
 
@@ -348,7 +333,7 @@ class _ParkPageState extends State<ParkPage> {
                               ),
                             );
                           },
-                          itemCount: tpaList.length),
+                          itemCount: (tpaList.length==null)?0:tpaList.length),
                     ),
                   ),
                   Container(
@@ -401,7 +386,7 @@ class _ParkPageState extends State<ParkPage> {
   }
 
   _addTpaFunc() {
-    print("tpa ekle");
+    Get.to(()=>AddTpaPage(park: park,));
   }
 
   _onTapButton(){
@@ -409,6 +394,60 @@ class _ParkPageState extends State<ParkPage> {
   }
 
   _deletePark(){
-    print("sil");
+    showDialog(context: context, builder: (context) {
+      return PopUp(title: "Park Silinecek", 
+      content: "Seçtiğiniz Otopark silinecektir, devam etmek istiyor musunuz ?", 
+      yesFunc: ()async{
+        Navigator.pop(context);
+        _showLoading();
+        var _res = await dataService.deletePark(
+          parkId: park.id
+        );
+        if (_res!=null) {
+          Get.to(()=>ProfileScreen(),fullscreenDialog: true);
+        }else{
+          Navigator.pop(context);
+          print("error at car page delete");
+        }
+      }, 
+      noFunc: (){
+        Navigator.pop(context);
+      },
+      single: false, 
+      realIcon: Icon(CupertinoIcons.trash,size: 60,),
+      );
+    });
   }
+
+  void _showLoading()async{
+
+    Future.delayed(Duration.zero,(){
+      showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
+    });
+  }
+
+  _getTpas()async{
+    
+    tpaList= await dataService.getTpas(park.id);
+    setState(() {
+          
+        });
+  }
+
+
 }

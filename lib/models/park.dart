@@ -74,7 +74,7 @@ class Park {
       price: json['price'], 
       status: _organizeStatus(json['status']), 
       isWithElectricity: json['isWithElectricity'], 
-      id: json['id'], 
+      id: json['parkId'], 
       point: json['point'], 
       isWithCam: json['isWithCam'], 
       isWithSecurity: json['isWithSecurity'], 

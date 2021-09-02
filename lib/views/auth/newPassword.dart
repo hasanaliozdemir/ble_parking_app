@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/passwordInput.dart';
+import 'package:gesk_app/views/auth/forgot_password.dart';
 
 import 'package:gesk_app/views/auth/signUp.dart';
 import 'package:get/get.dart';
@@ -209,12 +210,12 @@ Widget _buildNewPassword() {
   }
 
   void _backButtonFunc() {
-    print("back");
+    Get.to(()=>ForgotPasswordPage());
   }
 
 
   void _resetPassword(){
-    print("sıfırla: ${newPasswordController.text}");
+    print("sıfırla: ${newPasswordController.text}"); //TODO: Şifre sıfırla
   }
 
   void _turnRegister(){

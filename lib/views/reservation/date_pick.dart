@@ -9,6 +9,7 @@ import 'package:gesk_app/core/funcs/triangleCreator.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/services/markerCreator.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
+import 'package:gesk_app/views/reservation/timeRange.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -32,11 +33,6 @@ class _DatePickScreenState extends State<DatePickScreen> {
   var selectedDayString = "Tarih".obs;
   var selectedHourString = "SS:DD - SS:DD".obs;
 
-  int selectedHourStart;
-  int selectedHourEnd;
-
-  int selectedMinuteStart;
-  int selectedMinuteEnd;
 
   int index = 0;
 
@@ -44,6 +40,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           SizedBox(
@@ -56,7 +53,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
           Spacer(
             flex: 16,
           ),
-          Expanded(flex: 240, child: _buildCard()),
+          Expanded(flex: 290, child: _buildCard()),
           Spacer(
             flex: 24,
           ),
@@ -66,10 +63,6 @@ class _DatePickScreenState extends State<DatePickScreen> {
           ),
           Spacer(
             flex: 32,
-          ),
-          Expanded(
-            flex: 50,
-            child: _buildTimePicker(),
           ),
           Spacer(
             flex: 24,
@@ -254,7 +247,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         decoration: BoxDecoration(
-            color: gray900, borderRadius: BorderRadius.circular(16)),
+            color: gray600, borderRadius: BorderRadius.circular(16)),
         child: Column(
           children: [
             Expanded(flex: 36, child: _buildParkTextRow()),
@@ -357,246 +350,9 @@ class _DatePickScreenState extends State<DatePickScreen> {
     );
   }
 
-  Widget _buildTimePicker() {
-    List<String> saatler = List<String>.generate(24, (index) {
-      String hour;
+  
 
-      if (selectedDay.day == DateTime.now().day) {
-        if (index >= selectedDay.hour) {
-          if (index < 10) {
-            hour = "0" + index.toString();
-          } else {
-            hour = index.toString();
-          }
-        }
-      } else {
-        if (index < 10) {
-          hour = "0" + index.toString();
-        } else {
-          hour = index.toString();
-        }
-      }
-
-      return hour;
-    });
-    List<String> dakikalar = List<String>.generate(60, (index) {
-      String minute;
-      if (index % 5 == 0) {
-        if (selectedDay.day == DateTime.now().day) {
-          if (index >= selectedDay.minute) {
-            if (index < 10) {
-              minute = "0" + index.toString();
-            } else {
-              minute = index.toString();
-            }
-          }
-        } else {
-          if (index < 10) {
-            minute = "0" + index.toString();
-          } else {
-            minute = index.toString();
-          }
-        }
-      }
-
-      return minute;
-    });
-
-    dakikalar.removeWhere((element) => element == null);
-    saatler.removeWhere((element) => element == null);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: gray600)),
-          child: ListTile(
-            onTap: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      height: Get.height / 812 * 300,
-                      child: _bottomSheetColumn(context, saatler, dakikalar),
-                    );
-                  });
-            },
-            title: Text(
-              selectedHourString.value,
-              style: TextStyle(
-                  color: black,
-                  fontFamily: "SF Pro Text",
-                  fontWeight: FontWeight.w400,
-                  fontSize: 17),
-            ),
-            leading: Icon(
-              CupertinoIcons.clock_fill,
-              color: blue500,
-            ),
-          )),
-    );
-  }
-
-  Column _bottomSheetColumn(
-      BuildContext context, List<String> saatler, List<String> dakikalar) {
-    return Column(
-      children: [
-        Spacer(
-          flex: 1,
-        ),
-        Expanded(
-          flex: 1,
-          child: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () {
-                    selectedHourStart = DateTime.now().hour;
-                    selectedHourEnd = DateTime.now().hour;
-                    selectedMinuteStart = DateTime.now().minute;
-                    selectedMinuteStart = DateTime.now().minute;
-                    setState(() {
-                                          selectedHourString.value = "SS:DD - SS:DD";
-                                        });
-                    Navigator.pop(context);
-                  } ,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      "İptal",
-                      style: TextStyle(
-                          color: gray900,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      selectedHourString.value = selectedHourStart.toString() +
-                          ":" +
-                          selectedMinuteStart.toString() +
-                          " - " +
-                          selectedHourEnd.toString() +
-                          ":" +
-                          selectedMinuteEnd.toString();
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      "Onayla",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: blue500,
-                          fontSize: 17),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-        Spacer(
-          flex: 1,
-        ),
-        Expanded(
-          flex: 1,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                child: Text(
-                  "Başlangıç Saati",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Container(
-                child: Text(
-                  "Bitiş Saati",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          flex: 9,
-          child: Container(
-            width: Get.width,
-            child: Row(
-              children: [
-                _buildColumn1(saatler),
-                Text(":"),
-                _buildColumn2(dakikalar),
-                Text("ile"),
-                _buildColumn3(saatler),
-                Text(":"),
-                _buildColumn4(saatler),
-              ],
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Expanded _buildColumn1(saatler) {
-    return Expanded(
-      child: CupertinoPicker(
-        itemExtent: 64,
-        diameterRatio: 0.7,
-        children: modelBuilder(saatler),
-        onSelectedItemChanged: (index) {
-          selectedHourStart = int.parse(saatler[index]);
-        },
-      ),
-    );
-  }
-
-  Expanded _buildColumn2(dakikalar) {
-    return Expanded(
-      child: CupertinoPicker(
-        itemExtent: 64,
-        diameterRatio: 0.7,
-        children: modelBuilder(dakikalar),
-        onSelectedItemChanged: (index) {
-          selectedMinuteStart = int.parse(dakikalar[index]);
-        },
-      ),
-    );
-  }
-
-  Expanded _buildColumn3(saatler) {
-    return Expanded(
-      child: CupertinoPicker(
-        itemExtent: 64,
-        diameterRatio: 0.7,
-        children: modelBuilder(saatler),
-        onSelectedItemChanged: (index) {
-          selectedHourEnd = int.parse(saatler[index]);
-        },
-      ),
-    );
-  }
-
-  Expanded _buildColumn4(dakikalar) {
-    return Expanded(
-      child: CupertinoPicker(
-        itemExtent: 64,
-        diameterRatio: 0.7,
-        children: modelBuilder(dakikalar),
-        onSelectedItemChanged: (index) {
-          selectedMinuteEnd = int.parse(dakikalar[index]);
-        },
-      ),
-    );
-  }
-
+  
   Widget _buildButton() {
     return Container(
       child: Button.active(text: "Tekil Park Alanı Ara", onPressed: _searchReservation),
@@ -618,11 +374,10 @@ class _DatePickScreenState extends State<DatePickScreen> {
 
   _searchReservation(){
     var _selectedDay = selectedDay;
-    var _startHour = DateTime(_selectedDay.year,_selectedDay.month,_selectedDay.day,selectedHourStart,selectedMinuteStart);
-    var _endHour = DateTime(_selectedDay.year,_selectedDay.month,_selectedDay.day,selectedHourEnd,selectedMinuteEnd);
+    
+    
 
-    print(_selectedDay.day);
-    print(_startHour);
-    print(_endHour);
+    Get.to(()=>TimeRangePage(date: _selectedDay,park: _park,));
+
   }
 }
