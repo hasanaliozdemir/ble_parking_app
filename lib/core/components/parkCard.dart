@@ -238,11 +238,23 @@ class _ParkCardState extends State<ParkCard> {
   }
 
   Container imageContainer() {
-    return Container(
+
+    if (widget.park.imageUrls!=null) {
+      return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           image: DecorationImage(
               image: NetworkImage(widget.park.imageUrls.first), fit: BoxFit.cover)),
     );
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          color: gray400
+        ),
+        child: Center(child: CircularProgressIndicator.adaptive()),
+      );
+    }
+
+    
   }
 }

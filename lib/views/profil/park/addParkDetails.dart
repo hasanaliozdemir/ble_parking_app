@@ -471,7 +471,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
     _showLoading();
 
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    var _userId = _prefs.getString("userId");
+    var _userId = _prefs.getInt("userId");
 
     
     var _newPark = await dataService.addPark(

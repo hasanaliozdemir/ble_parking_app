@@ -13,6 +13,7 @@ import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:gesk_app/wrapper.dart';
 import 'package:get/get.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -39,6 +40,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   var dataService =DataService();
 
+  PhoneNumber phoneNumber = PhoneNumber(isoCode: 'TR');
   
   @override
   Widget build(BuildContext context) {
@@ -194,19 +196,43 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Widget _buildPhoneForm() {
-    return TextInputSimple(
-      hintText: "Telefon Numarası",
-      prefixIcon: Icon(CupertinoIcons.phone),
-      controller: phoneController,
-      focusNode: phoneFocus,
-      textInputAction: TextInputAction.next,
-      keyBoardType: TextInputType.phone,
-      inputFormatters: [
-        MaskedInputFormatter(
-          '(+90) ###-###-##-##'
-        )
-      ],
-      );
+    return Container(
+      width: Get.width / 375 * 343,
+      height: Get.height / 812 * 60,
+      child: Stack(
+        children: [
+          Container(
+            width: Get.width / 375 * 343,
+            height: Get.height / 812 * 44,
+            decoration: BoxDecoration(
+                color: white,
+                border: Border.all(color: gray600),
+                borderRadius: BorderRadius.circular(8)),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: InternationalPhoneNumberInput(
+              onInputChanged: (PhoneNumber number) {
+                phoneNumber = number;
+              },
+              countries: ["TR"],
+              formatInput: true,
+              autoValidateMode: AutovalidateMode.disabled,
+              hintText: "Telefon Numarası",
+              maxLength: 13,
+              validator: (String val) {
+                if (val.length == 10) {
+                  return val;
+                } else {
+                  return "non";
+                }
+              },
+              inputDecoration: InputDecoration(border: InputBorder.none),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
     void _onFocusChange() {
@@ -267,7 +293,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _signIn() async{
     _showLoading();
-    var _newUser = await dataService.login(phoneNumber:phoneController.text, password:passwordController.text);
+    var _newUser = await dataService.login(context: context,phoneNumber:phoneNumber.phoneNumber, password:passwordController.text);
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setInt("userId", _newUser.userId);
 

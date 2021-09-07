@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -401,6 +402,7 @@ class _ParkPageState extends State<ParkPage> {
         Navigator.pop(context);
         _showLoading();
         var _res = await dataService.deletePark(
+          context: context,
           parkId: park.id
         );
         if (_res!=null) {

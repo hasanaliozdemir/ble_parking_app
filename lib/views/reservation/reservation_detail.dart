@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gesk_app/backend/parkService.dart';
+
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/button.dart';
@@ -22,7 +22,7 @@ class _ReservationDetailState extends State<ReservationDetail> {
   var _near = false.obs;
   Park _park;
   Reservation _reservation;
-  ParkService _parkService = ParkService();
+  
 
   @override
   void initState() {
@@ -444,7 +444,7 @@ class _ReservationDetailState extends State<ReservationDetail> {
   }
 
   _readyPark() async {
-    _park = await _parkService.getPark();
+    
     setState(() {});
   }
 

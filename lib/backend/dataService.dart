@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/models/car.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/models/reservation.dart';
@@ -34,7 +36,11 @@ class DataService {
   }
 
   Future<Car> addCar(
-      {String userId, String plate, String modelYear, String color,String size}) async {
+      {String userId,
+      String plate,
+      String modelYear,
+      String color,
+      String size}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "addCar": {
@@ -74,7 +80,11 @@ class DataService {
   }
 
   Future<Car> editCar(
-      {int carId, String plate, String modelYear, String color,String carSize}) async {
+      {int carId,
+      String plate,
+      String modelYear,
+      String color,
+      String carSize}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "editCar": {
@@ -98,7 +108,7 @@ class DataService {
   }
 
   Future<Park> addPark(
-      {String userId,
+      {int userId,
       bool isClosedPark,
       bool isWithCam,
       bool isWithSecurity,
@@ -114,7 +124,7 @@ class DataService {
     Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "addPark": {
-        "ownerId": int.parse(userId),//TODO: Bütün ıd ler int olcak
+        "ownerId": userId, //TODO: Bütün ıd ler int olcak
         "isClosedPark": isClosedPark,
         "isWithCam": isWithCam,
         "isWithSecurity": isWithSecurity,
@@ -122,29 +132,38 @@ class DataService {
         "name": name,
         "status": 0,
         "parkSpace": 1,
-        "filledParkSpace":0,
+        "filledParkSpace": 0,
         "longtitude": longitude,
         "latitude": latitude,
         "location": location
       }
     };
 
-    
     var _postJson = convert.jsonEncode(_payloadBody);
 
     var _response = await http.post(_uri, body: _postJson);
-
     var _responseJson = convert.jsonDecode(_response.body)["addPark"] as List;
+
+    if (_responseJson.first is String) {
+      print(_responseJson.first);
+    } else {
+      
     List<Park> _parks = List<Park>();
 
-    _responseJson.forEach((element) {_parks.add(Park.fromJson(element));}); 
+    _responseJson.forEach((element) {
+      _parks.add(Park.fromJson(element));
+    });
 
     var _park = _parks.last;
 
     return _park;
+    }
   }
 
-  Future<String> deletePark({int parkId}) async {
+  Future<String> deletePark({
+    int parkId,
+    @required BuildContext context,
+  }) async {
     Uri _uri = Uri.parse(_setInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
@@ -160,8 +179,9 @@ class DataService {
     return _responseJson["deletePark"];
   }
 
-  Future<Park> editPark(
-      {String userId,
+  Future editPark(
+      {@required BuildContext context,
+      String userId,
       String parkId,
       bool isClosedPark,
       bool isWithCam,
@@ -201,12 +221,27 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    var _park = Park.fromJson(_responseJson["editPark"]);
+    if (_responseJson["editPark"] is String) {
+      Navigator.pop(context);
+      showBottomSheet(
+          context: context,
+          builder: (context) {
+            return Container(
+              decoration: BoxDecoration(color: yellow100),
+              child: Text(_responseJson["login"]),
+            );
+          });
+    } else {
+      var _park = Park.fromJson(_responseJson["editPark"]);
 
-    return _park;
+      return _park;
+    }
   }
 
-  Future<User> login({String phoneNumber, String password}) async {
+  Future login(
+      {String phoneNumber,
+      String password,
+      @required BuildContext context}) async {
     Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "login": {
@@ -221,11 +256,21 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    var _user = User.fromJson(_responseJson["login"]);
+    if (_responseJson["login"] is String) {
+      Navigator.pop(context);
+      showBottomSheet(
+          context: context,
+          builder: (context) {
+            return Container(
+              decoration: BoxDecoration(color: yellow100),
+              child: Text(_responseJson["login"]),
+            );
+          });
+    } else {
+      var _user = User.fromJson(_responseJson["login"]);
 
-    print(_user.userId);
-    print(_user.name);
-    return _user;
+      return _user;
+    }
   }
 
   Future<List<Car>> getCars({List<int> carsId}) async {
@@ -268,7 +313,7 @@ class DataService {
     return _car;
   }
 
-  Future<User> getUser({String userId}) async {
+  Future<User> getUser({int userId}) async {
     Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "getUser": {
@@ -322,11 +367,11 @@ class DataService {
     return _status;
   }
 
-  Future<Map<String, dynamic>> getUserInstance({String userId}) async {
+  Future<Map<String, dynamic>> getUserInstance({int userId}) async {
     Uri _uri = Uri.parse(_getInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "getUserInstance": {
-        "userId": int.parse(userId),
+        "userId": userId,
       }
     };
 
@@ -352,7 +397,11 @@ class DataService {
     return _result;
   }
 
-  Future<Tpa> addTpa({int parkId, String tpaName, double hourlyPrice, String maxCarSize})async{
+  Future<Tpa> addTpa(
+      {int parkId,
+      String tpaName,
+      double hourlyPrice,
+      String maxCarSize}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
 
     print(parkId);
@@ -364,9 +413,9 @@ class DataService {
       "addTpa": {
         "parkId": parkId,
         "tpaName": tpaName,
-        "hourlyPrice" : hourlyPrice,
-        "maxCarSize" : maxCarSize
-        }
+        "hourlyPrice": hourlyPrice,
+        "maxCarSize": maxCarSize
+      }
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -378,7 +427,12 @@ class DataService {
     return Tpa.fromJson(_responseJson["addTpa"][0]);
   }
 
-  Future<Tpa> editTpa({int tpaId,int parkId, String tpaName, double hourlyPrice, String maxCarSize})async{
+  Future<Tpa> editTpa(
+      {int tpaId,
+      int parkId,
+      String tpaName,
+      double hourlyPrice,
+      String maxCarSize}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
@@ -386,9 +440,9 @@ class DataService {
         "tpaId": tpaId,
         "parkId": parkId,
         "tpaName": tpaName,
-        "hourlyPrice" : hourlyPrice,
-        "maxCarSize" : maxCarSize
-        }
+        "hourlyPrice": hourlyPrice,
+        "maxCarSize": maxCarSize
+      }
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -398,16 +452,15 @@ class DataService {
     var _responseJson = convert.jsonDecode(_response.body);
 
     return Tpa.fromJson(_responseJson["editTpa"]);
-
   }
 
-  Future<String> deleteTpa({int tpaId})async{
+  Future<String> deleteTpa({int tpaId}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
       "deleteTpa": {
         "tpaId": tpaId,
-        }
+      }
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -419,14 +472,14 @@ class DataService {
     return _responseJson["deleteTpa"];
   }
 
-  Future<List<Tpa>> getTpas(int parkId)async{
+  Future<List<Tpa>> getTpas(int parkId) async {
     Uri _uri = Uri.parse(_getInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
       "getTpas": {
-        "command" : "partial",
+        "command": "partial",
         "parkId": parkId,
-        }
+      }
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -439,8 +492,35 @@ class DataService {
 
     List<Tpa> _tpas = List<Tpa>();
 
-    _ref.forEach((element) { _tpas.add(Tpa.fromJson(element));});
+    _ref.forEach((element) {
+      _tpas.add(Tpa.fromJson(element));
+    });
 
     return _tpas;
+  }
+
+  Future getNearParks({double lat, double lng}) async {
+    List<Park> _parks = List<Park>();
+    Uri _uri = Uri.parse(_getInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "getParksWithDistance": {"lat": lat, "lon": lng, "range": 500}
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    if (_responseJson["getParksWithDistance"] is String) {
+      print(_responseJson["getParksWithDistance"]);
+    } else {
+      var _ref = _responseJson["getParksWithDistance"] as List;
+      _ref.forEach((element) {
+        _parks.add(Park.fromJson(element));
+      });
+      return _parks;
+    }
   }
 }

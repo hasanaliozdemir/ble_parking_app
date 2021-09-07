@@ -576,7 +576,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _getInfo()async{
     
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    var _userId =_prefs.getString("userId");
+    var _userId =_prefs.getInt("userId");
     _currentUser = await dataService.getUser(userId: _userId);
     
     var _map = await dataService.getUserInstance(userId: _userId);

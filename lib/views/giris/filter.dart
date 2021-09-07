@@ -5,6 +5,7 @@ import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/customSwitch.dart';
 
 import 'package:gesk_app/models/filter_modal.dart';
+import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:get/get.dart';
 
 class FilterDetail extends StatefulWidget {
@@ -464,7 +465,9 @@ class _FilterDetailState extends State<FilterDetail> {
         size: _size
       );
 
-      print(_filter);
+    Get.to(()=>MapScreen(filterModel: _filter,),fullscreenDialog: true);
+
+      print(_filter.maxPrice);
     });
   }
 

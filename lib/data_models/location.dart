@@ -1,6 +1,6 @@
 class Location{
-  final double lat;
-  final double lng;
+  double lat;
+  double lng;
 
   Location({this.lat, this.lng});
 

@@ -23,7 +23,7 @@ class Park {
   Park(
       {
       @required this.location,
-      @required this.imageUrls,
+      this.imageUrls,
       @required this.isClosedPark,
       @required this.longitude,
       @required this.latitude,
@@ -66,7 +66,7 @@ class Park {
 
     return Park(
       location: json['location'], 
-      imageUrls: json['imageUrls'], 
+      //imageUrls: json['imageUrls'] as List<String>, 
       isClosedPark: json['isClosedPark'], 
       longitude: json['longtitude'], 
       latitude: json['latitude'], 
