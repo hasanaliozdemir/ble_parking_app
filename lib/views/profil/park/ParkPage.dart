@@ -11,6 +11,7 @@ import 'package:gesk_app/data_models/address.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/services/addressService.dart';
+import 'package:gesk_app/views/profil/park/editParkPage.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:gesk_app/views/profil/tpa/addTpa.dart';
 import 'package:get/get.dart';
@@ -374,7 +375,7 @@ class _ParkPageState extends State<ParkPage> {
   }
 
   void _backButtonFunc() {
-    Get.to(() => ProfileScreen());
+    Get.back();
   }
 
   _getAddress() async {
@@ -391,7 +392,7 @@ class _ParkPageState extends State<ParkPage> {
   }
 
   _onTapButton(){
-    print("düzenle");
+    Get.to(()=>EditParkPage(park: park,address:parkAddress));
   }
 
   _deletePark(){

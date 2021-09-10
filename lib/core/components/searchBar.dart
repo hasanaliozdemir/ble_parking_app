@@ -94,8 +94,8 @@ class _SearchBarState extends State<SearchBar> {
         ),
       ),
     ),
-    if (applicationBloc.searchResults != null && applicationBloc.searchResults.length != 0) Container(
-      height:( 4*40).toDouble(),
+    (applicationBloc.searchResults != null && applicationBloc.searchResults.length != 0)? Container(
+      height:( 3*40).toDouble(),
       decoration: BoxDecoration(
         color: white
       ),
@@ -117,7 +117,7 @@ class _SearchBarState extends State<SearchBar> {
           },
         ),
       ),
-    )
+    ) : SizedBox()
         ],
       )
     );

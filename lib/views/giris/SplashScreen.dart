@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:gesk_app/backend/dataService.dart';
+import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/wrapper.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +16,17 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  var dataService = DataService();
+
   var _auth;
+  var _location;
+  List<Park> _firstParks = List<Park>();
+
   @override
   void initState() {
     super.initState();
     _getAuth();
+    _getUserLocation();
   }
 
   @override
@@ -73,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _getAuth() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-
+    
     _auth = _prefs.getBool("auth");
 
     if (_auth == null) {
@@ -82,9 +91,34 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _timer() {
-    Timer(Duration(seconds: 3), () {
-      print("help im here");
-      Get.to(() => Wrapper(auth: _auth), fullscreenDialog: true);
+    Timer(Duration(seconds: 2), () {
+      if (_auth != null) {
+        if (_location != null) {
+          if (_firstParks != null) {
+            Get.to(() => Wrapper(auth: _auth, location: _location,firstParks: _firstParks),
+              fullscreenDialog: true);
+          }
+        }
+      }
     });
+  }
+
+  _getUserLocation() async {
+    var position = await GeolocatorPlatform.instance
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    _location = position;
+    _firstParks = await _getParks(lat: position.latitude, lng: position.longitude);
+  }
+
+  Future<List<Park>> _getParks({@required double lat, @required double lng}) async {
+    var _referance = await dataService.getNearParks(lat: lat, lng: lng);
+
+    if (_referance is List<Park>) {
+      return _referance;
+    }else{
+      _referance.printInfo();
+      List<Park> _decoy = [];
+      return _decoy;
+    }
   }
 }

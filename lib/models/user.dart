@@ -31,8 +31,16 @@ class User{
         _parks.add(element);
       });
     }
+
+    idCheck(val){
+      if(val is String){
+        return int.parse(val);
+      }else{
+        return val;
+      }
+    }
     return User(
-      userId: json["userId"],
+      userId: idCheck(json["userId"]),
       name: json["name"],
       phoneNumber: json["phoneNumber"],
       mail: json["mail"],

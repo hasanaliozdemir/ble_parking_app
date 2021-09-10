@@ -210,7 +210,7 @@ Widget _buildNewPassword() {
   }
 
   void _backButtonFunc() {
-    Get.to(()=>ForgotPasswordPage());
+    Get.back();
   }
 
 

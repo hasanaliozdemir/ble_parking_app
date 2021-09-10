@@ -7,7 +7,6 @@ import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/parkCard.dart';
 import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/core/components/searchBar.dart';
-import 'package:gesk_app/data_models/user_location.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
 
 import 'package:get/get.dart';
@@ -18,7 +17,6 @@ import 'package:gesk_app/core/funcs/triangleCreator.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/services/markerCreator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 
 var _electricitySelected = false.obs;
 var width = Get.width / 375;
@@ -185,7 +183,7 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
           );
         });
 
-            // TODO: _getDistance(cameraPosition.target, park.position);
+          
           },
           markerId: MarkerId(park.id.toString()),
           position: LatLng(park.latitude, park.longitude),
@@ -255,6 +253,7 @@ Widget _getMarkerWidget(double price, Status status, bool isWithElectiricity) {
 // Example of backing data
 List<Park> _parks = [
   Park(
+    ownerId: 1,
     name: "Ma Cafe",
     location: "Bandırma",
     latitude: 40.355499,
@@ -275,6 +274,7 @@ List<Park> _parks = [
     ]
   ),
   Park(
+    ownerId: 1,
     name: "Ma Cafe",
     location: "Bandırma",
     latitude: 40.355499,
@@ -295,6 +295,7 @@ List<Park> _parks = [
     ]
   ),
   Park(
+    ownerId: 1,
     name: "Ma Cafe",
     location: "Bandırma",
     latitude: 40.355499,

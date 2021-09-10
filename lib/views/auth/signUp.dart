@@ -256,8 +256,10 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
 
   Widget _buildSecurityButton(RxBool comfirmed) {
     return Obx(() => Container(
+          width: Get.width/375*343,
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Checkbox(
                   value: comfirmed.value,

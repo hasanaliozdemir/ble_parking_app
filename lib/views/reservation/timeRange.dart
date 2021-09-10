@@ -1,3 +1,4 @@
+
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
@@ -29,6 +30,12 @@ class _TimeRangePageState extends State<TimeRangePage> {
   List<Marker> _markers = [];
   List<Tpa> _tpas = List<Tpa>();
   var _selectedTimeRange = TimeRange().obs;
+  List<TimeRange> _timeRanges = List<TimeRange>.generate(24, (index) => TimeRange(
+    startHour: index,
+    endHour: (index==23)?0: (index+1),
+    avaliable: true,
+    selected:false
+  ));
 
   DataService _dataService = DataService();
 
@@ -112,12 +119,19 @@ class _TimeRangePageState extends State<TimeRangePage> {
                       children: [
                         Expanded(
                           flex: 22,
-                          child: Text(
-                            _tpas[index].tpaName,
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontFamily: "SF Pro Text",
-                              fontWeight: FontWeight.w600,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal:16.0),
+                              child: Text(
+                                _tpas[index].tpaName,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontFamily: "SF Pro Text",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -139,7 +153,87 @@ class _TimeRangePageState extends State<TimeRangePage> {
   }
 
   Widget _buildRowModel(){
-    return Container();
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: 24,
+      itemBuilder: (context,index){
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal:8.0),
+          child: GestureDetector(
+            onTap: ()=>_timeRangeTap(index),
+            child: Container(
+              width:Get.width/375*100,
+              height: Get.height/812*36,
+              decoration: BoxDecoration(
+                color: _colorSelect(index),
+                borderRadius: BorderRadius.circular(8)
+              ),
+              child: Center(
+                child: Text(
+                  _timeRanges[index].startHour.toString()+":00 - "+_timeRanges[index].endHour.toString()+":00",
+                  style: TextStyle(
+                    color: white
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _colorSelect(index){
+    if (_timeRanges[index].avaliable !=true) {
+      return gray500;
+    }else{
+      if (_timeRanges[index].selected) {
+        return blue500;
+      }else{
+        return blue300;
+      }
+    }
+  }
+
+  _timeRangeTap(index){
+    var count = _timeRanges.where((c) => c.selected == true).toList().length;
+    if (_timeRanges[index].avaliable !=true) {
+      
+    }else{
+      if (_timeRanges[index].selected) {
+        setState(() {
+                  _timeRanges[index].selected = false;
+                });
+      }else{
+        if (count <2) {
+          if (count == 1) {
+            if (index ==0) {
+              if (_timeRanges[index+1].selected) {
+              setState(() {
+                  _timeRanges[index].selected = true;
+                });
+            }
+            }else if(index==23){
+              if (_timeRanges[index-1].selected) {
+              setState(() {
+                  _timeRanges[index].selected = true;
+                });
+            }
+            }else{
+              if (_timeRanges[index-1].selected || _timeRanges[index+1].selected) {
+              setState(() {
+                  _timeRanges[index].selected = true;
+                });
+            }
+            }
+          }else{
+            setState(() {
+                  _timeRanges[index].selected = true;
+                });
+          }
+        }
+      }
+    }
   }
 
   Padding _buildUnderMapTitle() {
@@ -394,11 +488,18 @@ class _TimeRangePageState extends State<TimeRangePage> {
   }
 
   _backButtonFunc() {
-    Get.to(() => MapScreen());
+    Get.back();
   }
 
   _getTpas() async {
-    _tpas = await _dataService.getTpas(_park.id);
+    var _ref = await _dataService.getTpas(_park.id);
+    setState(() {
+          _ref.forEach((element) {_tpas.add(element);});
+        });
+  }
+
+  _fixTimeRanges()async{
+
   }
 
   _rentTpa(){

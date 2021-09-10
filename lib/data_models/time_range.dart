@@ -2,10 +2,10 @@ class TimeRange{
   int startHour;
   int endHour;
 
-  int startMinute;
-  int endMinute;
+  bool avaliable;
+  bool selected;
 
-  TimeRange({this.startHour,this.endHour,this.startMinute,this.endMinute});
+  TimeRange({this.startHour,this.endHour,this.avaliable,this.selected});
 
   
 }

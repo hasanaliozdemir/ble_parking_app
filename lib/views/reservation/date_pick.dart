@@ -31,7 +31,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
   final DateFormat dayFormatter = DateFormat('yyyy.MM.dd');
   DateTime selectedDay = DateTime.now();
   var selectedDayString = "Tarih".obs;
-  var selectedHourString = "SS:DD - SS:DD".obs;
+  
 
 
   int index = 0;
@@ -39,6 +39,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
   _DatePickScreenState(this._park);
   @override
   Widget build(BuildContext context) {
+    selectedDayString.value = dayFormatter.format(selectedDay);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
@@ -326,7 +327,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
                   minTime: DateTime.now(),
                   maxTime: DateTime.now().add(Duration(hours: 24 * 14)),
                   onChanged: (date) {
-                print('change $date');
+                
               }, onConfirm: (date) {
                 setState(() {
                   selectedDay = date;
@@ -354,9 +355,15 @@ class _DatePickScreenState extends State<DatePickScreen> {
 
   
   Widget _buildButton() {
-    return Container(
+    if (selectedDay.day !=null) {
+      return Container(
       child: Button.active(text: "Tekil Park Alanı Ara", onPressed: _searchReservation),
     );
+    } else {
+      return Container(
+      child: Button.passive(text: "Tekil Park Alanı Ara", onPressed: null),
+    );
+    }
   }
 
   modelBuilder(values) {
@@ -369,7 +376,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
   }
 
   _backButtonFunc() {
-    Get.to(() => MapScreen());
+    Get.back();
   }
 
   _searchReservation(){

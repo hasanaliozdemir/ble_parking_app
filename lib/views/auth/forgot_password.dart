@@ -200,7 +200,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   void _backButtonFunc() {
-    Get.to(()=>SignInScreen(),fullscreenDialog: true);
+    Get.back();
   }
 
 

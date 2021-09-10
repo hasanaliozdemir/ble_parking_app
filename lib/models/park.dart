@@ -7,6 +7,7 @@ class Park {
   final bool isWithCam;
   final bool isWithSecurity;
   final int id;
+  final int ownerId;
   final String name;
   final double price;
   final Status status;
@@ -22,6 +23,7 @@ class Park {
 
   Park(
       {
+      @required this.ownerId,
       @required this.location,
       this.imageUrls,
       @required this.isClosedPark,
@@ -64,9 +66,18 @@ class Park {
     }
   }
 
+  fixId(val){
+    if (val is String) {
+      return int.parse(val);
+    }else{
+      return val;
+    }
+  }
+
     return Park(
+      ownerId: fixId(json['ownerId']),
       location: json['location'], 
-      //imageUrls: json['imageUrls'] as List<String>, 
+      //imageUrls: json['imageUrls'] as List<Uint8List>, 
       isClosedPark: json['isClosedPark'], 
       longitude: json['longtitude'], 
       latitude: json['latitude'], 
@@ -74,7 +85,7 @@ class Park {
       price: json['price'], 
       status: _organizeStatus(json['status']), 
       isWithElectricity: json['isWithElectricity'], 
-      id: json['parkId'], 
+      id: fixId(json['parkId']), 
       point: json['point'], 
       isWithCam: json['isWithCam'], 
       isWithSecurity: json['isWithSecurity'], 

@@ -28,14 +28,19 @@ var width = Get.width / 375;
 var height = Get.height / 812;
 
 class MapScreen extends StatefulWidget {
-  MapScreen({this.filterModel});
+  MapScreen({this.filterModel,this.location,this.firstParks});
   FilterModel filterModel;
+  var location;
+  List<Park> firstParks;
   @override
-  _MapScreenState createState() => _MapScreenState(filterModel);
+  _MapScreenState createState() => _MapScreenState(filterModel,location,firstParks);
 }
 
 class _MapScreenState extends State<MapScreen> {
+  var _location;
   FilterModel _filterModel;
+  List<Park> _firstParks;
+
   int _selectedIndex = 0;
   int _caroselIndex = 0;
   final _index = 0;
@@ -48,12 +53,16 @@ class _MapScreenState extends State<MapScreen> {
 
   StreamSubscription locationSubscription;
 
-  _MapScreenState(this._filterModel);
+  _MapScreenState(this._filterModel,this._location,this._firstParks);
 
   DataService dataService = DataService();
 
   @override
   void initState() {
+    _currentPosition.lat = _location.latitude;
+    _currentPosition.lng = _location.longitude;
+    _getUserLocation();
+
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
     locationSubscription = applicationBloc.selectedLocation.stream
         .asBroadcastStream()
@@ -63,35 +72,25 @@ class _MapScreenState extends State<MapScreen> {
       }
     });
 
-    if (_filterModel == null) {
-      _filterModel = FilterModel(
-          minPrice: 0,
-          maxPrice: 100,
-          isWithElectricity: false,
-          isClosed: false,
-          isWithCam: false,
-          isWithSecurity: false);
-    }
-
-    listParks();
-
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
         _markers = mapBitmapsToMarkers(bitmaps);
       });
     }).generate(context);
 
-    _getUserLocation();
+    _parks = _firstParks;
+
+    //listParks();
     super.initState();
   }
 
   void _getUserLocation() async {
-    var position = await GeolocatorPlatform.instance
+    var _position = await GeolocatorPlatform.instance
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     setState(() {
-      _currentPosition.lat = position.latitude;
-      _currentPosition.lng = position.longitude;
+      _currentPosition.lat = _position.latitude;
+      _currentPosition.lng = _position.longitude;
     });
 
     getParks(lat: _currentPosition.lat,lng: _currentPosition.lng);
@@ -213,7 +212,7 @@ class _MapScreenState extends State<MapScreen> {
             onCameraMove: (CameraPosition position) {
               _currentPosition.lat = position.target.latitude;
               _currentPosition.lng = position.target.longitude;
-              getParks(lat: _currentPosition.lat,lng: _currentPosition.lng);
+              //getParks(lat: _currentPosition.lat,lng: _currentPosition.lng);
             },
             myLocationEnabled: true,
             mapType: MapType.terrain,
@@ -281,7 +280,15 @@ class _MapScreenState extends State<MapScreen> {
     _parks.clear();
     _ref2.clear();
 
-    // TODO: PARK FİLTRESİ BURDAN OLCAK
+    if (_filterModel == null) {
+      _filterModel = FilterModel(
+          minPrice: 0,
+          maxPrice: 100,
+          isWithElectricity: false,
+          isClosed: false,
+          isWithCam: false,
+          isWithSecurity: false);
+    }
 
     _ref.forEach((element) {
       if ((element.price >= _filterModel.minPrice) &&
@@ -368,6 +375,7 @@ List<Park> _parks = List<Park>();
 
 var _ref = [
   Park(
+      ownerId: 1,
       location: "Bandırma",
       filledParkSpace: 4,
       isWithSecurity: false,
@@ -384,6 +392,7 @@ var _ref = [
       parkSpace: 5,
       name: "16lık"),
   Park(
+      ownerId: 1,
       location: "Bandırma",
       filledParkSpace: 4,
       isWithSecurity: false,
@@ -477,7 +486,7 @@ _buildSearchBar(context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-              height: Get.height / 812 * 56,
+              //height: Get.height / 812 * 56,
               width: Get.width / 375 * 279,
               child: SearchBar()),
           SizedBox(

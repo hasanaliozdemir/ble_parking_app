@@ -6,6 +6,7 @@ import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/passwordInput.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:gesk_app/core/widgets.dart';
 
 import 'package:gesk_app/views/auth/forgot_password.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
@@ -294,7 +295,11 @@ class _SignInScreenState extends State<SignInScreen> {
   void _signIn() async{
     _showLoading();
     var _newUser = await dataService.login(context: context,phoneNumber:phoneNumber.phoneNumber, password:passwordController.text);
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    if (_newUser == null) {
+      print("helo");
+      Widgets().showAlert(context, "Bir hata oluştu");
+    } else {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setInt("userId", _newUser.userId);
 
     var _conf = await dataService.confirm(userId: _newUser.userId);
@@ -303,6 +308,8 @@ class _SignInScreenState extends State<SignInScreen> {
       Get.to(()=>MapScreen(),fullscreenDialog: true);
     }else{
       Navigator.pop(context);
+      print("yanlış");
+    }
     }
   }
 

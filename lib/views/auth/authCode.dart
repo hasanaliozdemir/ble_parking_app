@@ -4,7 +4,7 @@ import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
-import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
+
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -162,7 +162,7 @@ class _AuthCodePageState extends State<AuthCodePage> {
   }
 
   void _backButtonFunc() {
-    Get.to(()=>SignInScreen(),fullscreenDialog: true);
+    Get.back();
   }
 
   void _comfirmCode(){

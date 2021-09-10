@@ -216,14 +216,9 @@ class _ParkDetailState extends State<ParkDetail> {
         SizedBox(
           height: Get.height/812*60,
         ),
-        Container(
-          child: Button.active(text: "Park Alanı Kirala", onPressed: _rentParkSpace),
-        ),
+        _buildbutton(),
         SizedBox(
           height: Get.height/812*16,
-        ),
-        Container(
-          child: Button.backHover(text: "Rezervasyon Yap", onPressed: _reserveParkSpace),
         ),
         SizedBox(
           height: Get.height/812*24,
@@ -232,30 +227,46 @@ class _ParkDetailState extends State<ParkDetail> {
     );
   }
 
+  Container _buildbutton() {
+    if (_park.status!=Status.admin) {
+      return Container(
+        child: Button.passive(text: "Park Alanı Kirala", onPressed: null),
+      );
+    }else {
+      return Container(
+        child: Button.active(text: "Park Alanı Kirala", onPressed: _rentParkSpace),
+      );
+    }
+  }
+
   _buildGallery() {
     return Container(
       height: Get.height / 812 * 155,
-      child: CarouselSlider.builder(
-          itemCount: _park.imageUrls.length,
-          itemBuilder: (context, itemIndex, pageIndex) {
-            return Container(
-              margin: EdgeInsets.only(
-                right: 32,
-              ),
-              width: Get.width / 375 * 240,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                      image: NetworkImage(_park.imageUrls[itemIndex]),
-                      fit: BoxFit.cover)),
-            );
-          },
-          options: CarouselOptions(
-            pageSnapping: true,
-            disableCenter: true,
-            enableInfiniteScroll: false,
-          )),
+      child: (_park.imageUrls==null)?Icon(CupertinoIcons.arrow_2_circlepath):_buildCarosel(),
     );
+  }
+
+  CarouselSlider _buildCarosel() {
+    return CarouselSlider.builder(
+        itemCount: (_park.imageUrls==null)?0:_park.imageUrls.length,
+        itemBuilder: (context, itemIndex, pageIndex) {
+          return Container(
+            margin: EdgeInsets.only(
+              right: 32,
+            ),
+            width: Get.width / 375 * 240,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                    image: NetworkImage(_park.imageUrls[itemIndex]),
+                    fit: BoxFit.cover)),
+          );
+        },
+        options: CarouselOptions(
+          pageSnapping: true,
+          disableCenter: true,
+          enableInfiniteScroll: false,
+        ));
   }
 
   _buildTitle1() {

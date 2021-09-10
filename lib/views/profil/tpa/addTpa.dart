@@ -8,7 +8,6 @@ import 'package:gesk_app/core/components/textInput.dart';
 import 'package:gesk_app/core/custom_icon_icons.dart';
 import 'package:gesk_app/data_models/time_range.dart';
 import 'package:gesk_app/models/park.dart';
-import 'package:gesk_app/views/profil/park/ParkPage.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
 
@@ -287,7 +286,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
               });
             },
             value: _currentSelectedSize,
-            hint: Text("Boyut"),
+            hint: Text("Maks. Boyut"),
           ),
         ));
   }
@@ -361,11 +360,11 @@ class _AddTpaPageState extends State<AddTpaPage> {
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: _buildRangeText(timeRanges[index].startHour,timeRanges[index].startMinute),
+              child: _buildRangeText(timeRanges[index].startHour,"0"),
             ),
           ),
           Expanded(
-            child: _buildRangeText(timeRanges[index].endHour,timeRanges[index].endMinute),
+            child: _buildRangeText(timeRanges[index].endHour,"0"),
           )
           
         ],
@@ -546,8 +545,8 @@ class _AddTpaPageState extends State<AddTpaPage> {
                     timeRanges.add(TimeRange(
                         startHour: selectedHourStart,
                         endHour: selectedHourEnd,
-                        startMinute: selectedMinuteStart,
-                        endMinute: selectedMinuteEnd));
+                        avaliable: true
+                        ));
                     setState(() {});
                     timeRanges.forEach((element) {print(element.startHour);});
                     Navigator.pop(context);

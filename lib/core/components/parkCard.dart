@@ -251,7 +251,7 @@ class _ParkCardState extends State<ParkCard> {
         decoration: BoxDecoration(
           color: gray400
         ),
-        child: Center(child: CircularProgressIndicator.adaptive()),
+        child: Center(child: Icon(CupertinoIcons.arrow_2_circlepath)),
       );
     }
 

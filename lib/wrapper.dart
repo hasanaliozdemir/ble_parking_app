@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gesk_app/data_models/location.dart';
+import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 
@@ -10,8 +12,12 @@ import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 // ignore: must_be_immutable
 class Wrapper extends StatelessWidget {
   bool auth;
-  Wrapper({Key key,bool auth}) : super(key: key){
+  var _location;
+  List<Park> _firstParks;
+  Wrapper({Key key,bool auth,var location,List<Park> firstParks}) : super(key: key){
     this.auth = auth;
+    this._location = location;
+    this._firstParks=firstParks;
   }
 
   
@@ -20,7 +26,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     
     if (auth) {
-      return MapScreen();
+      return MapScreen(location: _location,firstParks:_firstParks);
     }else{
       return MapScreenReadOnly();
     }

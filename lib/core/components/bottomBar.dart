@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gesk_app/views/diger/othersScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
+import 'package:gesk_app/views/giris/SplashScreen.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:gesk_app/views/reservation/reservationsScreen.dart';
 import 'package:get/get.dart';
@@ -61,7 +62,7 @@ class _BottomBarState extends State<BottomBar> {
           onTap: (index){
             switch (index) {
               case 0:
-                Get.to(()=>MapScreen(),fullscreenDialog: true);
+                Get.off(()=>SplashScreen(),fullscreenDialog: true);
                 break;
               case 1:
                 Get.to(()=>ReservationsScreen(),fullscreenDialog: true);
@@ -78,4 +79,5 @@ class _BottomBarState extends State<BottomBar> {
           }
         );
   }
+  
 }
