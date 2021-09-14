@@ -3,9 +3,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/models/park.dart';
+import 'package:gesk_app/services/distanceService.dart';
+import 'package:gesk_app/views/giris/MapScreen.dart';
+import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:gesk_app/wrapper.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,7 +24,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   var _auth;
   var _location;
+  bool _fixed = false;
   List<Park> _firstParks = List<Park>();
+  List<Park> _ready = List<Park>();
 
   @override
   void initState() {
@@ -31,6 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("splashCalled !!!!!");
     var height = 190.obs;
     var height2 = 400.obs;
 
@@ -95,8 +102,19 @@ class _SplashScreenState extends State<SplashScreen> {
       if (_auth != null) {
         if (_location != null) {
           if (_firstParks != null) {
-            Get.to(() => Wrapper(auth: _auth, location: _location,firstParks: _firstParks),
-              fullscreenDialog: true);
+            if (_firstParks.last.distance !="") {
+              _orderList();
+              if (_fixed==true) {
+                if (_auth == true) {
+                  Get.off(() => MapScreen(location: _location,firstParks:_ready));
+                } else {
+                  Get.off(() => MapScreenReadOnly());
+                }
+              
+              }
+            }else{
+              _distanceFix(_location.latitude,_location.longitude);
+            }
           }
         }
       }
@@ -108,17 +126,65 @@ class _SplashScreenState extends State<SplashScreen> {
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     _location = position;
     _firstParks = await _getParks(lat: position.latitude, lng: position.longitude);
+
+    
   }
 
   Future<List<Park>> _getParks({@required double lat, @required double lng}) async {
-    var _referance = await dataService.getNearParks(lat: lat, lng: lng);
+    List<Park> _referance = await dataService.getNearParks(lat: lat, lng: lng);
+    var _prefs = await SharedPreferences.getInstance();
+    var _userId = _prefs.getInt("userId");
+    List<Park> _avaliableParks = List<Park>();
+
+    if (_userId == null) {
+      
+    }else{
+      _avaliableParks= await dataService.getFakeAdminPark(); //GETPARKSBYLOCATİON
+    }
+
+    _avaliableParks.forEach((element) {element.status = Status.admin; });
+
+
+    _avaliableParks.forEach((aval) { 
+      _referance.removeWhere((element) => element.id  == aval.id);
+    });
+
+    _avaliableParks.forEach((aval2) { 
+      _referance.add(aval2);
+    });
+
+
+
 
     if (_referance is List<Park>) {
       return _referance;
     }else{
-      _referance.printInfo();
+      
       List<Park> _decoy = [];
       return _decoy;
     }
+
+
+  }
+
+  Future _distanceFix(lat,lng)async{
+    _firstParks.forEach((element) async{ 
+      var _dist = await DistanceService().getDistance(
+        LatLng(lat, lng), 
+        LatLng(element.latitude, element.longitude));
+        setState(() {
+                  element.distance = _dist;
+                });
+    });
+    
+  }
+
+  _orderList(){
+    
+    //_firstParks.forEach((element) {print("orijin"+element.distance+" - "+element.name);});
+    _firstParks.sort((a, b) => a.distance.compareTo(b.distance));
+    //_firstParks.forEach((element) {print("sorted"+element.distance+" - "+element.name);});
+    _ready = _firstParks;
+    _fixed = true;
   }
 }

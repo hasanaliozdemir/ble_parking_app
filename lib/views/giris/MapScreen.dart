@@ -11,6 +11,7 @@ import 'package:gesk_app/core/components/searchBar.dart';
 import 'package:gesk_app/data_models/location.dart';
 import 'package:gesk_app/data_models/place.dart';
 import 'package:gesk_app/models/filter_modal.dart';
+import 'package:gesk_app/services/distanceService.dart';
 import 'package:gesk_app/views/giris/filter.dart';
 import 'package:gesk_app/views/giris/park_detail.dart';
 import 'package:get/get.dart';
@@ -59,10 +60,11 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void initState() {
+    _parks = _firstParks;
     _currentPosition.lat = _location.latitude;
     _currentPosition.lng = _location.longitude;
     _getUserLocation();
-
+    _distanceFix(_currentPosition.lat,_currentPosition.lng);
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
     locationSubscription = applicationBloc.selectedLocation.stream
         .asBroadcastStream()
@@ -78,7 +80,7 @@ class _MapScreenState extends State<MapScreen> {
       });
     }).generate(context);
 
-    _parks = _firstParks;
+    
 
     //listParks();
     super.initState();
@@ -93,7 +95,7 @@ class _MapScreenState extends State<MapScreen> {
       _currentPosition.lng = _position.longitude;
     });
 
-    getParks(lat: _currentPosition.lat,lng: _currentPosition.lng);
+    //getParks(lat: _currentPosition.lat,lng: _currentPosition.lng); bunu açınca uzaklığa göre sıralama bozuluyor
   }
 
   @override
@@ -137,11 +139,13 @@ class _MapScreenState extends State<MapScreen> {
                 height: h * 128,
               ),
               itemBuilder: (context, itemIndex, pageIndex) {
-                return Container(
+                
+                  return Container(
                   height: h * 128,
                   width: w * 264,
                   child: GestureDetector(
                     onTap: () {
+                      
                       showModalBottomSheet(
                           isScrollControlled: true,
                           shape: RoundedRectangleBorder(
@@ -157,9 +161,10 @@ class _MapScreenState extends State<MapScreen> {
                     },
                     child: ParkCard(
                       park: _parks[itemIndex],
-                    ),
+                    )
                   ),
                 );
+                
               },
             ),
           ),
@@ -250,6 +255,17 @@ class _MapScreenState extends State<MapScreen> {
           icon: BitmapDescriptor.fromBytes(bmp)));
     });
     return _markersList;
+  }
+
+  _distanceFix(lat,lng)async{
+    _parks.forEach((element) async{ 
+      var _dist = await DistanceService().getDistance(
+        LatLng(lat, lng), 
+        LatLng(element.latitude, element.longitude));
+        setState(() {
+                  element.distance = _dist;
+                });
+    });
   }
 
   Future<void> _getToPlace(Place place) async {

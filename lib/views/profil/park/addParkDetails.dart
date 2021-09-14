@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:gesk_app/data_models/address.dart';
 import 'package:gesk_app/data_models/location.dart';
+import 'package:gesk_app/services/imageService.dart';
 import 'package:gesk_app/views/profil/park/addParkPage.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
@@ -30,6 +32,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
   final Location location;
   final Address address;
   var dataService = DataService();
+  var imageService = ImageService();
 
   TextEditingController _parkNameController = TextEditingController();
   TextEditingController _tpaNumberController = TextEditingController();
@@ -46,9 +49,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
 
   List<XFile> _imageFileList = List<XFile>.generate(5, (index) => null);
 
-  set _imageFile(XFile value) {
-    _imageFileList = value == null ? null : [value];
-  }
+  List<Uint8List> _imageBytesList = List<Uint8List>.generate(5, (index) => null);
 
   final ImagePicker _picker = ImagePicker();
 
@@ -160,7 +161,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                             flex: 16,
                           ),
                           Expanded(
-                            flex: 120,
+                            flex: 60,
                             child: TextInputSimple(
                               controller: _parkInfoController,
                               focusNode: _parkInfoFocus,
@@ -177,7 +178,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                                 text: "Kaydet", onPressed: _savePark),
                           ),
                           Spacer(
-                            flex: 36,
+                            flex: 96,
                           ),
                         ],
                       ),
@@ -459,11 +460,20 @@ class _AddParkDetailsState extends State<AddParkDetails> {
 
   _pickImage(index) async {
     var newImage = await _picker.pickImage(source: ImageSource.gallery);
+    var _expbytes = File(newImage.path).readAsBytesSync().lengthInBytes;
+    var newBytes = await imageService.testCompressFile(File(newImage.path));
+
     setState(() {
       _imageFileList[index] = newImage;
+      _imageBytesList[index] = newBytes;
     });
     _imageFileList.forEach((element) {
-      print(element);
+      print("firsByte"+_expbytes.toString());
+    });
+    _imageBytesList.forEach((element) { 
+      if (element != null) {
+        print(element.length);
+      }
     });
   }
 

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gesk_app/bloc/app_bloc.dart';
+import 'package:gesk_app/services/distanceService.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 enum Status { deselected, selected, admin, disable, owner }
 
@@ -10,7 +14,7 @@ class Park {
   final int ownerId;
   final String name;
   final double price;
-  final Status status;
+  Status status;
   final bool isWithElectricity;
   final double point;
   final int parkSpace;
@@ -20,10 +24,11 @@ class Park {
   final List imageUrls;
   final String location;
   String info;
+  String distance;
+  String avaliableTime;
 
   Park(
-      {
-      @required this.ownerId,
+      {@required this.ownerId,
       @required this.location,
       this.imageUrls,
       @required this.isClosedPark,
@@ -39,63 +44,198 @@ class Park {
       @required this.isWithSecurity,
       @required this.parkSpace,
       @required this.filledParkSpace,
-      this.info
-      });
+      this.distance,
+      this.avaliableTime,
+      this.info});
 
-  factory Park.fromJson(Map<String,dynamic> json){
-    _organizeStatus(int stat){
-    switch (stat) {
-      case 0:
-        return Status.admin;
-        break;
-      case 1:
-        return Status.deselected;
-        break;
-      case 2:
-        return Status.selected;
-        break;
-      case 3:
-        return Status.disable;
-        break;
-      case 4:
-        return Status.owner;
-        break;
-      
-      default:
-      return Status.disable;
-    }
-  }
+  factory Park.fromJson(Map<String, dynamic> json) {
+    //TODO: true false olarak geliyor
 
-  fixId(val){
-    if (val is String) {
-      return int.parse(val);
-    }else{
-      return val;
+    _organizeStatus(int stat) {
+      switch (stat) {
+        case 0:
+          return Status.admin;
+          break;
+        case 1:
+          return Status.deselected;
+          break;
+        case 2:
+          return Status.selected;
+          break;
+        case 3:
+          return Status.disable;
+          break;
+        case 4:
+          return Status.owner;
+          break;
+
+        default:
+          return Status.disable;
+      }
     }
-  }
+
+    fixId(val) {
+      if (val is String) {
+        return int.parse(val);
+      } else {
+        return val;
+      }
+    }
+
+    fixPoint(val){
+      if (val is int) {
+        return val.toDouble();
+      } else {
+        return val;
+      }
+    }
 
     return Park(
-      ownerId: fixId(json['ownerId']),
-      location: json['location'], 
-      //imageUrls: json['imageUrls'] as List<Uint8List>, 
-      isClosedPark: json['isClosedPark'], 
-      longitude: json['longtitude'], 
-      latitude: json['latitude'], 
-      name: json['name'], 
-      price: json['price'], 
-      status: _organizeStatus(json['status']), 
-      isWithElectricity: json['isWithElectricity'], 
-      id: fixId(json['parkId']), 
-      point: json['point'], 
-      isWithCam: json['isWithCam'], 
-      isWithSecurity: json['isWithSecurity'], 
-      parkSpace: json['parkSpace'], 
-      filledParkSpace: json['filledParkSpace'],
-      
-      );
+        ownerId: fixId(json['ownerId']),
+        location: json['location'],
+        //imageUrls: json['imageUrls'] as List<String>,
+        isClosedPark: json['isClosedPark'],
+        longitude: json['longtitude'],
+        latitude: json['latitude'],
+        name: json['name'],
+        price: json['price'],
+        status: _organizeStatus(1), // TODO: içerdeki değer 1 olcak en son !!!!
+        isWithElectricity: json['isWithElectricity'],
+        id: fixId(json['parkId']),
+        point: fixPoint(json['point']),
+        isWithCam: json['isWithCam'],
+        isWithSecurity: json['isWithSecurity'],
+        parkSpace: json['parkSpace'],
+        filledParkSpace: json['filledParkSpace'],
+        distance: "");
   }
 
-  
+  factory Park.fromJsonWDistance(Map<String, dynamic> json) {
+    var _distance = "";
+
+    _organizeStatus(int stat) {
+      switch (stat) {
+        case 0:
+          return Status.admin;
+          break;
+        case 1:
+          if (json['parkSpace'] == json['filledParkSpace']) {
+            return Status.deselected;
+          } else {
+            return Status.deselected;
+          }
+          break;
+        case 2:
+          return Status.selected;
+          break;
+        case 3:
+          return Status.disable;
+          break;
+        case 4:
+          return Status.owner;
+          break;
+
+        default:
+          return Status.disable;
+      }
+    }
+
+    fixId(val) {
+      if (val is String) {
+        return int.parse(val);
+      } else {
+        return val;
+      }
+    }
+
+    fixPoint(val){
+      if (val is int) {
+        return val.toDouble();
+      } else {
+        return val;
+      }
+    }
+
+    return Park(
+        ownerId: fixId(json['ownerId']),
+        location: json['location'],
+        //imageUrls: json['imageUrls'] as List<String>,
+        isClosedPark: json['isClosedPark'],
+        longitude: json['longtitude'],
+        latitude: json['latitude'],
+        name: json['name'],
+        price: json['price'],
+        status: _organizeStatus(1), // TODO: içerdeki değer 1 olcak en son !!!!
+        isWithElectricity: json['isWithElectricity'],
+        id: fixId(json['parkId']),
+        point: fixPoint(json['point']),
+        isWithCam: json['isWithCam'],
+        isWithSecurity: json['isWithSecurity'],
+        parkSpace: json['parkSpace'],
+        filledParkSpace: json['filledParkSpace'],
+        distance: _distance);
+  }
+
+  factory Park.fromJsonForAvaliable(Map<String, dynamic> json) {
+    //TODO: true false olarak geliyor
+
+    _organizeStatus(int stat) {
+      switch (stat) {
+        case 0:
+          return Status.admin;
+          break;
+        case 1:
+          return Status.deselected;
+          break;
+        case 2:
+          return Status.selected;
+          break;
+        case 3:
+          return Status.disable;
+          break;
+        case 4:
+          return Status.owner;
+          break;
+
+        default:
+          return Status.disable;
+      }
+    }
+
+    fixId(val) {
+      if (val is String) {
+        return int.parse(val);
+      } else {
+        return val;
+      }
+    }
+
+    fixPoint(val){
+      if (val is int) {
+        return val.toDouble();
+      } else {
+        return val;
+      }
+    }
+
+    return Park(
+        ownerId: fixId(json['ownerId']),
+        location: json['location'],
+        //imageUrls: json['imageUrls'] as List<String>,
+        isClosedPark: json['isClosedPark'],
+        longitude: json['longtitude'],
+        latitude: json['latitude'],
+        name: json['name'],
+        price: json['price'],
+        status: _organizeStatus(1), // TODO: içerdeki değer 1 olcak en son !!!!
+        isWithElectricity: json['isWithElectricity'],
+        id: fixId(json['parkId']),
+        point: fixPoint(json['point']),
+        isWithCam: json['isWithCam'],
+        isWithSecurity: json['isWithSecurity'],
+        parkSpace: json['parkSpace'],
+        filledParkSpace: json['filledParkSpace'],
+        avaliableTime: json['availableForUsersWithTime'],
+        distance: "");
+  }
 }
-
-

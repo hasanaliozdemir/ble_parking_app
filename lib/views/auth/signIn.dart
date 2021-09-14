@@ -12,6 +12,7 @@ import 'package:gesk_app/views/auth/forgot_password.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
+import 'package:gesk_app/views/giris/SplashScreen.dart';
 import 'package:gesk_app/wrapper.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -305,7 +306,7 @@ class _SignInScreenState extends State<SignInScreen> {
     var _conf = await dataService.confirm(userId: _newUser.userId);
     if (_conf) {
       _prefs.setBool("auth", true);
-      Get.to(()=>MapScreen(),fullscreenDialog: true);
+      Get.to(()=>SplashScreen(),fullscreenDialog: true);
     }else{
       Navigator.pop(context);
       print("yanlış");

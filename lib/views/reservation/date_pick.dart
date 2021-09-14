@@ -31,15 +31,22 @@ class _DatePickScreenState extends State<DatePickScreen> {
   final DateFormat dayFormatter = DateFormat('yyyy.MM.dd');
   DateTime selectedDay = DateTime.now();
   var selectedDayString = "Tarih".obs;
+  var _startDay;
+  var _endDay;
+
   
 
 
   int index = 0;
 
+  
+
   _DatePickScreenState(this._park);
   @override
   Widget build(BuildContext context) {
-    selectedDayString.value = dayFormatter.format(selectedDay);
+    print(_park.avaliableTime);
+
+    
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
@@ -83,7 +90,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
   @override
   void initState() {
     super.initState();
-
+    _parseString();
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
         _markers = mapBitmapsToMarkers(bitmaps);
@@ -324,8 +331,8 @@ class _DatePickScreenState extends State<DatePickScreen> {
             onTap: () {
               DatePicker.showDatePicker(context,
                   showTitleActions: true,
-                  minTime: DateTime.now(),
-                  maxTime: DateTime.now().add(Duration(hours: 24 * 14)),
+                  minTime: _startDay,
+                  maxTime: _endDay,
                   onChanged: (date) {
                 
               }, onConfirm: (date) {
@@ -355,7 +362,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
 
   
   Widget _buildButton() {
-    if (selectedDay.day !=null) {
+    if (selectedDay.day !=null && selectedDayString.value != "Tarih") {
       return Container(
       child: Button.active(text: "Tekil Park Alanı Ara", onPressed: _searchReservation),
     );
@@ -379,12 +386,26 @@ class _DatePickScreenState extends State<DatePickScreen> {
     Get.back();
   }
 
+  _parseString(){
+    List<String> _firstExp = _park.avaliableTime.split("|");
+    
+    List<String> _secondExp = _firstExp[1].split(" ");
+    
+    String _startDate =_secondExp[0];
+    String _endDate = _secondExp[1];
+
+    _startDay = DateFormat("yyyy.MM.dd-H:m").parse(_startDate);
+    _endDay = DateFormat("yyyy.MM.dd-H:m").parse(_endDate);
+    print(_startDay);
+    print(_endDay);
+  }
+
   _searchReservation(){
     var _selectedDay = selectedDay;
     
     
 
-    Get.to(()=>TimeRangePage(date: _selectedDay,park: _park,));
+    Get.to(()=>TimeRangePage(date: _selectedDay,park: _park));
 
   }
 }

@@ -1,18 +1,23 @@
-import 'dart:ffi';
+
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+
 import 'package:gesk_app/core/colors.dart';
+
 import 'package:gesk_app/models/car.dart';
 import 'package:gesk_app/models/park.dart';
-import 'package:gesk_app/models/reservation.dart';
 import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/models/user.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 class DataService {
   final String _setInfoUrl = "https://www.erenkomurcu.com/setInfo/";
   final String _getInfoUrl = "https://www.erenkomurcu.com/getInfo/";
+  final String _uploadPhoto = "https://www.erenkomurcu.com/uploadPicture/";
+  
   List<Park> parks = List<Park>();
 
   Future<User> registerUser(
@@ -498,7 +503,7 @@ class DataService {
     Uri _uri = Uri.parse(_getInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
-      "getParksWithDistance": {"lat": lat, "lon": lng, "range": 1000}
+      "getParksWithDistance": {"lat": lat, "lon": lng, "range": 10000}
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -512,20 +517,19 @@ class DataService {
     } else {
       var _ref = _responseJson["getParksWithDistance"] as List;
       _ref.forEach((element) {
-        _parks.add(Park.fromJson(element));
+        _parks.add(Park.fromJsonWDistance(element));
       });
       return _parks;
     }
   }
 
-  Future getParksWithLocation(int driverId,String location)async{
+  Future getParksWithLocation(int driverId)async{ // avaliable aslında
     List<Park> _parks = List<Park>();
     Uri _uri = Uri.parse(_getInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
-      "getParksWithLocation": {
+      "getAvailableParks": {
         "driverId": driverId,
-        "location": location
       }
     };
 
@@ -535,10 +539,10 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    if (_responseJson["getParksWithDistance"] is String) {
-      print(_responseJson["getParksWithDistance"]);
+    if (_responseJson["getAvailableParks"] is String) {
+      print(_responseJson["getAvailableParks"]);
     } else {
-      var _ref = _responseJson["getParksWithDistance"] as List;
+      var _ref = _responseJson["getAvailableParks"] as List;
       _ref.forEach((element) {
         _parks.add(Park.fromJson(element));
       });
@@ -546,8 +550,64 @@ class DataService {
     }
   }
 
+  Future getFakeAdminPark()async{
+    Uri _uri = Uri.parse("https://ptsv2.com//t/1ls5r-1631475216/post");
+    List<Park> _parks = List<Park>();
+    Map<String, dynamic> _payloadBody = {
+      "getAvailableParks": {
+        "driverId": 1,
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    
+    if (_responseJson["getParksWithLocation"] is String) {
+      print(_responseJson["getParksWithLocation"]);
+    } else {
+      var _ref = _responseJson["getParksWithLocation"][0] as List;
+      _ref.forEach((element) {
+        _parks.add(Park.fromJsonForAvaliable(element));
+      });
+      return _parks;
+    }
+  }
+
+  Future getFakeAvaliableTpas(int parkId,int userId,String selectedDay)async{
+    Uri _uri = Uri.parse("https://ptsv2.com/t/4xme6-1631564926/post");
+    List<Tpa> _tpas = List<Tpa>();
+
+    Map<String, dynamic> _payloadBody = {
+      "getAvaliableTimes": {
+        "driverId": userId,
+        "parkId": parkId,
+        "selectedDay" : selectedDay
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);    
+
+    if (_responseJson["getAvaliableTimes"] is String) {
+      print(_responseJson["getAvaliableTimes"]);
+    } else {
+      var _ref = _responseJson["getAvaliableTimes"] as List;
+      _ref.forEach((element) {
+        _tpas.add(Tpa.fromJsonWithAvaliable(element));
+      });
+      return _tpas;
+    }
+  }
+
   Future setReserved({int parkId,int tpaId,int userId,String plate,String datetime})async{
-    Uri _uri = Uri.parse(_setInfoUrl);
+    Uri _uri = Uri.parse("https://ptsv2.com/t/qazus-1631623846/post"); //TODO: LİNK DÜZELT
 
     Map<String, dynamic> _payloadBody = {
       "setReserved": {
@@ -555,7 +615,7 @@ class DataService {
         "tpaId": tpaId,
         "userId" : userId,
         "plate" : plate,
-        "datetime" : datetime
+        "dateTime" : datetime
       }
     };
 
@@ -565,6 +625,25 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    print(_responseJson["setReserved"]);
+    return _responseJson["setReserved"];
+  }
+
+  Future uploadParkPhoto({int parkId,Uint8List bytes})async{
+    Uri _uri = Uri.parse(_uploadPhoto);
+
+    Map<String, dynamic> _payloadBody = {
+      "uploadPhoto": {
+        "parkId": parkId,
+        "photo":bytes
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    print(_responseJson["uploadPhoto"]);
   }
 }

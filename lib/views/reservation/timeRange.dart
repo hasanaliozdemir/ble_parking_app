@@ -1,4 +1,3 @@
-
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
@@ -12,30 +11,35 @@ import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/services/markerCreator.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
+import 'package:gesk_app/views/reservation/done.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TimeRangePage extends StatefulWidget {
   final Park park;
   final DateTime date;
+
   const TimeRangePage({Key key, this.park, this.date}) : super(key: key);
 
   @override
-  _TimeRangePageState createState() => _TimeRangePageState(park, date);
+  _TimeRangePageState createState() => _TimeRangePageState(
+        park,
+        date,
+      );
 }
 
 class _TimeRangePageState extends State<TimeRangePage> {
   final Park _park;
   final DateTime _date;
+
   List<Marker> _markers = [];
   List<Tpa> _tpas = List<Tpa>();
-  var _selectedTimeRange = TimeRange().obs;
-  List<TimeRange> _timeRanges = List<TimeRange>.generate(24, (index) => TimeRange(
-    startHour: index,
-    endHour: (index==23)?0: (index+1),
-    avaliable: true,
-    selected:false
-  ));
+  List<TimeRange> _timeRanges = List<TimeRange>();
+  var _count = 0;
+  var _startTime = 0;
+  var _endTime = 0;
 
   DataService _dataService = DataService();
 
@@ -43,8 +47,8 @@ class _TimeRangePageState extends State<TimeRangePage> {
   void initState() {
     super.initState();
 
-    _getTpas();
-
+    _getTimes();
+    
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
         _markers = mapBitmapsToMarkers(bitmaps);
@@ -88,7 +92,9 @@ class _TimeRangePageState extends State<TimeRangePage> {
                 flex: 216,
                 child: _buildList(),
               ),
-              Spacer(flex: 12,),
+              Spacer(
+                flex: 12,
+              ),
               Expanded(
                 flex: 56,
                 child: _buildButton(),
@@ -100,80 +106,86 @@ class _TimeRangePageState extends State<TimeRangePage> {
     );
   }
 
-  Widget _buildButton(){
-    if (_selectedTimeRange.value.startHour==null) {
-      return Button.passive(text: "Alanı Kirala", onPressed: null);
-    }else{
+  Widget _buildButton() {
+    if (_timeRanges.any((element) => element.selected == true)) {
       return Button.active(text: "Alanı Kirala", onPressed: _rentTpa);
+    } else {
+      return Button.passive(text: "Alanı Kirala", onPressed: null);
     }
   }
 
   ListView _buildList() {
     return ListView.builder(
-                shrinkWrap: true,
-                itemCount: (_tpas == null) ? 0 : _tpas.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: Get.height / 812 * 100,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          flex: 22,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal:16.0),
-                              child: Text(
-                                _tpas[index].tpaName,
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontFamily: "SF Pro Text",
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Spacer(
-                          flex: 16,
-                        ),
-                        Expanded(
-                          flex: 36,
-                          child: _buildRowModel(),
-                        ),
-                        Spacer(
-                          flex: 36,
-                        )
-                      ],
+      shrinkWrap: true,
+      itemCount: (_tpas == null) ? 0 : _tpas.length,
+      itemBuilder: (context, index) {
+        return Container(
+          height: Get.height / 812 * 100,
+          child: Column(
+            children: [
+              Expanded(
+                flex: 22,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      _tpas[index].tpaName,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontFamily: "SF Pro Text",
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  );
-                },
-              );
+                  ),
+                ),
+              ),
+              Spacer(
+                flex: 16,
+              ),
+              Expanded(
+                flex: 36,
+                child: _buildRowModel(_tpas[index]),
+              ),
+              Spacer(
+                flex: 36,
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 
-  Widget _buildRowModel(){
+  Widget _buildRowModel(Tpa tpa) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: 24,
-      itemBuilder: (context,index){
+      itemCount: tpa.avaliableTimes.length,
+      itemBuilder: (context, index) {
+        var _newtimeRange = TimeRange(
+          uniqueId: tpa.tapId.toString() + index.toString(),
+          startHour: tpa.avaliableTimes[index],
+          selected: false,
+          tpaId: tpa.tapId
+        );
+
+        _timeRanges.add(_newtimeRange);
+
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal:8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: GestureDetector(
-            onTap: ()=>_timeRangeTap(index),
+            onTap: () => onTapFunc(_newtimeRange.uniqueId),
             child: Container(
-              width:Get.width/375*100,
-              height: Get.height/812*36,
+              width: Get.width / 375 * 100,
+              height: Get.height / 812 * 36,
               decoration: BoxDecoration(
-                color: _colorSelect(index),
-                borderRadius: BorderRadius.circular(8)
-              ),
+                  color: fixColor(_newtimeRange.uniqueId),
+                  borderRadius: BorderRadius.circular(8)),
               child: Center(
                 child: Text(
-                  _timeRanges[index].startHour.toString()+":00 - "+_timeRanges[index].endHour.toString()+":00",
-                  style: TextStyle(
-                    color: white
-                  ),
+                  fixRowString(tpa.avaliableTimes[index]),
+                  style: TextStyle(color: white),
                 ),
               ),
             ),
@@ -183,57 +195,84 @@ class _TimeRangePageState extends State<TimeRangePage> {
     );
   }
 
-  _colorSelect(index){
-    if (_timeRanges[index].avaliable !=true) {
-      return gray500;
-    }else{
-      if (_timeRanges[index].selected) {
-        return blue500;
-      }else{
-        return blue300;
+  fixRowString(int startTime) {
+    String _first;
+    String _second;
+
+    if (startTime < 10) {
+      _first = "0" + startTime.toString();
+    } else {
+      _first = startTime.toString();
+    }
+
+    if (startTime == 23) {
+      _second = "00";
+    } else {
+      if (startTime + 1 < 10) {
+        _second = "0" + (startTime + 1).toString();
+      } else {
+        _second = (startTime + 1).toString();
       }
+    }
+
+    return _first + ":00-" + _second + ":00";
+  }
+
+  fixColor(String uniqId) {
+    var _refIndex =
+        _timeRanges.indexWhere((element) => element.uniqueId == uniqId);
+    var _ref = _timeRanges[_refIndex];
+    if (_ref.selected == true) {
+      return blue500;
+    } else {
+      return blue300;
     }
   }
 
-  _timeRangeTap(index){
-    var count = _timeRanges.where((c) => c.selected == true).toList().length;
-    if (_timeRanges[index].avaliable !=true) {
-      
-    }else{
-      if (_timeRanges[index].selected) {
-        setState(() {
-                  _timeRanges[index].selected = false;
-                });
+  onTapFunc(String uniqId) {
+    var _refIndex =
+        _timeRanges.indexWhere((element) => element.uniqueId == uniqId);
+    var _ref = _timeRanges[_refIndex];
+
+    if (_ref.selected == true) {
+      setState(() {
+        _timeRanges[_refIndex].selected = false;
+        _count = _count-1;
+      });
+    } else {
+      if (_count==2) {
+        // TODO: DAHA FAZLA SEÇİLEMEZ DE
+      }else if(_count ==1){
+        
+
       }else{
-        if (count <2) {
-          if (count == 1) {
-            if (index ==0) {
-              if (_timeRanges[index+1].selected) {
-              setState(() {
-                  _timeRanges[index].selected = true;
-                });
-            }
-            }else if(index==23){
-              if (_timeRanges[index-1].selected) {
-              setState(() {
-                  _timeRanges[index].selected = true;
-                });
-            }
-            }else{
-              if (_timeRanges[index-1].selected || _timeRanges[index+1].selected) {
-              setState(() {
-                  _timeRanges[index].selected = true;
-                });
-            }
-            }
-          }else{
-            setState(() {
-                  _timeRanges[index].selected = true;
-                });
-          }
-        }
+        setState(() {
+        _timeRanges[_refIndex].selected = true;
+        _count = _count+1;
+      });
       }
     }
+
+    if (_count>0) {
+      setStartEnd();
+    }
+  }
+
+  setStartEnd() {
+    var _ref = _timeRanges.where((element) => element.selected);
+    _startTime = _ref.first.startHour;
+    _endTime = _startTime + 1;
+    _ref.forEach((element) {
+      element.endHour = element.startHour + 1;
+
+      if (element.startHour < _startTime) {
+        _startTime = element.startHour;
+      }
+
+      if (element.endHour > _endTime) {
+        _endTime = element.endHour;
+      }
+    });
   }
 
   Padding _buildUnderMapTitle() {
@@ -252,7 +291,7 @@ class _TimeRangePageState extends State<TimeRangePage> {
             ),
           ),
           Text(
-            "19.00-20.00", //TODO: Burayı ayarla
+            (_count==0)?"":"$_startTime.00-$_endTime.00", //TODO: Burayı ayarla
             style: TextStyle(
               color: Colors.black,
               fontSize: 13,
@@ -491,18 +530,68 @@ class _TimeRangePageState extends State<TimeRangePage> {
     Get.back();
   }
 
-  _getTpas() async {
-    var _ref = await _dataService.getTpas(_park.id);
+  _getTimes() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var _userId = _prefs.getInt("userId");
+
+    var _selectedDayString = DateFormat("yyyy.MM.dd").format(_date);
+
+    List<Tpa> _ref = await _dataService.getFakeAvaliableTpas(
+        _park.id, _userId, _selectedDayString);
+
+    _tpas = _ref;
     setState(() {
-          _ref.forEach((element) {_tpas.add(element);});
+          
         });
   }
 
-  _fixTimeRanges()async{
+  _rentTpa() async{
+    var _selectedTime = _timeRanges.where((element) => element.selected == true);
+    _showLoading();
+    var _prefs = await SharedPreferences.getInstance();
+
+    var _userId = _prefs.getInt("userId");
+
+    var _dateTime = "${_date.year}.${_date.month}.${_date.day}-$_startTime:00 ${_date.year}.${_date.month}.${_date.day}-$_endTime:00";
+
+    var _refTpa = _tpas.where((element) => element.tapId == _selectedTime.first.tpaId);
+
+    var _res = await _dataService.setReserved(
+      parkId: _park.id,
+      tpaId: _selectedTime.first.tpaId,
+      userId: _userId,
+      plate: "10hasan105",//TODO: PLAKA NERDE ALO
+      datetime: _dateTime
+    );
+
+    if (_res!=null) {
+      Navigator.pop(context);
+      Get.to(()=>DoneReservationPage(park: _park,date: _date,start: _startTime,end: _endTime,tpa: _refTpa.first,),fullscreenDialog: true);
+    } else {
+      Navigator.pop(context);
+    }
 
   }
 
-  _rentTpa(){
-    print("rent");
+  void _showLoading()async{
+
+    Future.delayed(Duration.zero,(){
+      showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
+    });
   }
 }

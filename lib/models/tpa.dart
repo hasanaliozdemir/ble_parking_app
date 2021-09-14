@@ -8,9 +8,11 @@ class Tpa{
   double hourlyPrice;
   bool isWithElectricity;
   String maxCarSize; 
+  List reservedTimes;
+  List avaliableTimes;
   
 
-  Tpa({this.parkId,this.maxCarSize,this.tapId, this.avaliable, this.tpaName, this.hourlyPrice, this.isWithElectricity});
+  Tpa({this.avaliableTimes,this.reservedTimes,this.parkId,this.maxCarSize,this.tapId, this.avaliable, this.tpaName, this.hourlyPrice, this.isWithElectricity});
 
   factory Tpa.fromJson(Map<String,dynamic> json){
     return Tpa(
@@ -20,7 +22,16 @@ class Tpa{
       hourlyPrice: json["hourlyPrice"],
       isWithElectricity: false, //TODO: data ?
       avaliable: true.obs, //TODO: data ?
-      maxCarSize: "SUV" //TODO: ekle seçimini
+      maxCarSize: "SUV", //TODO: ekle seçimini
+      reservedTimes : json["reservedTimes"]
+    );
+  }
+
+  factory Tpa.fromJsonWithAvaliable(Map<String,dynamic> json){
+    return Tpa(
+      tapId: json["tpaId"],
+      tpaName: json["tpaName"],
+      avaliableTimes: json["times"]
     );
   }
 

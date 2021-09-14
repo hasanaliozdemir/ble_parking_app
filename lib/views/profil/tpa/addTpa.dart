@@ -420,9 +420,10 @@ class _AddTpaPageState extends State<AddTpaPage> {
   }
 
   _buildRangeText(h,m){
+    
     String _hour;
     String _minute;
-    if (h<10) {
+    if (int.parse(h)<10) {
       _hour = "0"+h.toString();
     }else{
       _hour = h.toString();

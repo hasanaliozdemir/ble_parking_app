@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,21 +9,35 @@ import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/models/reservation.dart';
+import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/views/reservation/reservationsScreen.dart';
 import 'package:get/get.dart';
+import 'package:map_launcher/map_launcher.dart';
 
 // ignore: must_be_immutable
 class ReservationDetail extends StatefulWidget {
-  ReservationDetail({Key key}) : super(key: key);
+  final Park park;
+  final Tpa tpa;
+  final DateTime date;
+  final int start;
+  final int end;
+
+  ReservationDetail({Key key, this.park, this.tpa, this.date, this.start, this.end}) : super(key: key);
 
   @override
-  _ReservationDetailState createState() => _ReservationDetailState();
+  _ReservationDetailState createState() => _ReservationDetailState(park,tpa,date,start,end);
 }
 
 class _ReservationDetailState extends State<ReservationDetail> {
   var _near = false.obs;
-  Park _park;
-  Reservation _reservation;
+  final Park _park;
+  final Tpa _tpa;
+  final DateTime _date;
+  final int _start;
+  final int _end;
+
+  _ReservationDetailState(this._park, this._tpa, this._date, this._start, this._end);
+  
   
 
   @override
@@ -155,18 +171,27 @@ class _ReservationDetailState extends State<ReservationDetail> {
         decoration: BoxDecoration(
             border: Border.all(color: gray600),
             borderRadius: BorderRadius.circular(8)),
+        child: ListTile(
+          leading: Icon(CupertinoIcons.bell_circle_fill,color: blue500,),
+          title: Text(
+            "${_park.name} Otopark, ${_tpa.tpaName}"
+          ),
+          subtitle: Text(
+            "${_date.day}.${_date.month}.${_date.year}    $_start:00-$_end:00"
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildGallery() {
-    if (_park == null) {
+    if (_park.imageUrls == null) {
       return CircularProgressIndicator.adaptive();
     } else {
       return Container(
         height: Get.height / 812 * 155,
         child: CarouselSlider.builder(
-            itemCount: (_park == null) ? 0 : _park.imageUrls.length,
+            itemCount: (_park.imageUrls == null) ? 0 : _park.imageUrls.length,
             itemBuilder: (context, itemIndex, pageIndex) {
               return Container(
                 margin: EdgeInsets.only(
@@ -383,9 +408,7 @@ class _ReservationDetailState extends State<ReservationDetail> {
   }
 
   Widget _buildButtonGoPark(){
-    return Button.active(text: "Otoparka Git", onPressed: (){
-      print("go park");
-    });
+    return Button.active(text: "Otoparka Git", onPressed: _navigateToPark);
   }
 
   Widget _buildButtonOpenBarrier(){
@@ -450,6 +473,16 @@ class _ReservationDetailState extends State<ReservationDetail> {
 
   _openBarrier(){
     print("bariyeri aç bakam");
+  }
+
+  _navigateToPark()async{
+    final availableMaps = await MapLauncher.installedMaps;
+print(availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
+
+await availableMaps.first.showMarker(
+  coords: Coords(_park.latitude, _park.longitude),
+  title: "${_park.name}",
+);
   }
 
   _deleteReservation(){

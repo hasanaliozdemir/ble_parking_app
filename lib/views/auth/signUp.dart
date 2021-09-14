@@ -9,6 +9,7 @@ import 'package:gesk_app/models/user.dart';
 import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
+import 'package:gesk_app/views/giris/SplashScreen.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -339,7 +340,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       // TODO: false dönüyor
       _prefs.setBool("auth", true);
 
-      Get.to(() => MapScreen(), fullscreenDialog: true);
+      Get.to(() => SplashScreen(), fullscreenDialog: true);
     } else {
       Navigator.pop(context);
     }

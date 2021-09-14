@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:gesk_app/bloc/app_bloc.dart';
 import 'package:gesk_app/services/distanceService.dart';
 
@@ -26,15 +28,13 @@ class ParkCard extends StatefulWidget {
 }
 
 class _ParkCardState extends State<ParkCard> {
-  var distance = "".obs;
+  
 
   
   @override
   Widget build(BuildContext context) {
-    final applicationBloc = Provider.of<AppBloc>(context);
-    _getDistance(
-      applicationBloc.currentLocation
-    );
+    
+    
 
     return Container(
       height: h * 128,
@@ -129,11 +129,7 @@ class _ParkCardState extends State<ParkCard> {
     );
   }
 
-  _getDistance(userLocation) async {
-    distance.value = await DistanceService().getDistance(
-        LatLng(widget.park.latitude, widget.park.longitude),
-        LatLng(userLocation.latitude, userLocation.longitude));
-  }
+  
 
   icon(index) {
     switch (index) {
@@ -196,8 +192,8 @@ class _ParkCardState extends State<ParkCard> {
         Spacer(flex: 4),
         Flexible(
           flex: 16,
-          child: Obx(()=>Text(
-            distance.value ?? " h",
+          child: Text(
+            widget.park.distance,
             
             style: TextStyle(
               color: gray900,
@@ -205,7 +201,7 @@ class _ParkCardState extends State<ParkCard> {
               fontFamily: "SF Pro Text",
               fontWeight: FontWeight.w600,
             ),
-          ),)
+          ),
         ),
       ],
     );
