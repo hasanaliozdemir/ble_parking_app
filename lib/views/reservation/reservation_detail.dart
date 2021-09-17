@@ -1,15 +1,19 @@
-import 'dart:math';
+import 'dart:async';
+import 'dart:math' show cos, sqrt, asin;
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/button.dart';
+import 'package:gesk_app/data_models/location.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/models/reservation.dart';
 import 'package:gesk_app/models/tpa.dart';
+import 'package:gesk_app/views/reservation/openBarrier.dart';
 import 'package:gesk_app/views/reservation/reservationsScreen.dart';
 import 'package:get/get.dart';
 import 'package:map_launcher/map_launcher.dart';
@@ -22,10 +26,13 @@ class ReservationDetail extends StatefulWidget {
   final int start;
   final int end;
 
-  ReservationDetail({Key key, this.park, this.tpa, this.date, this.start, this.end}) : super(key: key);
+  ReservationDetail(
+      {Key key, this.park, this.tpa, this.date, this.start, this.end})
+      : super(key: key);
 
   @override
-  _ReservationDetailState createState() => _ReservationDetailState(park,tpa,date,start,end);
+  _ReservationDetailState createState() =>
+      _ReservationDetailState(park, tpa, date, start, end);
 }
 
 class _ReservationDetailState extends State<ReservationDetail> {
@@ -35,10 +42,11 @@ class _ReservationDetailState extends State<ReservationDetail> {
   final DateTime _date;
   final int _start;
   final int _end;
+  Location _currentPosition = Location();
+  int _time =10;
 
-  _ReservationDetailState(this._park, this._tpa, this._date, this._start, this._end);
-  
-  
+  _ReservationDetailState(
+      this._park, this._tpa, this._date, this._start, this._end);
 
   @override
   void initState() {
@@ -48,19 +56,23 @@ class _ReservationDetailState extends State<ReservationDetail> {
 
   @override
   Widget build(BuildContext context) {
+    Timer.periodic(Duration(seconds: _time), (timer) {
+      _getUserLocation();
+      _calcDistance();
+    });
+
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      bottomNavigationBar: BottomBar(
-        index: 1,
-      ),
-      body: _buildBody()
-    );
+        resizeToAvoidBottomInset: false,
+        bottomNavigationBar: BottomBar(
+          index: 1,
+        ),
+        body: _buildBody());
   }
 
-  Widget _buildBody(){
+  Widget _buildBody() {
     if (_park == null) {
       return CircularProgressIndicator.adaptive();
-    }else{
+    } else {
       return Column(
         children: [
           SizedBox(
@@ -121,7 +133,7 @@ class _ReservationDetailState extends State<ReservationDetail> {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          "Erenköy 2 Otopark", //TODO: get park name from api
+          "${_park.name} Otopark", //TODO: get park name from api
           style: TextStyle(
               fontFamily: "SF Pro Display",
               fontSize: 22,
@@ -172,13 +184,13 @@ class _ReservationDetailState extends State<ReservationDetail> {
             border: Border.all(color: gray600),
             borderRadius: BorderRadius.circular(8)),
         child: ListTile(
-          leading: Icon(CupertinoIcons.bell_circle_fill,color: blue500,),
-          title: Text(
-            "${_park.name} Otopark, ${_tpa.tpaName}"
+          leading: Icon(
+            CupertinoIcons.bell_circle_fill,
+            color: blue500,
           ),
+          title: Text("${_park.name} Otopark, ${_tpa.tpaName}"),
           subtitle: Text(
-            "${_date.day}.${_date.month}.${_date.year}    $_start:00-$_end:00"
-          ),
+              "${_date.day}.${_date.month}.${_date.year}    $_start:00-$_end:00"),
         ),
       ),
     );
@@ -214,16 +226,11 @@ class _ReservationDetailState extends State<ReservationDetail> {
     }
   }
 
-  Widget _buildTitle2(){
+  Widget _buildTitle2() {
     return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: gray600
-          )
-        )
-      ),
-      height: Get.height/812*48,
+      decoration:
+          BoxDecoration(border: Border(bottom: BorderSide(color: gray600))),
+      height: Get.height / 812 * 48,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Align(
@@ -231,11 +238,10 @@ class _ReservationDetailState extends State<ReservationDetail> {
           child: Text(
             "Otopark Özellikleri",
             style: TextStyle(
-              fontFamily: "SF Pro Text",
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              color: black
-            ),
+                fontFamily: "SF Pro Text",
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+                color: black),
           ),
         ),
       ),
@@ -254,14 +260,14 @@ class _ReservationDetailState extends State<ReservationDetail> {
               border: Border.all(
                   width: 2, color: _park.isClosedPark ? blue500 : gray800)),
           child: _park.isClosedPark
-                      ? Icon(
-                          CupertinoIcons.square_grid_3x2_fill,
-                          color: blue500,
-                        )
-                      : Icon(
-                          CupertinoIcons.square_grid_3x2_fill,
-                          color: gray700,
-                        ),
+              ? Icon(
+                  CupertinoIcons.square_grid_3x2_fill,
+                  color: blue500,
+                )
+              : Icon(
+                  CupertinoIcons.square_grid_3x2_fill,
+                  color: gray700,
+                ),
         ),
         title: Text(
           "Kapalı Otopark",
@@ -295,14 +301,14 @@ class _ReservationDetailState extends State<ReservationDetail> {
               border: Border.all(
                   width: 2, color: _park.isWithCam ? blue500 : gray800)),
           child: _park.isWithCam
-                      ? Icon(
-                          CupertinoIcons.video_camera_solid,
-                          color: blue500,
-                        )
-                      : Icon(
-                          CupertinoIcons.video_camera_solid,
-                          color: gray700,
-                        ),
+              ? Icon(
+                  CupertinoIcons.video_camera_solid,
+                  color: blue500,
+                )
+              : Icon(
+                  CupertinoIcons.video_camera_solid,
+                  color: gray700,
+                ),
         ),
         title: Text(
           "Güvenlik Kamerası",
@@ -324,7 +330,6 @@ class _ReservationDetailState extends State<ReservationDetail> {
     );
   }
 
-
   Widget _buildListTile3() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -335,16 +340,17 @@ class _ReservationDetailState extends State<ReservationDetail> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                  width: 2, color: _park.isWithElectricity ? blue500 : gray800)),
+                  width: 2,
+                  color: _park.isWithElectricity ? blue500 : gray800)),
           child: _park.isWithElectricity
-                      ? Icon(
-                          CupertinoIcons.bolt_fill,
-                          color: blue500,
-                        )
-                      : Icon(
-                          CupertinoIcons.bolt_fill,
-                          color: gray700,
-                        ),
+              ? Icon(
+                  CupertinoIcons.bolt_fill,
+                  color: blue500,
+                )
+              : Icon(
+                  CupertinoIcons.bolt_fill,
+                  color: gray700,
+                ),
         ),
         title: Text(
           "Elektrikli Şarj İstasyonu",
@@ -378,14 +384,14 @@ class _ReservationDetailState extends State<ReservationDetail> {
               border: Border.all(
                   width: 2, color: _park.isWithSecurity ? blue500 : gray800)),
           child: _park.isWithSecurity
-                      ? Icon(
-                          CupertinoIcons.shield_lefthalf_fill,
-                          color: blue500,
-                        )
-                      : Icon(
-                          CupertinoIcons.shield_lefthalf_fill,
-                          color: gray700,
-                        ),
+              ? Icon(
+                  CupertinoIcons.shield_lefthalf_fill,
+                  color: blue500,
+                )
+              : Icon(
+                  CupertinoIcons.shield_lefthalf_fill,
+                  color: gray700,
+                ),
         ),
         title: Text(
           "Güvenlik Personeli",
@@ -407,23 +413,23 @@ class _ReservationDetailState extends State<ReservationDetail> {
     );
   }
 
-  Widget _buildButtonGoPark(){
+  Widget _buildButtonGoPark() {
     return Button.active(text: "Otoparka Git", onPressed: _navigateToPark);
   }
 
-  Widget _buildButtonOpenBarrier(){
-    return Obx((){
+  Widget _buildButtonOpenBarrier() {
+    return Obx(() {
       if (_near.value == true) {
-      return Button.active(text: "Bariyeri Aç", onPressed: _openBarrier);
-    } else {
-      return Button.backHover(text: "Bariyeri Aç", onPressed: null);
-    }
+        return Button.active(text: "Bariyeri Aç", onPressed: _openBarrier);
+      } else {
+        return Button.backHover(text: "Bariyeri Aç", onPressed: null);
+      }
     });
   }
 
-  Widget _buildDeleteText(){
+  Widget _buildDeleteText() {
     return Padding(
-      padding:  EdgeInsets.only(left: Get.width/375* 50.0),
+      padding: EdgeInsets.only(left: Get.width / 375 * 50.0),
       child: InkWell(
         onTap: _deleteReservation,
         child: Row(
@@ -432,30 +438,27 @@ class _ReservationDetailState extends State<ReservationDetail> {
             Text(
               "Bu rezervasyonu kalıcı olarak",
               style: TextStyle(
-                fontFamily: "SF Pro Text",
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-                color: gray900
-              ),
-              ),
-              Text(
-                " silmek ",
-                style: TextStyle(
                   fontFamily: "SF Pro Text",
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: gray900
-                ),
-              ),
-              Text(
-                "istiyorum.",
-                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: gray900),
+            ),
+            Text(
+              " silmek ",
+              style: TextStyle(
                   fontFamily: "SF Pro Text",
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-                color: gray900
-                ),
-              )
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: gray900),
+            ),
+            Text(
+              "istiyorum.",
+              style: TextStyle(
+                  fontFamily: "SF Pro Text",
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: gray900),
+            )
           ],
         ),
       ),
@@ -467,25 +470,62 @@ class _ReservationDetailState extends State<ReservationDetail> {
   }
 
   _readyPark() async {
-    
     setState(() {});
   }
 
-  _openBarrier(){
-    print("bariyeri aç bakam");
+  _openBarrier() {
+    Get.to(()=>OpenBarrierPage());
   }
 
-  _navigateToPark()async{
+  _navigateToPark() async {
     final availableMaps = await MapLauncher.installedMaps;
-print(availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
+    print(
+        availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
 
-await availableMaps.first.showMarker(
-  coords: Coords(_park.latitude, _park.longitude),
-  title: "${_park.name}",
-);
+    await availableMaps.first.showMarker(
+      coords: Coords(_park.latitude, _park.longitude),
+      title: "${_park.name}",
+    );
   }
 
-  _deleteReservation(){
-    print( "delete");
+  void _getUserLocation() async {
+    var _position = await GeolocatorPlatform.instance
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      _currentPosition.lat = _position.latitude;
+      _currentPosition.lng = _position.longitude;
+    });
+
+    //getParks(lat: _currentPosition.lat,lng: _currentPosition.lng); bunu açınca uzaklığa göre sıralama bozuluyor
+  }
+
+  _calcDistance()async{
+    var _lat1= _currentPosition.lat;
+    var _lon1= _currentPosition.lng;
+
+    var _lat2 = _park.latitude;
+    var _lon2 = _park.longitude;
+
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 - c((_lat2 - _lat1) * p)/2 + 
+          c(_lat1 * p) * c(_lat2 * p) * 
+          (1 - c((_lon2 - _lon1) * p))/2;
+
+    var _result = 12742 * asin(sqrt(a))*1000;
+    print(_result);
+    if (_result<300) {
+      
+              _near.value = true;
+              _time = 60;
+
+    }else{
+      _time = 30;
+    }
+  }
+
+  _deleteReservation() {
+    print("delete");
   }
 }

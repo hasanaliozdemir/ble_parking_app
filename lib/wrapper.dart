@@ -28,7 +28,7 @@ class Wrapper extends StatelessWidget {
     if (auth) {
       return MapScreen(location: _location,firstParks:_firstParks);
     }else{
-      return MapScreenReadOnly();
+      return MapScreenReadOnly(location: _location,firstParks:_firstParks);
     }
   }
 }

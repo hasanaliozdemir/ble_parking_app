@@ -6,16 +6,21 @@ import 'package:gesk_app/core/components/customSwitch.dart';
 
 import 'package:gesk_app/models/filter_modal.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
+import 'package:gesk_app/views/giris/SplashScreen.dart';
 import 'package:get/get.dart';
 
 class FilterDetail extends StatefulWidget {
-  const FilterDetail({Key key}) : super(key: key);
+  const FilterDetail({Key key, this.location, this.parks}) : super(key: key);
+  final location;
+  final parks;
 
   @override
   _FilterDetailState createState() => _FilterDetailState();
 }
 
 class _FilterDetailState extends State<FilterDetail> {
+
+
   var _isClosed = false.obs;
   var _isCam = false.obs;
   var _isWithSecurity = false.obs;
@@ -465,8 +470,11 @@ class _FilterDetailState extends State<FilterDetail> {
         size: _size
       );
 
-    Get.to(()=>MapScreen(filterModel: _filter,),fullscreenDialog: true);
-
+      Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => MapScreen(filterModel: _filter,firstParks: widget.parks,location: widget.location,)),
+  );
+      
       print(_filter.maxPrice);
     });
   }

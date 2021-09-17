@@ -82,7 +82,7 @@ class _MapScreenState extends State<MapScreen> {
 
     
 
-    //listParks();
+    listParks();
     super.initState();
   }
 
@@ -276,24 +276,12 @@ class _MapScreenState extends State<MapScreen> {
         zoom: 17)));
   }
 
-  Future<void> getParks({@required double lat,@required double lng})async{
-    var _referance = await dataService.getNearParks(lat: lat,lng: lng);
-
-    if (_referance is List<Park>) {
-      _ref.clear();
-
-      _referance.forEach((_element) { _ref.add(_element); });
-
-      listParks();
-    }
-
-    
-  }
+  
 
   Future<void> listParks() async {
     List<Park> _ref2 = List<Park>();
 
-    _parks.clear();
+    
     _ref2.clear();
 
     if (_filterModel == null) {
@@ -306,7 +294,7 @@ class _MapScreenState extends State<MapScreen> {
           isWithSecurity: false);
     }
 
-    _ref.forEach((element) {
+    _parks.forEach((element) {
       if ((element.price >= _filterModel.minPrice) &&
           (element.price <= _filterModel.maxPrice)) {
         _ref2.add(element);
@@ -319,7 +307,7 @@ class _MapScreenState extends State<MapScreen> {
       }
     });
 
-    _ref2.forEach((item) {_parks.add(item); });
+    _parks = _ref2;
 
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
@@ -327,6 +315,56 @@ class _MapScreenState extends State<MapScreen> {
       });
     }).generate(context);
   }
+
+  _buildSearchBar(context) {
+  return Positioned(
+      top: MediaQuery.of(context).padding.top + (h * 36),
+      left: 16,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+              //height: Get.height / 812 * 56,
+              width: Get.width / 375 * 279,
+              child: SearchBar()),
+          SizedBox(
+            width: 8,
+          ),
+          Container(
+              width: Get.height / 812 * 56,
+              height: Get.height / 812 * 56,
+              decoration: BoxDecoration(
+                  color: white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x33000000),
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(8)),
+              child: IconButton(
+                  icon: Icon(
+                    CupertinoIcons.slider_horizontal_3,
+                    color: blue500,
+                    size: 22,
+                  ),
+                  onPressed: () {
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        backgroundColor: Colors.white,
+                        context: context,
+                        builder: (context) {
+                          return FilterDetail(location: _location,parks: _firstParks,);
+                        });
+                  }))
+        ],
+      ));
+}
+
 }
 
 // Example of marker widget
@@ -334,8 +372,8 @@ Widget _getMarkerWidget(double price, Status status, bool isWithElectiricity) {
   return Container(
       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       child: Container(
-        width: width * 100,
-        height: height * 100,
+        width: width * 56,
+        height: width * 64,
         child: Stack(children: [
           Padding(
             padding:
@@ -350,8 +388,8 @@ Widget _getMarkerWidget(double price, Status status, bool isWithElectiricity) {
                     borderRadius: BorderRadius.circular(4.00),
                     color: _markerColor(status),
                   ),
-                  width: width * 72,
-                  height: height * 72,
+                  width: width * 48,
+                  height: width * 48,
                   child: Stack(
                     children: [
                       Positioned.fill(
@@ -371,8 +409,8 @@ Widget _getMarkerWidget(double price, Status status, bool isWithElectiricity) {
                       paintingStyle: PaintingStyle.fill,
                     ),
                     child: Container(
-                      height: height * 14,
-                      width: width * 20,
+                      height: height * 7,
+                      width: width * 10,
                     ),
                   ),
                 )
@@ -389,42 +427,7 @@ Widget _getMarkerWidget(double price, Status status, bool isWithElectiricity) {
 // Example of backing data
 List<Park> _parks = List<Park>();
 
-var _ref = [
-  Park(
-      ownerId: 1,
-      location: "Bandırma",
-      filledParkSpace: 4,
-      isWithSecurity: false,
-      isWithCam: false,
-      isWithElectricity: false,
-      isClosedPark: false,
-      id: 0,
-      price: 16,
-      latitude: 40.355499,
-      longitude: 27.971991,
-      imageUrls: [],
-      point: 3.5,
-      status: Status.admin,
-      parkSpace: 5,
-      name: "16lık"),
-  Park(
-      ownerId: 1,
-      location: "Bandırma",
-      filledParkSpace: 4,
-      isWithSecurity: false,
-      isWithCam: false,
-      isWithElectricity: false,
-      isClosedPark: true,
-      id: 0,
-      price: 30,
-      latitude: 40.355499,
-      longitude: 27.971991,
-      imageUrls: [],
-      point: 3.5,
-      status: Status.admin,
-      parkSpace: 5,
-      name: "30 tl lik"),
-];
+
 
 Widget _buildMarkerText(Status status, price) {
   if (status == Status.owner) {
@@ -494,54 +497,7 @@ Widget _electricityIcon(bool active) {
   }
 }
 
-_buildSearchBar(context) {
-  return Positioned(
-      top: MediaQuery.of(context).padding.top + (h * 36),
-      left: 16,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-              //height: Get.height / 812 * 56,
-              width: Get.width / 375 * 279,
-              child: SearchBar()),
-          SizedBox(
-            width: 8,
-          ),
-          Container(
-              width: Get.height / 812 * 56,
-              height: Get.height / 812 * 56,
-              decoration: BoxDecoration(
-                  color: white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x33000000),
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                  borderRadius: BorderRadius.circular(8)),
-              child: IconButton(
-                  icon: Icon(
-                    CupertinoIcons.slider_horizontal_3,
-                    color: blue500,
-                    size: 22,
-                  ),
-                  onPressed: () {
-                    showModalBottomSheet(
-                        isScrollControlled: true,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        backgroundColor: Colors.white,
-                        context: context,
-                        builder: (context) {
-                          return FilterDetail();
-                        });
-                  }))
-        ],
-      ));
-}
+
 
 Future<Uint8List> getPerson(context) async {
   ByteData byteData =

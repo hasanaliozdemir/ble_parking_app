@@ -15,8 +15,8 @@ class User{
   factory User.fromJson(Map<String,dynamic> json){
     List _refcars = json["carsId"] as List;
     List _refparks = json["parksId"] as List;
-    List<int> _cars;
-    List<int> _parks;
+    List<int> _cars = List<int>();
+    List<int> _parks= List<int>();;
     if (_refcars.isEmpty) {
       _cars = [];
     }else{

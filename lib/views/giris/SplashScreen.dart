@@ -22,6 +22,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   var dataService = DataService();
 
+  var count = 0;
+
   var _auth;
   var _location;
   bool _fixed = false;
@@ -108,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 if (_auth == true) {
                   Get.off(() => MapScreen(location: _location,firstParks:_ready));
                 } else {
-                  Get.off(() => MapScreenReadOnly());
+                  Get.off(() => MapScreenReadOnly(location: _location,firstParks:_ready));
                 }
               
               }
@@ -116,6 +118,8 @@ class _SplashScreenState extends State<SplashScreen> {
               _distanceFix(_location.latitude,_location.longitude);
             }
           }
+        }else{
+          _getUserLocation();
         }
       }
     });
