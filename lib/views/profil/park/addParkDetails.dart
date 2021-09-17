@@ -125,7 +125,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                           Spacer(
                             flex: 16,
                           ),
-                          // Expanded(flex: 44,child: _buildTpaNumber(),),
+                          Expanded(flex: 44,child: _buildPrice(),),
                           Spacer(
                             flex: 16,
                           ),
@@ -509,6 +509,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
 
     
     var _newPark = await dataService.addPark(
+      price: double.parse(_priceController.text),
       userId: _userId, 
       isClosedPark:_isClosed.value,
       isWithCam: _isCam.value, 

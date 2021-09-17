@@ -137,6 +137,7 @@ class DataService {
         "isWithCam": isWithCam,
         "isWithSecurity": isWithSecurity,
         "isWithElectricity": isWithElectricity,
+        "price": price,
         "name": name,
         "status": 0,
         "parkSpace": 1,
