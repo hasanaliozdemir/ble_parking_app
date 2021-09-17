@@ -9,6 +9,7 @@ import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/textInput.dart';
+import 'package:gesk_app/core/custom_icon_icons.dart';
 import 'package:gesk_app/data_models/address.dart';
 import 'package:gesk_app/data_models/location.dart';
 import 'package:gesk_app/services/imageService.dart';
@@ -37,10 +38,13 @@ class _AddParkDetailsState extends State<AddParkDetails> {
   TextEditingController _parkNameController = TextEditingController();
   TextEditingController _tpaNumberController = TextEditingController();
   TextEditingController _parkInfoController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
 
+  FocusNode _priceFocus = FocusNode();
   FocusNode _parkNameFocus = FocusNode();
   FocusNode _tpaNumberFocus = FocusNode();
   FocusNode _parkInfoFocus = FocusNode();
+
 
   var _isClosed = false.obs;
   var _isCam = false.obs;
@@ -213,6 +217,26 @@ class _AddParkDetailsState extends State<AddParkDetails> {
               ),
             ),
           );
+        },
+      ),
+    );
+  }
+
+  _buildPrice() {
+    return Container(
+      child: TextInputSimple(
+        controller: _priceController,
+        focusNode: _priceFocus,
+        hintText: "Saatlik Kiralama Fiyatı",
+        suffixIcon: Icon(
+          CustomIcon.tryicon,
+          color: blue500,
+        ),
+        onTap: (){
+          
+          setState(() {
+                      
+                    });
         },
       ),
     );

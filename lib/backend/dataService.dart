@@ -403,10 +403,7 @@ class DataService {
       String maxCarSize}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
 
-    print(parkId);
-    print(tpaName);
-    print(hourlyPrice);
-    print(maxCarSize);
+
 
     Map<String, dynamic> _payloadBody = {
       "addTpa": {

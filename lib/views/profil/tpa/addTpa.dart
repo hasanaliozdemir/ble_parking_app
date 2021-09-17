@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
-import 'package:gesk_app/core/components/customSwitch.dart';
 import 'package:gesk_app/core/components/textInput.dart';
-import 'package:gesk_app/core/custom_icon_icons.dart';
 import 'package:gesk_app/data_models/time_range.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
@@ -21,7 +19,7 @@ class AddTpaPage extends StatefulWidget {
 
 class _AddTpaPageState extends State<AddTpaPage> {
   final Park park;
-  var _isWithElectricity = false.obs;
+
   var _filled = 0.obs;
 
   DataService _dataService = DataService();
@@ -32,16 +30,17 @@ class _AddTpaPageState extends State<AddTpaPage> {
   int selectedMinuteStart = 0;
   int selectedMinuteEnd = 0;
 
+  // ignore: deprecated_member_use
   List<TimeRange> timeRanges = List<TimeRange>();
 
   TextEditingController _tpaNameController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
+  
 
   FocusNode _tpaNameFocus = FocusNode();
-  FocusNode _priceFocus = FocusNode();
+  
 
   var _currentSelectedSize;
-  var _selectTimeRange = "Kiralama saat aralığı";
+  
 
   _AddTpaPageState(this.park);
   @override
@@ -95,13 +94,6 @@ class _AddTpaPageState extends State<AddTpaPage> {
           flex: 24,
         ),
         Expanded(
-          child: _buildPrice(),
-          flex: 44,
-        ),
-        Spacer(
-          flex: 24,
-        ),
-        Expanded(
           child: _buildSizeDropDown(),
           flex: 44,
         ),
@@ -124,7 +116,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
         ),
         // Expanded(flex: 44,child: _buildElectricity(),),
         Spacer(
-          flex: 16,
+          flex: 16+68,
         ),
         Expanded(
           flex: 56,
@@ -206,7 +198,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
         child: Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            "Erenköy 2", //TODO: parkın ismi yazıcak burada
+            park.name??"",
             style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 17,
@@ -233,25 +225,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
     );
   }
 
-  _buildPrice() {
-    return Container(
-      child: TextInputSimple(
-        controller: _priceController,
-        focusNode: _priceFocus,
-        hintText: "Saatlik Kiralama Fiyatı",
-        suffixIcon: Icon(
-          CustomIcon.tryicon,
-          color: blue500,
-        ),
-        onTap: (){
-          _filled.value = _filled.value +1;
-          setState(() {
-                      
-                    });
-        },
-      ),
-    );
-  }
+  
 
   List<String> _sizes = ["Sedan", "SUV", "Hatchback"];
 
@@ -360,11 +334,11 @@ class _AddTpaPageState extends State<AddTpaPage> {
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: _buildRangeText(timeRanges[index].startHour,"0"),
+              child: _buildRangeText(timeRanges[index].startHour),
             ),
           ),
           Expanded(
-            child: _buildRangeText(timeRanges[index].endHour,"0"),
+            child: _buildRangeText(timeRanges[index].endHour),
           )
           
         ],
@@ -372,68 +346,26 @@ class _AddTpaPageState extends State<AddTpaPage> {
     );
   }
 
-  _buildElectricity() {
-    return Container(
-      child: _buildListTile3()
-    );
-  }
-
-  Widget _buildListTile3() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: ListTile(
-        leading: Container(
-          width: Get.width / 375 * 36,
-          height: Get.width / 375 * 36,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 2, color: blue500)),
-          child: Icon(
-            CupertinoIcons.bolt_fill,
-            color: blue500,
-          ),
-        ),
-        title: Text(
-          "Elektrikli Şarj İstasyonu",
-          style: TextStyle(
-            color: black,
-            fontSize: 17,
-          ),
-        ),
-        trailing: Container(
-          width: Get.width / 375 * 50,
-          child: CustomSwitch(
-            value: _isWithElectricity,
-            passiveToggleColor: gray700,
-          ),
-        ),
-      ),
-    );
-  }
 
   _buildButton() {
-    if (_tpaNameController.text !=null && timeRanges.length>0 && _priceController.text != null && _currentSelectedSize != null && _priceController.text != "" && _tpaNameController.text != "") {
+    if (_tpaNameController.text !=null && timeRanges.length>0 && _currentSelectedSize != null  && _tpaNameController.text != "") {
       return Button.active(text: "Kaydet", onPressed: _saveTpa);
     }else{
       return Button.passive(text: "Kaydet", onPressed: null);
     }
   }
 
-  _buildRangeText(h,m){
+  _buildRangeText(h){
     
     String _hour;
-    String _minute;
-    if (int.parse(h)<10) {
+    String _minute = "00";
+    if (h < 10) {
       _hour = "0"+h.toString();
     }else{
       _hour = h.toString();
     }
 
-    if (m<10) {
-      _minute = "0"+m.toString();
-    }else{
-      _minute = m.toString();
-    }
+    
 
     return Text(_hour+":"+_minute,
     style: TextStyle(
@@ -456,19 +388,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
 
       return hour;
     });
-    List<String> dakikalar = List<String>.generate(60, (index) {
-      String minute;
-
-      if (index < 10) {
-        minute = "0" + index.toString();
-      } else {
-        minute = index.toString();
-      }
-
-      return minute;
-    });
-
-    dakikalar.removeWhere((element) => element == null);
+    
     saatler.removeWhere((element) => element == null);
 
     return Padding(
@@ -492,7 +412,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
                         borderRadius: BorderRadius.circular(10)
                       ),
                       height: Get.height / 812 * 300,
-                      child: _bottomSheetColumn(context, saatler, dakikalar),
+                      child: _bottomSheetColumn(context, saatler),
                     );
                   });
             },
@@ -509,7 +429,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
   }
 
   Column _bottomSheetColumn(
-      BuildContext context, List<String> saatler, List<String> dakikalar) {
+      BuildContext context, List<String> saatler) {
     return Column(
       children: [
         Spacer(
@@ -598,17 +518,23 @@ class _AddTpaPageState extends State<AddTpaPage> {
               children: [
                 _buildColumn1(saatler),
                 Text(":"),
-                _buildColumn2(dakikalar),
+                _buildMidColumn(),
                 Text("ile"),
                 _buildColumn3(saatler),
                 Text(":"),
-                _buildColumn4(saatler),
+                _buildMidColumn(),
               ],
             ),
           ),
         )
       ],
     );
+  }
+
+  _buildMidColumn(){
+    return Expanded(child: Center(child: Text("00",style: TextStyle(
+      fontSize: 17,
+    ),)));
   }
 
   Expanded _buildColumn1(saatler) {
@@ -619,19 +545,6 @@ class _AddTpaPageState extends State<AddTpaPage> {
         children: modelBuilder(saatler),
         onSelectedItemChanged: (index) {
           selectedHourStart = int.parse(saatler[index]);
-        },
-      ),
-    );
-  }
-
-  Expanded _buildColumn2(dakikalar) {
-    return Expanded(
-      child: CupertinoPicker(
-        itemExtent: 64,
-        diameterRatio: 0.7,
-        children: modelBuilder(dakikalar),
-        onSelectedItemChanged: (index) {
-          selectedMinuteStart = int.parse(dakikalar[index]);
         },
       ),
     );
@@ -650,18 +563,6 @@ class _AddTpaPageState extends State<AddTpaPage> {
     );
   }
 
-  Expanded _buildColumn4(dakikalar) {
-    return Expanded(
-      child: CupertinoPicker(
-        itemExtent: 64,
-        diameterRatio: 0.7,
-        children: modelBuilder(dakikalar),
-        onSelectedItemChanged: (index) {
-          selectedMinuteEnd = int.parse(dakikalar[index]);
-        },
-      ),
-    );
-  }
 
   modelBuilder(values) {
     List<Widget> _widgetList = List<Widget>.generate(values.length, (index) {
@@ -678,7 +579,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
     var _res = await _dataService.addTpa( 
       parkId: park.id, 
       tpaName: _tpaNameController.text,
-      hourlyPrice: double.parse(_priceController.text),
+      hourlyPrice: 0,
       maxCarSize: _currentSelectedSize.toString() );
 
     if(_res.parkId!=null){
