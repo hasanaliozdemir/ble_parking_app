@@ -85,79 +85,88 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-        body: Column(
-      children: [
-        SizedBox(
-          height: MediaQuery.of(context).padding.top,
-        ),
-        Spacer(
-          flex: 20,
-        ),
-        Expanded(
-          flex: 44,
-          child: Stack(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(8),
-                child: _buildBackButton(),
-              ),
-              Center(
-                child: Text(
-                  "Yeni Adresi Ekle",
-                  style: TextStyle(
-                      color: black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: "SF Pro Text"),
-                ),
-              )
-            ],
-          ),
-        ),
-        Spacer(
-          flex: 6,
-        ),
-        Expanded(
-          flex: 470,
-          child: GoogleMap(
-            initialCameraPosition: CameraPosition(target: latLng, zoom: 15),
-            markers: _markers.toSet(),
-            mapToolbarEnabled: false,
-            myLocationButtonEnabled: false,
-          ),
-        ),
-        Expanded(
-            flex: 240,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Expanded(child: _buildAddressInput()),
-                  Expanded(child: _buildAddress2()),
-                  Expanded(child: _buildButton())
-                ],
-              ),
-            )),
-        SizedBox(
-          height: MediaQuery.of(context).padding.bottom,
+      
+        body: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: _columnBuild(context),
+            )
+          ],
         )
-      ],
-    ));
+        );
+  }
+
+  Column _columnBuild(BuildContext context) {
+    return Column(
+    children: [
+      SizedBox(
+        height: MediaQuery.of(context).padding.top,
+      ),
+      Spacer(
+        flex: 20,
+      ),
+      Expanded(
+        flex: 44,
+        child: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: _buildBackButton(),
+            ),
+            Center(
+              child: Text(
+                "Yeni Adresi Ekle",
+                style: TextStyle(
+                    color: black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "SF Pro Text"),
+              ),
+            )
+          ],
+        ),
+      ),
+      Spacer(
+        flex: 6,
+      ),
+      Expanded(
+        flex: 470,
+        child: GoogleMap(
+          initialCameraPosition: CameraPosition(target: latLng, zoom: 15),
+          markers: _markers.toSet(),
+          mapToolbarEnabled: false,
+          myLocationButtonEnabled: false,
+        ),
+      ),
+      Expanded(
+          flex: 240,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Flexible(child: _buildAddressInput(),flex: 50,),
+                Flexible(child: _buildAddress2(),flex: 44,),
+                Flexible(child: _buildButton(),flex: 56,)
+              ],
+            ),
+          )),
+      SizedBox(
+        height: MediaQuery.of(context).padding.bottom,
+      )
+    ],
+  );
   }
 
   Widget _buildAddressInput() {
     
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: Get.height/812*44,
-                width: Get.width/375*343,
-        child: TextInputSimple(
-          focusNode: addressFocus,
-          controller: addressController,
-          readOnly: true,
-        ),
+    return Container(
+      
+              width: Get.width/375*343,
+      child: TextInputSimple(
+        focusNode: addressFocus,
+        controller: addressController,
+        readOnly: true,
       ),
     );
   }
@@ -172,6 +181,11 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
                 height: Get.height/812*44,
                 width: Get.width/375*164,
           child: TextInputSimple(
+            onChange: (){
+              setState(() {
+                              
+                            });
+            },
               focusNode: numberFocus,
               controller: numberController,
               hintText: "Bina No",
@@ -185,6 +199,11 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
                 height: Get.height/812*44,
                 width: Get.width/375*164,
           child: TextInputSimple(
+            onChange: (){
+              setState(() {
+                              
+                            });
+            },
               focusNode: floorFocus,
               controller: floorController,
               hintText: "Kat",
@@ -196,9 +215,15 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
   }
 
   Widget _buildButton() {
-    return Container(
+    if (numberController.text!=null && numberController.text!="" && floorController.text!=null && floorController.text != "") {
+      return Container(
       child: Button.active(text: "Kaydet", onPressed: _confirmFunc),
     );
+    } else {
+      return Container(
+      child: Button.passive(text: "Kaydet", onPressed: null),
+    );
+    }
   }
 
   List<Marker> mapBitmapsToMarkers(List<Uint8List> bitmaps) {
