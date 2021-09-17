@@ -289,82 +289,10 @@ class _ParkPageState extends State<ParkPage> {
               height: Get.height / 812 * 165,
               child: Column(
                 children: [
-                  Container(
-                    height: Get.height / 812 * 115,
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      removeBottom: true,
-                      child: ListView.separated(
-                          shrinkWrap: true,
-                          separatorBuilder: (context, i) {
-                            return Container(
-                              height: Get.height / 812 * 1,
-                              width: Get.width / 375 * 343,
-                              color: gray400,
-                            );
-                          },
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: SvgPicture.asset(
-                                  "assets/icons/park_icon.svg"),
-                              title: Text(
-                                tpaList[index].tpaName,
-                                style: TextStyle(
-                                    fontFamily: "SF Pro Text",
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              trailing: Container(
-                                width: Get.width / 375 * 50,
-                                child: CustomSwitch(
-                                  value: tpaList[index].avaliable,
-                                  activeIcon: Icon(
-                                    CupertinoIcons.lock_open,
-                                    color: blue500,
-                                  ),
-                                  passiveIcon: Icon(
-                                    CupertinoIcons.lock,
-                                    color: blue500,
-                                  ),
-                                  func: () {
-                                    print(
-                                        "switch: $index : ${tpaList[index].avaliable}");
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                          itemCount: (tpaList.length==null)?0:tpaList.length),
-                    ),
+                  Expanded(flex: 4,
+                  child: _tpaListesi(),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: blue500,
-                        borderRadius:
-                            BorderRadius.vertical(bottom: Radius.circular(8))),
-                    child: ListTile(
-                      title: Text(
-                        "Tekil Park Alanı Ekle",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 17,
-                            fontFamily: "SF Pro Text",
-                            color: white),
-                      ),
-                      leading: Icon(
-                        CupertinoIcons.add_circled,
-                        color: white,
-                      ),
-                      trailing: Icon(
-                        CupertinoIcons.chevron_right,
-                        color: white,
-                      ),
-                      onTap: () {
-                        _addTpaFunc();
-                      },
-                    ),
-                  )
+                  Expanded(child: _tpaEklemeButton(),flex: 2,)
                 ],
               ),
             ),
@@ -372,6 +300,88 @@ class _ParkPageState extends State<ParkPage> {
         ),
       ),
     );
+  }
+
+  Container _tpaEklemeButton() {
+    return Container(
+                  decoration: BoxDecoration(
+                      color: blue500,
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(8))),
+                  child: ListTile(
+                    title: Text(
+                      "Tekil Park Alanı Ekle",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          fontFamily: "SF Pro Text",
+                          color: white),
+                    ),
+                    leading: Icon(
+                      CupertinoIcons.add_circled,
+                      color: white,
+                    ),
+                    trailing: Icon(
+                      CupertinoIcons.chevron_right,
+                      color: white,
+                    ),
+                    onTap: () {
+                      _addTpaFunc();
+                    },
+                  ),
+                );
+  }
+
+  Container _tpaListesi() {
+    return Container(
+                  
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    removeBottom: true,
+                    child: ListView.separated(
+                        shrinkWrap: true,
+                        separatorBuilder: (context, i) {
+                          return Container(
+                            height: Get.height / 812 * 1,
+                            width: Get.width / 375 * 343,
+                            color: gray400,
+                          );
+                        },
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            leading: SvgPicture.asset(
+                                "assets/icons/park_icon.svg"),
+                            title: Text(
+                              tpaList[index].tpaName,
+                              style: TextStyle(
+                                  fontFamily: "SF Pro Text",
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            trailing: Container(
+                              width: Get.width / 375 * 50,
+                              child: CustomSwitch(
+                                value: tpaList[index].avaliable,
+                                activeIcon: Icon(
+                                  CupertinoIcons.lock_open,
+                                  color: blue500,
+                                ),
+                                passiveIcon: Icon(
+                                  CupertinoIcons.lock,
+                                  color: blue500,
+                                ),
+                                func: () {
+                                  print(
+                                      "switch: $index : ${tpaList[index].avaliable}");
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        itemCount: (tpaList.length==null)?0:tpaList.length),
+                  ),
+                );
   }
 
   void _backButtonFunc() {
@@ -410,7 +420,7 @@ class _ParkPageState extends State<ParkPage> {
           Get.to(()=>ProfileScreen(),fullscreenDialog: true);
         }else{
           Navigator.pop(context);
-          print("error at car page delete");
+          print("error at parks page delete");
         }
       }, 
       noFunc: (){
