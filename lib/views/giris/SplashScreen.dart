@@ -100,23 +100,27 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _timer() {
-    Timer(Duration(seconds: 2), () {
+    Timer.periodic(Duration(seconds: 1), (timer) {
       if (_auth != null) {
         if (_location != null) {
           if (_firstParks != null) {
-            if (_firstParks.last.distance !="") {
+            if (_firstParks.last!=null && _firstParks.last.distance!=null) {
+              if (_firstParks.last.distance !="") {
               _orderList();
               if (_fixed==true) {
                 if (_auth == true) {
                   Get.off(() => MapScreen(location: _location,firstParks:_ready));
+                  timer.cancel();
                 } else {
                   Get.off(() => MapScreenReadOnly(location: _location,firstParks:_ready));
+                  timer.cancel();
                 }
               
               }
             }else{
               _distanceFix(_location.latitude,_location.longitude);
             }
+            } 
           }
         }else{
           _getUserLocation();
@@ -143,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (_userId == null) {
       
     }else{
-      _avaliableParks= await dataService.getFakeAdminPark(); //GETPARKSBYLOCATİON
+      _avaliableParks= await dataService.getFakeAdminPark(_userId); //GETPARKSBYLOCATİON
     }
 
     _avaliableParks.forEach((element) {element.status = Status.admin; });

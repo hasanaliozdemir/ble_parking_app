@@ -7,6 +7,7 @@ import 'package:gesk_app/core/colors.dart';
 
 import 'package:gesk_app/models/car.dart';
 import 'package:gesk_app/models/park.dart';
+import 'package:gesk_app/models/reservation.dart';
 import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/models/user.dart';
 
@@ -44,7 +45,7 @@ class DataService {
   }
 
   Future<Car> addCar(
-      {String userId,
+      {int userId,
       String plate,
       String modelYear,
       String color,
@@ -52,7 +53,7 @@ class DataService {
     Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "addCar": {
-        "ownerId": int.parse(userId),
+        "ownerId": userId,
         "plate": plate,
         "modelYear": modelYear,
         "color": color,
@@ -537,7 +538,8 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    if (_responseJson["getAvailableParks"] is String) {
+    if (_response.body !=null) {
+      if (_responseJson["getAvailableParks"] is String) {
       print(_responseJson["getAvailableParks"]);
     } else {
       var _ref = _responseJson["getAvailableParks"] as List;
@@ -546,14 +548,17 @@ class DataService {
       });
       return _parks;
     }
+    }else{
+      return[];
+    }
   }
 
-  Future getFakeAdminPark()async{
-    Uri _uri = Uri.parse("https://ptsv2.com//t/1ls5r-1631475216/post");
+  Future getFakeAdminPark(int userId)async{
+    Uri _uri = Uri.parse(_getInfoUrl);
     List<Park> _parks = List<Park>();
     Map<String, dynamic> _payloadBody = {
       "getAvailableParks": {
-        "driverId": 1,
+        "driverId": userId,
       }
     };
 
@@ -564,10 +569,10 @@ class DataService {
     var _responseJson = convert.jsonDecode(_response.body);
 
     
-    if (_responseJson["getParksWithLocation"] is String) {
-      print(_responseJson["getParksWithLocation"]);
+    if (_responseJson["getAvailableParks"] is String) {
     } else {
-      var _ref = _responseJson["getParksWithLocation"][0] as List;
+      var _ref = _responseJson["getAvailableParks"] as List;
+      
       _ref.forEach((element) {
         _parks.add(Park.fromJsonForAvaliable(element));
       });
@@ -576,16 +581,18 @@ class DataService {
   }
 
   Future getFakeAvaliableTpas(int parkId,int userId,String selectedDay)async{
-    Uri _uri = Uri.parse("https://ptsv2.com/t/4xme6-1631564926/post");
+    Uri _uri = Uri.parse(_getInfoUrl);
     List<Tpa> _tpas = List<Tpa>();
 
     Map<String, dynamic> _payloadBody = {
-      "getAvaliableTimes": {
+      "getAvailableTimes": {
         "driverId": userId,
         "parkId": parkId,
         "selectedDay" : selectedDay
       }
     };
+
+    print(_payloadBody);
 
     var _postJson = convert.jsonEncode(_payloadBody);
 
@@ -593,16 +600,18 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);    
 
-    if (_responseJson["getAvaliableTimes"] is String) {
-      print(_responseJson["getAvaliableTimes"]);
+    if (_responseJson["getAvailableTimes"] is String) {
+      print(_responseJson["getAvailableTimes"]);
     } else {
-      var _ref = _responseJson["getAvaliableTimes"] as List;
+      var _ref = _responseJson["getAvailableTimes"] as List;
       _ref.forEach((element) {
         _tpas.add(Tpa.fromJsonWithAvaliable(element));
       });
       return _tpas;
     }
   }
+
+  
 
   Future setReserved({int parkId,int tpaId,int userId,String plate,String datetime})async{
     Uri _uri = Uri.parse("https://ptsv2.com/t/qazus-1631623846/post"); //TODO: LİNK DÜZELT
@@ -644,4 +653,57 @@ class DataService {
 
     print(_responseJson["uploadPhoto"]);
   }
+
+  Future getReservationsHost(int hostId)async{
+    Uri _uri = Uri.parse(_getInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "getReservations": {
+        "command": 1,//"partial",
+        "hostId":hostId
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri,body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    if (_responseJson["getReservations"] is String) {
+      print("error");
+    }else{
+      List<Reservation> _reservations = List<Reservation>();
+      var _ref = _responseJson["getReservations"] as List;
+      _ref.forEach((element) {_reservations.add(Reservation.fromJson(element)); });
+      return _reservations;
+    }
+  }
+
+  Future getReservationsDriver(int driverId)async{
+    Uri _uri = Uri.parse(_getInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "getReservations": {
+        "command": 1,//"partial",
+        "driverId":driverId
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri,body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    if (_responseJson["getReservations"] is String) {
+      print("error");
+    }else{
+      List<Reservation> _reservations = List<Reservation>();
+      var _ref = _responseJson["getReservations"] as List;
+      _ref.forEach((element) {_reservations.add(Reservation.fromJson(element)); });
+      return _reservations;
+    }
+  }
+
 }

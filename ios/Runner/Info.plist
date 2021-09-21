@@ -72,5 +72,9 @@
 		<string>qqmap</string>
 		<string>here-location</string>
 	</array>
+	<key>NSBluetoothAlwaysUsageDescription</key>  
+	<string>Need BLE permission</string>  
+	<key>NSBluetoothPeripheralUsageDescription</key>  
+	<string>Need BLE permission</string>    
 </dict>
 </plist>

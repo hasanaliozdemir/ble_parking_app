@@ -45,6 +45,7 @@ dependencies:
   intl_phone_number_input: ^0.7.0+2
   flutter_image_compress: ^1.1.0
   map_launcher: ^2.1.1
+  flutter_blue: ^0.8.0
 
 dev_dependencies:
   flutter_test:

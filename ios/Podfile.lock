@@ -1,5 +1,11 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_blue (0.0.1):
+    - Flutter
+    - flutter_blue/Protos (= 0.0.1)
+  - flutter_blue/Protos (0.0.1):
+    - Flutter
+    - Protobuf (~> 3.11.4)
   - flutter_image_compress (0.0.1):
     - Flutter
     - Mantle
@@ -39,6 +45,7 @@ PODS:
   - Mantle/extobjc (2.1.6)
   - map_launcher (0.0.1):
     - Flutter
+  - Protobuf (3.11.4)
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
@@ -50,6 +57,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_blue (from `.symlinks/plugins/flutter_blue/ios`)
   - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
@@ -65,12 +73,15 @@ SPEC REPOS:
     - libPhoneNumber-iOS
     - libwebp
     - Mantle
+    - Protobuf
     - SDWebImage
     - SDWebImageWebPCoder
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_blue:
+    :path: ".symlinks/plugins/flutter_blue/ios"
   flutter_image_compress:
     :path: ".symlinks/plugins/flutter_image_compress/ios"
   geolocator_apple:
@@ -90,6 +101,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_blue: eeb381dc4727a0954dede73515f683865494b370
   flutter_image_compress: fd2b476345226e1a10ea352fa306af95704642c1
   geolocator_apple: 60a1c3f5930c090d2f5164ba8bf25f4f89121e3c
   google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
@@ -101,6 +113,7 @@ SPEC CHECKSUMS:
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
   map_launcher: e325db1261d029ff33e08e03baccffe09593ffea
+  Protobuf: 176220c526ad8bd09ab1fb40a978eac3fef665f7
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d

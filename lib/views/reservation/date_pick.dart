@@ -44,9 +44,6 @@ class _DatePickScreenState extends State<DatePickScreen> {
   _DatePickScreenState(this._park);
   @override
   Widget build(BuildContext context) {
-    print(_park.avaliableTime);
-
-    
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
@@ -387,15 +384,31 @@ class _DatePickScreenState extends State<DatePickScreen> {
   }
 
   _parseString(){
-    List<String> _firstExp = _park.avaliableTime.split("|");
-    
-    List<String> _secondExp = _firstExp[1].split(" ");
-    
-    String _startDate =_secondExp[0];
-    String _endDate = _secondExp[1];
+    List<String> _ref = _park.avaliableTime.split(",");
+    _ref.removeAt(0);
+    List<String> _days = List<String>();
+    _ref.forEach((element) {
+      var _part = element.split("-");
+      _days.add(_part[0]);
+    });
 
-    _startDay = DateFormat("yyyy.MM.dd-H:m").parse(_startDate);
-    _endDay = DateFormat("yyyy.MM.dd-H:m").parse(_endDate);
+    List<String> _removedId =List<String>();
+
+    _days.forEach((element) { 
+      var _ref =element.split("|");
+      _removedId.add(_ref[1]); 
+      });
+    
+    List<DateTime> _dateTimes = List<DateTime>();
+
+    _removedId.forEach((element) {
+      _dateTimes.add( DateFormat("yyyy.MM.dd").parse(element) );
+     });
+  
+    _dateTimes.sort((a, b) => a.compareTo(b));
+
+    _startDay = _dateTimes.first;
+    _endDay = _dateTimes.last;
     print(_startDay);
     print(_endDay);
   }

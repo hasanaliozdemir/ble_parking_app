@@ -237,7 +237,7 @@ class _AddCArPageState extends State<AddCArPage> {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
     var _res = dataService.addCar(
-      userId: _prefs.getString("userId"),
+      userId: _prefs.getInt("userId"),
       plate: plakaController.text,
       modelYear: modelController.text,
       color: _currentSelectedColor,

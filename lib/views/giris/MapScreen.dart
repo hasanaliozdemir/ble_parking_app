@@ -219,6 +219,7 @@ class _MapScreenState extends State<MapScreen> {
               _currentPosition.lng = position.target.longitude;
               //getParks(lat: _currentPosition.lat,lng: _currentPosition.lng);
             },
+            zoomControlsEnabled: false,
             myLocationEnabled: true,
             mapType: MapType.terrain,
             mapToolbarEnabled: false,

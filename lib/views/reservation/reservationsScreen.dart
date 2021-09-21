@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/models/reservation.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReservationsScreen extends StatefulWidget {
   const ReservationsScreen({Key key}) : super(key: key);
@@ -18,9 +20,12 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   List<Reservation> carList = List<Reservation>();
   var _turned = false.obs;
 
+  var dataService = DataService();
+
   @override
   void initState() { 
     super.initState();
+    _getInstance();
     _orderReservations();
   }
 
@@ -145,7 +150,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
             child: ListTile(
               leading: _buildLeading(),
               title: Text(
-                "",
+                _reservation.date.day.toString(),
                 style: TextStyle(
                     fontFamily: "SF Pro Text",
                     fontSize: 13,
@@ -173,16 +178,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     );
   }
 
-  List<Reservation> reservations = [
-    Reservation(
-        reservationId: 0,
-        date: "21.08.21",
-        start: "18.00",
-        end: "19.00",
-        parkId: 0,
-        tpaId: 0,
-        ownerId: "1")
-  ];
+  
 
   _orderReservations(){
     
@@ -190,5 +186,42 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
 
   _getReservationTexts() async {
     
+  }
+
+
+  _getInstance()async{
+    _showLoading();
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+    var _userId = _prefs.getInt("userId");
+    print(_userId);
+
+    carList= await dataService.getReservationsDriver(_userId);
+
+    ownerList = await dataService.getReservationsHost(_userId);
+
+    Navigator.pop(context);
+  }
+
+  void _showLoading()async{
+
+    Future.delayed(Duration.zero,(){
+      showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
+    });
   }
 }

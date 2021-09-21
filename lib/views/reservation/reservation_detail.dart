@@ -16,6 +16,7 @@ import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/views/reservation/openBarrier.dart';
 import 'package:gesk_app/views/reservation/reservationsScreen.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:map_launcher/map_launcher.dart';
 
 // ignore: must_be_immutable
@@ -43,7 +44,7 @@ class _ReservationDetailState extends State<ReservationDetail> {
   final int _start;
   final int _end;
   Location _currentPosition = Location();
-  int _time =10;
+  int _time =60;
 
   _ReservationDetailState(
       this._park, this._tpa, this._date, this._start, this._end);
@@ -59,6 +60,9 @@ class _ReservationDetailState extends State<ReservationDetail> {
     Timer.periodic(Duration(seconds: _time), (timer) {
       _getUserLocation();
       _calcDistance();
+      if (_near.value == true) {
+        timer.cancel();
+      }
     });
 
     return Scaffold(
@@ -474,7 +478,9 @@ class _ReservationDetailState extends State<ReservationDetail> {
   }
 
   _openBarrier() {
-    Get.to(()=>OpenBarrierPage());
+
+    var _sendDate = _date.add(Duration(hours: _end));
+    Get.to(()=>OpenBarrierPage(end: _sendDate,));
   }
 
   _navigateToPark() async {
@@ -515,7 +521,7 @@ class _ReservationDetailState extends State<ReservationDetail> {
 
     var _result = 12742 * asin(sqrt(a))*1000;
     print(_result);
-    if (_result<300) {
+    if (_result<800) {
       
               _near.value = true;
               _time = 60;
