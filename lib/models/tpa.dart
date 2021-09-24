@@ -30,7 +30,7 @@ class Tpa{
       parkId: json["parkId"],
       tpaName: json["tpaName"],
       hourlyPrice: json["hourlyPrice"],
-      isWithElectricity: false, //TODO: data ?
+      //isWithElectricity: false, //TODO: data ?
       avaliable: true.obs, //TODO: data ?
       maxCarSize: "SUV", //TODO: ekle seçimini
       reservedTimes : fixReservedTimes(json["reservedTimes"])

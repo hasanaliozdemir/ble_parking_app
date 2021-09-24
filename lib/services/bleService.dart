@@ -8,24 +8,21 @@ class NewBleService {
   BleManager bleManager = BleManager();
   Peripheral peripheral;
 
-  test() {
-    print(Uint8List.fromList([0, 1]));
-  }
-
   start() async {
+
     bleManager.createClient();
     if (peripheral != null) {
       findServices();
     } else {
       scan();
     }
-    
   }
 
   Future<bool> chechOn() async {
     var state = false;
 
     bleManager.bluetoothState().then((value) {
+      print(value);
       if (value == BluetoothState.POWERED_ON) {
         state = true;
       }
@@ -100,7 +97,11 @@ class NewBleService {
   ) {
     var data = Uint8List.fromList([0x01]);
     printInfo(info: "data : $data \n  charUuid : ${characteristic.uuid}");
-    characteristic.write(data, true);
+    characteristic.write(data, true).then((value) => dispose);
+  }
 
+  dispose(){
+    peripheral.disconnectOrCancelConnection();
+    bleManager.destroyClient();
   }
 }

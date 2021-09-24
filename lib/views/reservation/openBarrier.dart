@@ -9,6 +9,7 @@ import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/models/reservation.dart';
+import 'package:gesk_app/services/bleFunc.dart';
 import 'package:gesk_app/services/bleService.dart';
 import 'package:gesk_app/views/reservation/reviewScreen.dart';
 import 'package:get/get.dart';
@@ -26,6 +27,8 @@ class OpenBarrierPage extends StatefulWidget {
 
 class _OpenBarrierPageState extends State<OpenBarrierPage> {
   NewBleService _bleService = NewBleService();
+  BleFunc _bleFunc = BleFunc();
+
   final DateTime _end;
   final Reservation _reservation;
   Timer _coundownTimer;
@@ -268,7 +271,8 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
   }
 
   _setPins() {
-    var _difference = _end.difference(DateTime.now()).inMinutes;
+    if (DateTime.now().isBefore(_end)) {
+      var _difference = _end.difference(DateTime.now()).inMinutes;
     print(_difference);
     var _minute = _difference % 60;
     var _hour = _difference ~/ 60;
@@ -288,7 +292,17 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
       pin1 = _hour ~/ 10;
       pin2 = _hour % 10;
     }
-    setState(() {});
+    } else {
+      pin1 =0;
+      pin2 = 0;
+      pin3 = 0;
+      pin4=0;
+    }
+    setState(() {
+      if (pin1==0 && pin2==0 && pin3==0 && pin4==0) {
+        _finished = true;
+      }
+    });
   }
 
   _backButtonFunc() {
@@ -296,7 +310,7 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
   }
 
   _openBarrier() async {
-    _bleService.chechOn().then((btOn) {
+    _bleFunc.checkBT().then((btOn) {
       if (btOn) {
         if (_first == true) {
           _bleService.start();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gesk_app/bloc/app_bloc.dart';
-import 'package:gesk_app/test.dart';
+
 import 'package:gesk_app/views/giris/SplashScreen.dart';
 
 
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       ],
       child: GetMaterialApp(
         theme: ThemeData(fontFamily: 'SF Pro Text'),
-        home:TestPage(),
+        home:SplashScreen(),
       ),
     );
   }

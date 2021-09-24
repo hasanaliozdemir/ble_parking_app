@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gesk_app/bloc/app_bloc.dart';
-import 'package:gesk_app/services/distanceService.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
+
 
 enum Status { deselected, selected, admin, disable, owner }
 
@@ -49,7 +46,6 @@ class Park {
       this.info});
 
   factory Park.fromJson(Map<String, dynamic> json) {
-    //TODO: true false olarak geliyor
 
     _organizeStatus(int stat) {
       switch (stat) {
@@ -99,7 +95,7 @@ class Park {
         latitude: json['latitude'],
         name: json['name'],
         price: json['price'],
-        status: _organizeStatus(1), // TODO: içerdeki değer 1 olcak en son !!!!
+        status: _organizeStatus(1), 
         isWithElectricity: json['isWithElectricity'],
         id: fixId(json['parkId']),
         point: fixPoint(json['point']),
@@ -165,7 +161,7 @@ class Park {
         latitude: json['latitude'],
         name: json['name'],
         price: json['price'],
-        status: _organizeStatus(1), // TODO: içerdeki değer 1 olcak en son !!!!
+        status: _organizeStatus(1), 
         isWithElectricity: json['isWithElectricity'],
         id: fixId(json['parkId']),
         point: fixPoint(json['point']),
@@ -177,7 +173,6 @@ class Park {
   }
 
   factory Park.fromJsonForAvaliable(Map<String, dynamic> json) {
-    //TODO: true false olarak geliyor
 
     _organizeStatus(int stat) {
       switch (stat) {
@@ -227,7 +222,7 @@ class Park {
         latitude: json['latitude'],
         name: json['name'],
         price: json['price'],
-        status: _organizeStatus(1), // TODO: içerdeki değer 1 olcak en son !!!!
+        status: _organizeStatus(1), 
         isWithElectricity: json['isWithElectricity'],
         id: fixId(json['parkId']),
         point: fixPoint(json['point']),
