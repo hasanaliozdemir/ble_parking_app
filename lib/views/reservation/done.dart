@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/models/park.dart';
+import 'package:gesk_app/models/reservation.dart';
 import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/views/reservation/reservation_detail.dart';
 import 'package:get/get.dart';
 
 class DoneReservationPage extends StatefulWidget {
+  final Reservation reservation;
   final Tpa tpa;
   final Park park;
   final DateTime date;
   final int start;
   final int end;
-  const DoneReservationPage({ Key key, this.tpa, this.park, this.date, this.start, this.end }) : super(key: key);
+  const DoneReservationPage({ Key key, this.tpa, this.park, this.date, this.start, this.end, this.reservation }) : super(key: key);
 
   @override
-  _DoneReservationPageState createState() => _DoneReservationPageState(tpa,park,date,start,end);
+  _DoneReservationPageState createState() => _DoneReservationPageState(tpa,park,date,start,end,reservation);
 }
 
 class _DoneReservationPageState extends State<DoneReservationPage> {
@@ -25,8 +27,9 @@ class _DoneReservationPageState extends State<DoneReservationPage> {
   final DateTime date;
   final int start;
   final int end;
+  final Reservation reservation;
 
-  _DoneReservationPageState(this.tpa, this.park, this.date, this.start, this.end);
+  _DoneReservationPageState(this.tpa, this.park, this.date, this.start, this.end, this.reservation);
 
 
   @override
@@ -164,6 +167,6 @@ class _DoneReservationPageState extends State<DoneReservationPage> {
   }
 
   gitRezervasyon(){
-    Get.to(()=>ReservationDetail(park: park,tpa: tpa,date: date,start: start,end: end,),fullscreenDialog: true);
+    Get.to(()=>ReservationDetail(park: park,tpa: tpa,date: date,start: start,end: end,reservation: reservation,),fullscreenDialog: true);
   }
 }

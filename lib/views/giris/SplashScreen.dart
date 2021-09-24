@@ -147,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (_userId == null) {
       
     }else{
-      _avaliableParks= await dataService.getFakeAdminPark(_userId); //GETPARKSBYLOCATİON
+      _avaliableParks= await dataService.getAdminPark(_userId); //GETPARKSBYLOCATİON
     }
 
     _avaliableParks.forEach((element) {element.status = Status.admin; });

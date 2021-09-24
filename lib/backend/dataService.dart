@@ -522,7 +522,7 @@ class DataService {
     }
   }
 
-  Future getParksWithLocation(int driverId)async{ // avaliable aslında
+  Future getAvailableParks(int driverId)async{ // avaliable aslında
     List<Park> _parks = List<Park>();
     Uri _uri = Uri.parse(_getInfoUrl);
 
@@ -553,7 +553,7 @@ class DataService {
     }
   }
 
-  Future getFakeAdminPark(int userId)async{
+  Future getAdminPark(int userId)async{
     Uri _uri = Uri.parse(_getInfoUrl);
     List<Park> _parks = List<Park>();
     Map<String, dynamic> _payloadBody = {
@@ -659,7 +659,7 @@ class DataService {
 
     Map<String, dynamic> _payloadBody = {
       "getReservations": {
-        "command": 1,//"partial",
+        "command": "partial",
         "hostId":hostId
       }
     };
@@ -685,7 +685,7 @@ class DataService {
 
     Map<String, dynamic> _payloadBody = {
       "getReservations": {
-        "command": 1,//"partial",
+        "command": "partial",
         "driverId":driverId
       }
     };

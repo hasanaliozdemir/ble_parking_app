@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gesk_app/core/components/button.dart';
+import 'package:gesk_app/services/bleService.dart';
 import 'package:gesk_app/services/bluetoothService.dart';
 
 class TestPage extends StatelessWidget {
-  BleService _bleService = BleService();
+  NewBleService newBleService = NewBleService();
 
   TestPage({ Key key }) : super(key: key);
 
@@ -13,7 +14,8 @@ class TestPage extends StatelessWidget {
       body: Column(
         children: [
           SizedBox(height: 100,),
-          Button.active(text: "dosm", onPressed: _bleService.scan)
+          Button.active(text: "dosm", onPressed: ()=>newBleService.start()),
+          Button.active(text: "tst", onPressed: ()=>newBleService.test()),
         ],
       ),
     );

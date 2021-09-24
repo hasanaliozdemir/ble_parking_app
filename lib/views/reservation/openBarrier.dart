@@ -4,23 +4,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/core/colors.dart';
+import 'package:gesk_app/core/components/BtPopUp.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/popUp.dart';
+import 'package:gesk_app/models/reservation.dart';
+import 'package:gesk_app/services/bleService.dart';
+import 'package:gesk_app/views/reservation/reviewScreen.dart';
 import 'package:get/get.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OpenBarrierPage extends StatefulWidget {
   final DateTime end;
-  const OpenBarrierPage({Key key, this.end}) : super(key: key);
+  final Reservation reservation;
+  const OpenBarrierPage({Key key, this.end, this.reservation})
+      : super(key: key);
 
   @override
-  _OpenBarrierPageState createState() => _OpenBarrierPageState(end);
+  _OpenBarrierPageState createState() =>
+      _OpenBarrierPageState(end, reservation);
 }
 
 class _OpenBarrierPageState extends State<OpenBarrierPage> {
+  NewBleService _bleService = NewBleService();
   final DateTime _end;
-  TextEditingController _countDownTimerController = TextEditingController();
+  final Reservation _reservation;
+  Timer _coundownTimer;
 
   bool _first = true;
   bool _opened = false;
@@ -31,16 +39,22 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
   int pin3 = 0;
   int pin4 = 0;
 
-  _OpenBarrierPageState(this._end);
+  _OpenBarrierPageState(this._end, this._reservation);
+  @override
+  void initState() {
+    super.initState();
+    _setPins();
+    _coundownTimer = Timer.periodic(Duration(minutes: 1), (timer) => _setPins);
+  }
+
+  @override
+  void dispose() {
+    _coundownTimer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    Timer.periodic(Duration(minutes: 1), (timer){
-        var _difference = _end.difference(DateTime.now()).inMinutes;
-        print(_difference);
-      });
-
     return Scaffold(
       body: SafeArea(
         child: (_opened == true) ? _secondColumn() : _firstColumn(),
@@ -119,10 +133,10 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
           _pinContainer(pin1),
           _pinContainer(pin2),
           Container(
-            child: Text(":",style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold
-            ),),
+            child: Text(
+              ":",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
           ),
           _pinContainer(pin3),
           _pinContainer(pin4),
@@ -133,23 +147,22 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
 
   Widget _pinContainer(int pinCode) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Container(
         width: Get.width / 375 * 48,
         height: Get.height / 812 * 64,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             border: Border.all(width: 2, color: gray500)),
-            child: Center(
-              child: Text(
-                pinCode.toString(),
-                style: TextStyle(
-                  fontSize: 22,
-                  color: _finished ? gray500 : black,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-            ),
+        child: Center(
+          child: Text(
+            pinCode.toString(),
+            style: TextStyle(
+                fontSize: 22,
+                color: _finished ? gray500 : black,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
       ),
     );
   }
@@ -254,23 +267,58 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
     );
   }
 
+  _setPins() {
+    var _difference = _end.difference(DateTime.now()).inMinutes;
+    print(_difference);
+    var _minute = _difference % 60;
+    var _hour = _difference ~/ 60;
+
+    if (_minute < 10) {
+      pin3 = 0;
+      pin4 = _minute;
+    } else {
+      pin3 = _minute ~/ 10;
+      pin4 = _minute % 10;
+    }
+
+    if (_hour < 10) {
+      pin1 = 0;
+      pin2 = _hour;
+    } else {
+      pin1 = _hour ~/ 10;
+      pin2 = _hour % 10;
+    }
+    setState(() {});
+  }
+
   _backButtonFunc() {
     Get.back();
   }
 
   _openBarrier() async {
-    if (_first == true) {
-      print("bariyer açıldı");
-      setState(() {
-        _opened = true;
-      });
-    } else {
-      print("bariyer açıldı");
-    }
+    _bleService.chechOn().then((btOn) {
+      if (btOn) {
+        if (_first == true) {
+          _bleService.start();
+          print("bariyer açıldı");
+          setState(() {
+            _opened = true;
+          });
+        } else {
+          _bleService.start();
+          print("bariyer açıldı");
+        }
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return BtPopUp();
+            });
+      }
+    });
   }
 
   _finishPark() {
-    print("parkı bitir");
     showDialog(
         context: context,
         builder: (context) {
@@ -279,7 +327,11 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
               content:
                   "Park sonlandırıldıktan sonra bariyer açılamaz. Parkı sonlandırmak istediğinize emin misiniz?",
               yesFunc: _yesFunc,
-              realIcon: Icon(CupertinoIcons.news),
+              realIcon: Icon(
+                CupertinoIcons.drop_triangle,
+                size: 60,
+                color: blue500,
+              ),
               noFunc: () {
                 Navigator.pop(context);
               },
@@ -288,6 +340,7 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
   }
 
   _yesFunc() {
-    print("oki bitti");
+    print("park bitti");
+    Get.to(() => ReviewScreen());
   }
 }

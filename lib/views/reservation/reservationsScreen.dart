@@ -109,27 +109,8 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
       itemCount: ownerList.length ?? 0,
       itemBuilder: (context, index) {
         var _reservation = ownerList[index];
-        _getReservationTexts();
-        return Padding(
-          padding: EdgeInsets.all(8),
-          child: Container(
-            height: Get.height / 812 * 56,
-            decoration: BoxDecoration(
-                border: Border.all(color: gray500, width: 1),
-                borderRadius: BorderRadius.circular(8)),
-            child: ListTile(
-              leading: _buildLeading(),
-              title: Text(
-                "",
-                style: TextStyle(
-                    fontFamily: "SF Pro Text",
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600),
-              ),
-            ),
-          ),
-        );
-      },
+        return _buildListTile(_reservation);
+        }
     );
   }
 
@@ -139,55 +120,66 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
       itemCount: carList.length ?? 0,
       itemBuilder: (context, index) {
         var _reservation = carList[index];
-        _getReservationTexts();
-        return Padding(
-          padding: EdgeInsets.all(8),
-          child: Container(
-            height: Get.height / 812 * 56,
-            decoration: BoxDecoration(
-                border: Border.all(color: gray500, width: 1),
-                borderRadius: BorderRadius.circular(8)),
+        return _buildListTile(_reservation);
+      },
+    );
+  }
+
+  Padding _buildListTile(Reservation _reservation) {
+    return Padding(
+        padding: EdgeInsets.all(8),
+        child: Container(
+          height: Get.height / 812 * 56,
+          decoration: BoxDecoration(
+              border: Border.all(color: gray500, width: 1),
+              borderRadius: BorderRadius.circular(8)),
+          child: Center(
             child: ListTile(
               leading: _buildLeading(),
               title: Text(
-                _reservation.date.day.toString(),
+                _reservation.reservationId.toString(),
                 style: TextStyle(
                     fontFamily: "SF Pro Text",
                     fontSize: 13,
                     fontWeight: FontWeight.w600),
               ),
+              subtitle: _buildSubtitle(_reservation),
             ),
           ),
-        );
-      },
+        ),
+      );
+  }
+
+  Padding _buildLeading() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom:8.0),
+      child: Container(
+        alignment: Alignment.centerLeft,
+        width: Get.width / 375 * 36,
+        height: Get.width / 375 * 36,
+        decoration:
+            BoxDecoration(color: gray400, borderRadius: BorderRadius.circular(8)),
+        child: Center(
+            child: Icon(
+          CupertinoIcons.bell_circle,
+          color: blue500,
+        )),
+      ),
     );
   }
 
-  Container _buildLeading() {
-    return Container(
-      alignment: Alignment.centerLeft,
-      width: Get.width / 375 * 36,
-      height: Get.width / 375 * 36,
-      decoration:
-          BoxDecoration(color: gray400, borderRadius: BorderRadius.circular(8)),
-      child: Center(
-          child: Icon(
-        CupertinoIcons.bell_circle,
-        color: blue500,
-      )),
+  Text _buildSubtitle(Reservation _reservation){
+    var _dateString= "${_reservation.date.day}.${_reservation.date.month}.${_reservation.date.year}";
+    var _timeString= "${_reservation.start}:00 - ${_reservation.end}:00";
+
+    return Text(
+      _dateString+"    "+_timeString
     );
   }
-
-  
 
   _orderReservations(){
     
   }
-
-  _getReservationTexts() async {
-    
-  }
-
 
   _getInstance()async{
     _showLoading();
@@ -201,6 +193,9 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     ownerList = await dataService.getReservationsHost(_userId);
 
     Navigator.pop(context);
+    setState(() {
+          
+        });
   }
 
   void _showLoading()async{
@@ -223,5 +218,9 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
       );
     });
     });
+  }
+
+  goToReservation(Reservation reservation){
+    
   }
 }

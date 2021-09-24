@@ -46,6 +46,7 @@ dependencies:
   flutter_image_compress: ^1.1.0
   map_launcher: ^2.1.1
   flutter_blue: ^0.8.0
+  flutter_ble_lib: ^2.3.2
 
 dev_dependencies:
   flutter_test:

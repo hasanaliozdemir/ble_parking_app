@@ -16,7 +16,7 @@ import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/views/reservation/openBarrier.dart';
 import 'package:gesk_app/views/reservation/reservationsScreen.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+
 import 'package:map_launcher/map_launcher.dart';
 
 // ignore: must_be_immutable
@@ -26,17 +26,25 @@ class ReservationDetail extends StatefulWidget {
   final DateTime date;
   final int start;
   final int end;
+  final Reservation reservation;
 
   ReservationDetail(
-      {Key key, this.park, this.tpa, this.date, this.start, this.end})
+      {Key key,
+      @required this.park,
+      @required this.tpa,
+      @required this.date,
+      @required this.start,
+      @required this.end,
+      @required this.reservation})
       : super(key: key);
 
   @override
   _ReservationDetailState createState() =>
-      _ReservationDetailState(park, tpa, date, start, end);
+      _ReservationDetailState(park, tpa, date, start, end, reservation);
 }
 
 class _ReservationDetailState extends State<ReservationDetail> {
+  final Reservation _reservation;
   var _near = false.obs;
   final Park _park;
   final Tpa _tpa;
@@ -44,26 +52,37 @@ class _ReservationDetailState extends State<ReservationDetail> {
   final int _start;
   final int _end;
   Location _currentPosition = Location();
-  int _time =60;
+  int _time = 30;
 
-  _ReservationDetailState(
-      this._park, this._tpa, this._date, this._start, this._end);
+  Timer _timer;
+
+  _ReservationDetailState(this._park, this._tpa, this._date, this._start,
+      this._end, this._reservation);
 
   @override
   void initState() {
     super.initState();
     _readyPark();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Timer.periodic(Duration(seconds: _time), (timer) {
+    _getUserLocation();
+    Timer(Duration(seconds: 2),(){
       _getUserLocation();
-      _calcDistance();
+    });
+    _timer = Timer.periodic(Duration(seconds: _time), (timer) {
+      _getUserLocation();
+
       if (_near.value == true) {
         timer.cancel();
       }
     });
+  }
+
+  @override
+  void dispose() { 
+    _timer.cancel();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -478,9 +497,12 @@ class _ReservationDetailState extends State<ReservationDetail> {
   }
 
   _openBarrier() {
-
     var _sendDate = _date.add(Duration(hours: _end));
-    Get.to(()=>OpenBarrierPage(end: _sendDate,));
+    _timer.cancel();
+    Get.to(() => OpenBarrierPage(
+          end: _sendDate,
+          reservation: _reservation,
+        ));
   }
 
   _navigateToPark() async {
@@ -495,38 +517,38 @@ class _ReservationDetailState extends State<ReservationDetail> {
   }
 
   void _getUserLocation() async {
-    var _position = await GeolocatorPlatform.instance
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-
-    setState(() {
-      _currentPosition.lat = _position.latitude;
-      _currentPosition.lng = _position.longitude;
+    GeolocatorPlatform.instance
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((_position) {
+      _calcDistance();
+      setState(() {
+        _currentPosition.lat = _position.latitude;
+        _currentPosition.lng = _position.longitude;
+      });
     });
 
     //getParks(lat: _currentPosition.lat,lng: _currentPosition.lng); bunu açınca uzaklığa göre sıralama bozuluyor
   }
 
-  _calcDistance()async{
-    var _lat1= _currentPosition.lat;
-    var _lon1= _currentPosition.lng;
+  _calcDistance() async {
+    var _lat1 = _currentPosition.lat;
+    var _lon1 = _currentPosition.lng;
 
     var _lat2 = _park.latitude;
     var _lon2 = _park.longitude;
 
     var p = 0.017453292519943295;
     var c = cos;
-    var a = 0.5 - c((_lat2 - _lat1) * p)/2 + 
-          c(_lat1 * p) * c(_lat2 * p) * 
-          (1 - c((_lon2 - _lon1) * p))/2;
+    var a = 0.5 -
+        c((_lat2 - _lat1) * p) / 2 +
+        c(_lat1 * p) * c(_lat2 * p) * (1 - c((_lon2 - _lon1) * p)) / 2;
 
-    var _result = 12742 * asin(sqrt(a))*1000;
+    var _result = 12742 * asin(sqrt(a)) * 1000;
     print(_result);
-    if (_result<800) {
-      
-              _near.value = true;
-              _time = 60;
-
-    }else{
+    if (_result < 800) {
+      _near.value = true;
+      _time = 60;
+    } else {
       _time = 30;
     }
   }

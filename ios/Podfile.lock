@@ -1,5 +1,8 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_ble_lib (2.3.2):
+    - Flutter
+    - MultiplatformBleAdapter (~> 0.1.8)
   - flutter_blue (0.0.1):
     - Flutter
     - flutter_blue/Protos (= 0.0.1)
@@ -45,6 +48,7 @@ PODS:
   - Mantle/extobjc (2.1.6)
   - map_launcher (0.0.1):
     - Flutter
+  - MultiplatformBleAdapter (0.1.8)
   - Protobuf (3.11.4)
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
@@ -57,6 +61,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_ble_lib (from `.symlinks/plugins/flutter_ble_lib/ios`)
   - flutter_blue (from `.symlinks/plugins/flutter_blue/ios`)
   - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
@@ -73,6 +78,7 @@ SPEC REPOS:
     - libPhoneNumber-iOS
     - libwebp
     - Mantle
+    - MultiplatformBleAdapter
     - Protobuf
     - SDWebImage
     - SDWebImageWebPCoder
@@ -80,6 +86,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_ble_lib:
+    :path: ".symlinks/plugins/flutter_ble_lib/ios"
   flutter_blue:
     :path: ".symlinks/plugins/flutter_blue/ios"
   flutter_image_compress:
@@ -101,6 +109,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_ble_lib: 675f6ceaa6cd6a675bba408b705042458a782101
   flutter_blue: eeb381dc4727a0954dede73515f683865494b370
   flutter_image_compress: fd2b476345226e1a10ea352fa306af95704642c1
   geolocator_apple: 60a1c3f5930c090d2f5164ba8bf25f4f89121e3c
@@ -113,6 +122,7 @@ SPEC CHECKSUMS:
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
   map_launcher: e325db1261d029ff33e08e03baccffe09593ffea
+  MultiplatformBleAdapter: bdfdd698ea5d816f0f389eda13d5b07a1bc74b59
   Protobuf: 176220c526ad8bd09ab1fb40a978eac3fef665f7
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
