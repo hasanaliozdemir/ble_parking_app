@@ -85,7 +85,9 @@ class _TextInputSimpleState extends State<TextInputSimple> {
       height: Get.height / 812 * 60,
       child: Stack(
         children: [
-          Obx(()=>Container(
+          Obx(()=>Column(
+            children: [
+              Container(
             width: Get.width / 375 * 343,
             height: Get.height / 812 * 44,
             decoration: BoxDecoration(
@@ -99,7 +101,18 @@ class _TextInputSimpleState extends State<TextInputSimple> {
           horizontal: 8,
           vertical: 4,
         ),
-          ),),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              widget.errorText,
+              style: TextStyle(
+                color: Colors.red
+              ),
+            ),
+          )
+            ],
+          )),
           _buildObx()
         ],
       ),
@@ -151,7 +164,7 @@ class _TextInputSimpleState extends State<TextInputSimple> {
               focusColor: blue500,
               prefixIcon: widget.prefixIcon,
               suffixIcon: _buildSuffix(),
-              errorText: widget.errorText),
+              ),
         ),
       ));
   }

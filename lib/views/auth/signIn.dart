@@ -4,16 +4,16 @@ import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/passwordInput.dart';
-import 'package:gesk_app/core/components/textInput.dart';
-import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+
 import 'package:gesk_app/core/widgets.dart';
+import 'package:gesk_app/services/validationService.dart';
 
 import 'package:gesk_app/views/auth/forgot_password.dart';
 import 'package:gesk_app/views/auth/signUp.dart';
-import 'package:gesk_app/views/giris/MapScreen.dart';
+
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
 import 'package:gesk_app/views/giris/SplashScreen.dart';
-import 'package:gesk_app/wrapper.dart';
+
 import 'package:get/get.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,6 +41,10 @@ class _SignInScreenState extends State<SignInScreen> {
   FocusNode passwordFocus= FocusNode();
 
   var dataService =DataService();
+  var validationService = ValidationService();
+
+  var _errorPhone ="";
+  var _errorPassword = "";
 
   PhoneNumber phoneNumber = PhoneNumber(isoCode: 'TR');
   
@@ -221,6 +225,7 @@ class _SignInScreenState extends State<SignInScreen> {
               formatInput: true,
               autoValidateMode: AutovalidateMode.disabled,
               hintText: "Telefon Numarası",
+              errorMessage: _errorPhone,
               maxLength: 13,
               validator: (String val) {
                 if (val.length == 10) {
@@ -256,12 +261,13 @@ class _SignInScreenState extends State<SignInScreen> {
       focusNode: passwordFocus,
       prefixIcon: Icon(CupertinoIcons.lock),
       hintText: "Parola",
+      errorText: _errorPassword,
     );
   }
 
 
   Widget _buildSignInButton() {
-    return Button.active(text: "Giriş yap", onPressed: _signIn);
+    return Button.active(text: "Giriş yap", onPressed: _validate);
   }
 
   Widget _buildCreateAccount() {
@@ -290,6 +296,18 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _backButtonFunc() {
     Get.to(()=>MapScreenReadOnly());
+  }
+
+  void _validate(){
+    if ( validationService.passwordValidaton(passwordController.text) && validationService.phoneValidator(phoneNumber.phoneNumber) ) {
+      _signIn();
+    }else{
+      print(validationService.passwordValidaton(phoneNumber.phoneNumber));
+      setState(() {
+              _errorPassword = validationService.passwordError(passwordController.text);
+              _errorPhone = validationService.phoneError(phoneNumber.phoneNumber);
+            });
+    }
   }
 
 

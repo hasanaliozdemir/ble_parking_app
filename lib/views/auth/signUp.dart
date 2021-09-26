@@ -6,6 +6,7 @@ import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/passwordInput.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:gesk_app/models/user.dart';
+import 'package:gesk_app/services/validationService.dart';
 import 'package:gesk_app/views/auth/signIn.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
 import 'package:gesk_app/views/giris/MapScreen_readOnly.dart';
@@ -34,7 +35,14 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   FocusNode mailFocus = FocusNode();
   FocusNode passwordFocus = FocusNode();
 
+  var _errorName = "";
+  var _errorPhone = "";
+  var _errorMail = "";
+  var _errorPassword = "";
+
   PhoneNumber phoneNumber = PhoneNumber(isoCode: 'TR');
+
+  var validationService = ValidationService();
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +110,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       hintText: "İsim Soyisim",
       controller: nameAndSurnameController,
       focusNode: nameFocus,
+      errorText: _errorName,
       func: () {
         FocusScope.of(context).requestFocus(phoneFocus);
       },
@@ -221,13 +230,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
               autoValidateMode: AutovalidateMode.disabled,
               hintText: "Telefon Numarası",
               maxLength: 13,
-              validator: (String val) {
-                if (val.length == 10) {
-                  return val;
-                } else {
-                  return "non";
-                }
-              },
+              errorMessage: _errorPhone,
               inputDecoration: InputDecoration(border: InputBorder.none),
             ),
           )
@@ -241,6 +244,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       controller: mailController,
       focusNode: mailFocus,
       hintText: "E-mail",
+      errorText: _errorMail,
       prefixIcon: Icon(CupertinoIcons.mail),
       keyBoardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
@@ -252,6 +256,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
         hintText: "Parola",
         controller: passwordController,
         prefixIcon: Icon(CupertinoIcons.lock),
+        errorText: _errorPassword,
         focusNode: passwordFocus);
   }
 
@@ -289,7 +294,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   }
 
   Widget _buildSignUpButton() {
-    return Button.active(text: "Üye Ol", onPressed: _signUp);
+    return Button.active(text: "Üye Ol", onPressed: _validate);
   }
 
   Widget _buildAlreadyHaveAccount() {
@@ -321,6 +326,19 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
 
   void _onTapHizmet() {
     print("hizmet"); //TODO: Hizmet sözleşmesi
+  }
+
+  void _validate(){
+    if (confirmed.value && validationService.nameValidator(nameAndSurnameController.text) && validationService.phoneValidator(phoneNumber.phoneNumber) && validationService.emailValidation(mailController.text) && validationService.passwordValidaton(passwordController.text)) {
+      _signUp();
+    }else{
+      setState(() {
+              _errorName = validationService.nameError(nameAndSurnameController.text);
+              _errorPhone = validationService.phoneError(phoneNumber.phoneNumber);
+              _errorMail = validationService.emailError(mailController.text);
+              _errorPassword = validationService.passwordError(passwordController.text);
+            });
+    }
   }
 
   void _signUp() async {

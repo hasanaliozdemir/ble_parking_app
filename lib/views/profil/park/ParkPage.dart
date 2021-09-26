@@ -372,8 +372,11 @@ class _ParkPageState extends State<ParkPage> {
                                   color: blue500,
                                 ),
                                 func: () {
-                                  print(
-                                      "switch: $index : ${tpaList[index].avaliable}");
+                                  dataService.lockTpa(
+                                    parkId: park.id,
+                                    tpaId: tpaList[index].tapId,
+                                    available: tpaList[index].avaliable.value
+                                  );
                                 },
                               ),
                             ),

@@ -706,4 +706,24 @@ class DataService {
     }
   }
 
+  Future lockTpa({int parkId, int tpaId, bool available})async{
+    Uri _uri = Uri.parse(_getInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "tpaLock": {
+        "parkId": parkId,
+        "tpaId":tpaId,
+        "available": available
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri,body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    print(_responseJson);
+  }
+
 }
