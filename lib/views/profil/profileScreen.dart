@@ -660,6 +660,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  
+
   void _showLoading() async {
     Future.delayed(Duration.zero, () {
       showDialog(
