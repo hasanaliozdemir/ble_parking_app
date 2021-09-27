@@ -8,9 +8,10 @@ class ImageService{
     var result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
       format: CompressFormat.png,
-      minWidth: 288,
-      minHeight: 288,
-      quality: 50,
+      
+      minWidth: 144,
+      minHeight: 144,
+      quality: 40,
       
     );
     

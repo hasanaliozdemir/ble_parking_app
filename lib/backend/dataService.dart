@@ -406,9 +406,14 @@ class DataService {
       {int parkId,
       String tpaName,
       double hourlyPrice,
-      String maxCarSize}) async {
+      String maxCarSize,
+      int startTime,
+      int endTime,
+      }) async {
     Uri _uri = Uri.parse(_setInfoUrl);
 
+    var _startString = (startTime<10)? "0$startTime" : "$startTime";
+    var _endString = (endTime<10)? "0$endTime" : "$endTime";
 
 
     Map<String, dynamic> _payloadBody = {
@@ -416,7 +421,8 @@ class DataService {
         "parkId": parkId,
         "tpaName": tpaName,
         "hourlyPrice": hourlyPrice,
-        "maxCarSize": maxCarSize
+        "maxCarSize": maxCarSize,
+        "availableTimes": "2021.12.25-"+_startString+":00 2021.12.25-"+_endString+":00"
       }
     };
 
@@ -636,11 +642,16 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    return _responseJson["setReserved"];
+
+    if (_responseJson["setReserved"] == "true") {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future uploadParkPhoto({int parkId,Uint8List bytes})async{
-    Uri _uri = Uri.parse("https://ptsv2.com/t/4xme6-1631564926/post");
+    Uri _uri = Uri.parse(_uploadPhoto);
     
 
     Map<String, dynamic> _payloadBody = {
@@ -774,5 +785,25 @@ class DataService {
 
   }
 
+  Future setReview({int userId, int reservationId,String comment,double point})async{
+    Uri _uri = Uri.parse(_setInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "setReview": {
+        "userId" : userId,
+        "reservationId" : reservationId,
+        "comment" : comment,
+        "point" : point
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    print(_responseJson["setReview"]);
+  }
 
 }

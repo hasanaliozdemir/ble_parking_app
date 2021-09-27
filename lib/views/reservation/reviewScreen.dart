@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/button.dart';
@@ -205,7 +206,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
     Get.back();
   }
   _sendReview(){
-    printInfo(info: "BAĞLI DEĞİLİM BEN (YORUM GÖNDERME) !!!!");
+    DataService().setReview(
+      point: point.toDouble(),
+      comment: _infoController.text
+    );
     Get.to(()=>SplashScreen(),fullscreenDialog: true);
   }
 }

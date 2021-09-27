@@ -5,6 +5,7 @@ import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/models/reservation.dart';
+import 'package:gesk_app/views/reservation/reservation_detail.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -120,8 +121,30 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
       itemCount: carList.length ?? 0,
       itemBuilder: (context, index) {
         var _reservation = carList[index];
-        return _buildListTile(_reservation);
+        return GestureDetector(
+          onTap: ()async{
+            _showLoading();
+            var _tpas = await dataService.getTpas(carList[index].parkId);
+            
+            var _index = _tpas.indexWhere((element) => element.tapId == carList[index].tpaId);
+            _tpas.forEach((element) {print(element.tapId);});
+            print("index: $_index , length : $_tpas");
+            var _tpa = _tpas[_index];
+            if (_tpa != null && carList[index].park != null) {
+              Navigator.pop(context);
+              Get.to(()=> ReservationDetail(
+                park: carList[index].park, 
+                tpa: _tpa, 
+                date: carList[index].date, 
+                start: int.parse(carList[index].start), 
+                end: int.parse(carList[index].end), 
+                reservation: carList[index]
+                ));
+            }
+          },
+          child: _buildListTile(_reservation));
       },
+      
     );
   }
 
@@ -186,7 +209,6 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
     var _userId = _prefs.getInt("userId");
-    print(_userId);
 
     carList= await dataService.getReservationsDriver(_userId);
 

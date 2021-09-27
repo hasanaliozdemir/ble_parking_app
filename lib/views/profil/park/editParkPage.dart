@@ -36,14 +36,12 @@ class _EditParkPageState extends State<EditParkPage> {
   Address _address;
   var _formattedAdress = "";
   var dataService = DataService();
-    var imageService = ImageService();
+  var imageService = ImageService();
 
   TextEditingController _parkNameController = TextEditingController();
-  TextEditingController _tpaNumberController = TextEditingController();
   TextEditingController _parkInfoController = TextEditingController();
 
   FocusNode _parkNameFocus = FocusNode();
-  FocusNode _tpaNumberFocus = FocusNode();
   FocusNode _parkInfoFocus = FocusNode();
 
   var _isClosed = false.obs;
@@ -52,7 +50,8 @@ class _EditParkPageState extends State<EditParkPage> {
   var _isWithElectricity = false.obs;
 
   List<XFile> _imageFileList = List<XFile>.generate(5, (index) => null);
-  List<Uint8List> _imageBytesList = List<Uint8List>.generate(5, (index) => null);
+  List<Uint8List> _imageBytesList =
+      List<Uint8List>.generate(5, (index) => null);
 
   final ImagePicker _picker = ImagePicker();
 
@@ -61,9 +60,9 @@ class _EditParkPageState extends State<EditParkPage> {
   @override
   void initState() {
     super.initState();
+    loadImageList();
     loadParkInfo();
     getAddress();
-    loadImageList();
   }
 
   @override
@@ -216,12 +215,11 @@ class _EditParkPageState extends State<EditParkPage> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     image: DecorationImage(
-                        image: (_imageFileList != null)? 
-                          _imageFileList[index] == null
-                            ? AssetImage("assets/images/carpark-image.png")
-                            : FileImage(File(_imageFileList[index].path)) 
-                          :
-                            AssetImage("assets/images/carpark-image.png"),
+                        image: (_imageBytesList != null)
+                            ? _imageBytesList[index] == null
+                                ? AssetImage("assets/images/carpark-image.png")
+                                : MemoryImage(_imageBytesList[index])
+                            : AssetImage("assets/images/carpark-image.png"),
                         fit: BoxFit.fill)),
               ),
             ),
@@ -467,7 +465,6 @@ class _EditParkPageState extends State<EditParkPage> {
       _imageFileList[index] = newImage;
       _imageBytesList[index] = newBytes;
     });
-
   }
 
   void _savePark() async {
@@ -495,13 +492,10 @@ class _EditParkPageState extends State<EditParkPage> {
     }
   }
 
-  uploadPhotos(int parkId)async{
+  uploadPhotos(int parkId) async {
     _imageBytesList.forEach((element) {
-      if (element !=null) {
-        dataService.uploadParkPhoto(
-          parkId: parkId,
-          bytes: element
-        );
+      if (element != null) {
+        dataService.uploadParkPhoto(parkId: parkId, bytes: element);
       }
     });
   }
@@ -537,13 +531,11 @@ class _EditParkPageState extends State<EditParkPage> {
 
     _ids.forEach((id) async {
       dataService.downloadPhoto(parkId: _park.id, photoId: id).then((byte) {
-        _imageFileList[_ids.indexOf(id)] = XFile(File.fromRawPath(byte).path);
+        setState(() {
+          _imageBytesList[_ids.indexWhere((element) => element == id)] = byte;
+        });
       });
     });
-
-    setState(() {
-          
-        });
   }
 
   getAddress() async {

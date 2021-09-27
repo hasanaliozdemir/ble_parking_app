@@ -469,7 +469,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
                         avaliable: true
                         ));
                     setState(() {});
-                    timeRanges.forEach((element) {print(element.startHour);});
+                    
                     Navigator.pop(context);
                   },
                   child: Padding(
@@ -573,6 +573,16 @@ class _AddTpaPageState extends State<AddTpaPage> {
     return _widgetList;
   }
 
+  _fixStart(){
+    timeRanges.sort( (a,b) => a.startHour.compareTo(b.startHour));
+    return timeRanges.first.startHour;
+  }
+
+  _fixEnd(){
+    timeRanges.sort( (a,b) => a.endHour.compareTo(b.endHour));
+    return timeRanges.first.endHour;
+  }
+
   _saveTpa()async{
     _showLoading();
 
@@ -580,7 +590,10 @@ class _AddTpaPageState extends State<AddTpaPage> {
       parkId: park.id, 
       tpaName: _tpaNameController.text,
       hourlyPrice: 0,
-      maxCarSize: _currentSelectedSize.toString() );
+      maxCarSize: _currentSelectedSize.toString(),
+      startTime: _fixStart(),
+      endTime: _fixEnd()
+      );
 
     if(_res.parkId!=null){
       Get.to(()=>ProfileScreen(),fullscreenDialog: true);

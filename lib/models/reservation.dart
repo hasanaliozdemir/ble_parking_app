@@ -1,3 +1,5 @@
+import 'package:gesk_app/backend/dataService.dart';
+import 'package:gesk_app/models/park.dart';
 import 'package:intl/intl.dart';
 
 class Reservation{
@@ -11,10 +13,16 @@ class Reservation{
   String plate; 
   String visitTime; 
   String visitStatus;
-  
-  
 
-  Reservation({this.plate,this.reservationId, this.date, this.start, this.end, this.parkId, this.tpaId, this.ownerId});
+  bool owned;
+  double price;
+
+  Park park;
+
+  String parkName;
+  String tpaName;
+
+  Reservation({this.park,this.parkName,this.tpaName,this.price,this.owned,this.plate,this.reservationId, this.date, this.start, this.end, this.parkId, this.tpaId, this.ownerId});
 
   factory Reservation.fromJson(Map<String,dynamic> json){
     
@@ -25,7 +33,13 @@ class Reservation{
 
     var _start = _startendList[0].split("-")[1].substring(0,2);
     var _end = _startendList[1].split("-")[1].substring(0,2);
-    
+    double _price = 0;
+    var _park;
+
+    DataService().getPark(parkId: json["parkId"]).then((park) {
+      _price = park.price * (int.parse(_end)-int.parse(_start));
+      _park = park;
+    });
 
     return Reservation(
       reservationId: json["reservationId"],
@@ -35,7 +49,9 @@ class Reservation{
       start: _start,
       end: _end,
       parkId: json["parkId"],
-
+      owned: false,
+      price: _price,
+      park: _park
     );
   }
 

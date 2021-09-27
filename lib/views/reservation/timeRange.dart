@@ -556,6 +556,7 @@ class _TimeRangePageState extends State<TimeRangePage> {
 
     var _refTpa = _tpas.where((element) => element.tapId == _selectedTime.first.tpaId);
 
+
     var _res = await _dataService.setReserved(
       parkId: _park.id,
       tpaId: _selectedTime.first.tpaId,
@@ -564,11 +565,12 @@ class _TimeRangePageState extends State<TimeRangePage> {
       datetime: _dateTime
     );
 
-    if (_res!=null) {
+    if (_res!=true) {
       Navigator.pop(context);
-      Get.to(()=>DoneReservationPage(park: _park,date: _date,start: _startTime,end: _endTime,tpa: _refTpa.first,),fullscreenDialog: true);
+      Get.snackbar("Hata", "Bir hata oluştu lütfen tekrar deneyin");
     } else {
       Navigator.pop(context);
+      Get.to(()=>DoneReservationPage(park: _park,date: _date,start: _startTime,end: _endTime,tpa: _refTpa.first,),fullscreenDialog: true);
     }
 
   }
