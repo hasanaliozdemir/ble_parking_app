@@ -131,7 +131,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
         flex: 6,
       ),
       Expanded(
-        flex: 470,
+        flex: 400,
         child: GoogleMap(
           initialCameraPosition: CameraPosition(target: latLng, zoom: 15),
           markers: _markers.toSet(),
@@ -140,7 +140,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
         ),
       ),
       Expanded(
-          flex: 240,
+          flex: 310,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -178,7 +178,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                height: Get.height/812*44,
+                height: Get.height/812*62,
                 width: Get.width/375*164,
           child: TextInputSimple(
             onChange: (){
@@ -187,6 +187,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
                             });
             },
               focusNode: numberFocus,
+              keyBoardType: TextInputType.datetime,
               controller: numberController,
               hintText: "Bina No",
           ),
@@ -196,7 +197,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                height: Get.height/812*44,
+                height: Get.height/812*62,
                 width: Get.width/375*164,
           child: TextInputSimple(
             onChange: (){
@@ -206,6 +207,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
             },
               focusNode: floorFocus,
               controller: floorController,
+              keyBoardType: TextInputType.datetime,
               hintText: "Kat",
           ),
         ),

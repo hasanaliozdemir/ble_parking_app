@@ -105,7 +105,7 @@ class _TextInputSimpleState extends State<TextInputSimple> {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              widget.errorText,
+              widget.errorText ?? "",
               style: TextStyle(
                 color: Colors.red
               ),

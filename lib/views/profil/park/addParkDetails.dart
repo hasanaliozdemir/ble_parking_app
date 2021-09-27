@@ -61,38 +61,49 @@ class _AddParkDetailsState extends State<AddParkDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).padding.top,
-            ),
-            Expanded(
-              flex: 44,
-              child: _buildBackButton(),
-            ),
-            Spacer(
-              flex: 8,
-            ),
-            Expanded(
-              flex: 41,
-              child: _buildtitle(),
-            ),
-            Expanded(
-              flex: 44,
-              child: _buildDesc(),
-            ),
-            Spacer(
-              flex: 8,
-            ),
-            Expanded(
-              flex: 480,
-              child: _builList(context),
-            ),
+      
+      body: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: _body(context),
+            )
           ],
-        ),
+        )
+    );
+  }
+
+  Padding _body(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).padding.top,
+          ),
+          Expanded(
+            flex: 44,
+            child: _buildBackButton(),
+          ),
+          Spacer(
+            flex: 8,
+          ),
+          Expanded(
+            flex: 41,
+            child: _buildtitle(),
+          ),
+          Expanded(
+            flex: 44,
+            child: _buildDesc(),
+          ),
+          Spacer(
+            flex: 8,
+          ),
+          Expanded(
+            flex: 480,
+            child: _builList(context),
+          ),
+        ],
       ),
     );
   }
@@ -108,7 +119,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                   shrinkWrap: true,
                   children: [
                     Container(
-                      height: Get.height / 812 * 700,
+                      height: Get.height / 812 * 800,
                       child: Column(
                         children: [
                           Expanded(
@@ -119,13 +130,13 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                             flex: 16,
                           ),
                           Expanded(
-                            flex: 44,
+                            flex: 60,
                             child: _buildParkName(),
                           ),
                           Spacer(
                             flex: 16,
                           ),
-                          Expanded(flex: 44,child: _buildPrice(),),
+                          Expanded(flex: 60,child: _buildPrice(),),
                           Spacer(
                             flex: 16,
                           ),
@@ -158,20 +169,15 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                             flex: 16,
                           ),
                           Expanded(
-                            flex: 96,
+                            flex: 84,
                             child: _buildImagePicker(),
                           ),
                           Spacer(
                             flex: 16,
                           ),
                           Expanded(
-                            flex: 60,
-                            child: TextInputSimple(
-                              controller: _parkInfoController,
-                              focusNode: _parkInfoFocus,
-                              hintText:
-                                  "Otopark hakkında ek bilgi ekleyebilirsiniz.",
-                            ),
+                            flex: 120,
+                            child: _buildInfo()
                           ),
                           Spacer(
                             flex: 16,
@@ -182,7 +188,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                                 text: "Kaydet", onPressed: _savePark),
                           ),
                           Spacer(
-                            flex: 96,
+                            flex: 60,
                           ),
                         ],
                       ),
@@ -238,18 +244,6 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                       
                     });
         },
-      ),
-    );
-  }
-
-  Padding _buildTpaNumber() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: TextInputSimple(
-        controller: _tpaNumberController,
-        focusNode: _tpaNumberFocus,
-        hintText: "Tekil Park Alanı Sayısı",
-        keyBoardType: TextInputType.number,
       ),
     );
   }
@@ -478,25 +472,52 @@ class _AddParkDetailsState extends State<AddParkDetails> {
     );
   }
 
+  Widget _buildInfo(){
+    return Container(
+      width: Get.width/375*343,
+      height: Get.height/812*120,
+      decoration: BoxDecoration(
+        border: Border.all(width: 2,color: gray500),
+        borderRadius: BorderRadius.circular(8)
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextField(
+          keyboardType: TextInputType.name,
+          controller: _parkInfoController,
+          maxLines: null,
+          decoration: InputDecoration(
+            hintText: "Otopark hakkında düşünceleriniz.",
+            border: InputBorder.none
+          ),
+        ),
+      ),
+    );
+  }
+
   void _backButtonFunc() {
     Get.to(() => AddParkPage());
   }
 
   _pickImage(index) async {
+    
     var newImage = await _picker.pickImage(source: ImageSource.gallery);
-    var _expbytes = File(newImage.path).readAsBytesSync().lengthInBytes;
     var newBytes = await imageService.testCompressFile(File(newImage.path));
 
     setState(() {
       _imageFileList[index] = newImage;
       _imageBytesList[index] = newBytes;
     });
-    _imageFileList.forEach((element) {
-      print("firsByte"+_expbytes.toString());
-    });
-    _imageBytesList.forEach((element) { 
-      if (element != null) {
-        print(element.length);
+
+  }
+
+  uploadPhotos(int parkId)async{
+    _imageBytesList.forEach((element) {
+      if (element !=null) {
+        dataService.uploadParkPhoto(
+          parkId: parkId,
+          bytes: element
+        );
       }
     });
   }
@@ -518,9 +539,13 @@ class _AddParkDetailsState extends State<AddParkDetails> {
       name: _parkNameController.text, 
       longitude: address.latLng.longitude, 
       latitude: address.latLng.latitude, 
+      info: _parkInfoController.text,
       location: address.mahalle);
 
     if(_newPark.name != null){
+      print(_newPark.id);
+
+      uploadPhotos(_newPark.id);
       Get.to(()=> ProfileScreen(),fullscreenDialog: true);
     }else{
       Navigator.pop(context);

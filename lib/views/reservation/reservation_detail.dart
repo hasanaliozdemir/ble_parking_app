@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:math' show cos, sqrt, asin;
+import 'dart:typed_data';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:gesk_app/backend/dataService.dart';
 
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
@@ -56,12 +58,17 @@ class _ReservationDetailState extends State<ReservationDetail> {
 
   Timer _timer;
 
+  var dataService = DataService();
+  List<Uint8List> _imageBytesList = List<Uint8List>.generate(5, (index) => null);
+
+
   _ReservationDetailState(this._park, this._tpa, this._date, this._start,
       this._end, this._reservation);
 
   @override
   void initState() {
     super.initState();
+    loadImageList();
     _readyPark();
     _getUserLocation();
     Timer(Duration(seconds: 2),(){
@@ -235,8 +242,8 @@ class _ReservationDetailState extends State<ReservationDetail> {
                 width: Get.width / 375 * 240,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                        image: NetworkImage(_park.imageUrls[itemIndex]),
+                    image:(_imageBytesList[itemIndex]==null)? null: DecorationImage(
+                        image: MemoryImage(_imageBytesList[itemIndex]),
                         fit: BoxFit.cover)),
               );
             },
@@ -551,6 +558,19 @@ class _ReservationDetailState extends State<ReservationDetail> {
     } else {
       _time = 30;
     }
+  }
+
+  loadImageList() {
+    var _ids = _park.imageUrls;
+
+    _ids.forEach((id) async {
+      dataService.downloadPhoto(parkId: _park.id, photoId: id).then((byte) {
+       setState(() {
+                _imageBytesList[_ids.indexOf(id)] = byte;
+              });
+      });
+    });
+
   }
 
   _deleteReservation() {

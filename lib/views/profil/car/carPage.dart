@@ -75,7 +75,7 @@ class _CarPAgeState extends State<CarPAge> {
               flex: 32,
             ),
             Expanded(
-                flex: 60,
+                flex: 65,
                 child: TextInputSimple(
                   readOnly: edit1.value,
                   suffixIcon: Icon(edit1.value
@@ -109,7 +109,7 @@ class _CarPAgeState extends State<CarPAge> {
               flex: 24,
             ),
             Expanded(
-              flex: 60,
+              flex: 66,
               child: TextInputSimple(
                 readOnly: edit3.value,
                 suffixIcon: Icon(edit3.value

@@ -1,8 +1,8 @@
 
-import 'dart:async';
 
-import 'package:gesk_app/bloc/app_bloc.dart';
-import 'package:gesk_app/services/distanceService.dart';
+
+import 'package:gesk_app/backend/dataService.dart';
+
 
 
 import 'package:flutter/cupertino.dart';
@@ -11,9 +11,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'package:provider/provider.dart';
 
 var h = Get.height / 812;
 var w = Get.width / 375;
@@ -28,9 +26,15 @@ class ParkCard extends StatefulWidget {
 }
 
 class _ParkCardState extends State<ParkCard> {
-  
+  var _imageByte;
+  var _dataService = DataService();
 
-  
+  @override
+  void initState() { 
+    super.initState();
+    _getImage();
+  }
+
   @override
   Widget build(BuildContext context) {
     
@@ -235,12 +239,12 @@ class _ParkCardState extends State<ParkCard> {
 
   Container imageContainer() {
 
-    if (widget.park.imageUrls!=null) {
+    if (_imageByte!=null) {
       return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           image: DecorationImage(
-              image: NetworkImage(widget.park.imageUrls.first), fit: BoxFit.cover)),
+              image: MemoryImage(_imageByte), fit: BoxFit.cover)),
     );
     } else {
       return Container(
@@ -252,5 +256,13 @@ class _ParkCardState extends State<ParkCard> {
     }
 
     
+  }
+
+  _getImage()async{
+    _dataService.downloadPhoto(parkId: widget.park.id, photoId: widget.park.imageUrls.first).then((value) {
+      setState(() {
+              _imageByte = value;
+            });
+    });
   }
 }

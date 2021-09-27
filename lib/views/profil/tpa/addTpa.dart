@@ -88,7 +88,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
         ),
         Expanded(
           child: _buildTpaName(),
-          flex: 44,
+          flex: 60,
         ),
         Spacer(
           flex: 24,

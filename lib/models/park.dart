@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 
@@ -89,7 +91,7 @@ class Park {
     return Park(
         ownerId: fixId(json['ownerId']),
         location: json['location'],
-        //imageUrls: json['imageUrls'] as List<String>,
+        imageUrls: jsonDecode(json['imageUrls']) as List,
         isClosedPark: json['isClosedPark'],
         longitude: json['longtitude'],
         latitude: json['latitude'],
@@ -155,7 +157,7 @@ class Park {
     return Park(
         ownerId: fixId(json['ownerId']),
         location: json['location'],
-        //imageUrls: json['imageUrls'] as List<String>,
+        imageUrls: jsonDecode(json['imageUrls']) as List,
         isClosedPark: json['isClosedPark'],
         longitude: json['longtitude'],
         latitude: json['latitude'],
@@ -216,7 +218,7 @@ class Park {
     return Park(
         ownerId: fixId(json['ownerId']),
         location: json['location'],
-        //imageUrls: json['imageUrls'] as List<String>,
+        imageUrls: jsonDecode(json['imageUrls']) as List,
         isClosedPark: json['isClosedPark'],
         longitude: json['longtitude'],
         latitude: json['latitude'],

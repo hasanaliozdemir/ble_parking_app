@@ -44,10 +44,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final int _index = 2;
   var w = Get.width / 375;
   var h = Get.height / 812;
-  String name = "Hasan Ali Özdemir";
-  String phoneNumber = "+90 535 069 01 77";
-  String imageUrl =
-      "https://media-exp1.licdn.com/dms/image/C4D03AQGYcK6j7HPXOA/profile-displayphoto-shrink_200_200/0/1606888856127?e=1632355200&v=beta&t=-tbOl92SK-ZO87X1OIRg5uroCA4eOLcQ_up8DFsOSyA";
+
+  
 
   bool _loaded = false;
   @override
@@ -137,10 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: Image(
-          fit: BoxFit.fill,
-          image: NetworkImage(imageUrl),
-        ),
+        
       ),
     );
   }

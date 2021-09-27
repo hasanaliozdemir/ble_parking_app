@@ -1,4 +1,5 @@
 
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class DataService {
   final String _setInfoUrl = "https://www.erenkomurcu.com/setInfo/";
   final String _getInfoUrl = "https://www.erenkomurcu.com/getInfo/";
   final String _uploadPhoto = "https://www.erenkomurcu.com/uploadPicture/";
+  final String _downloadPhoto = "https://www.erenkomurcu.com/downloadPicture/";
   
   List<Park> parks = List<Park>();
 
@@ -118,6 +120,7 @@ class DataService {
 
   Future<Park> addPark(
       {int userId,
+      String info,
       bool isClosedPark,
       bool isWithCam,
       bool isWithSecurity,
@@ -141,11 +144,12 @@ class DataService {
         "price": price,
         "name": name,
         "status": 0,
-        "parkSpace": 1,
+        "parkSpace": 0,
         "filledParkSpace": 0,
         "longtitude": longitude,
         "latitude": latitude,
-        "location": location
+        "location": location,
+        "parkInfo": info
       }
     };
 
@@ -614,7 +618,7 @@ class DataService {
   
 
   Future setReserved({int parkId,int tpaId,int userId,String plate,String datetime})async{
-    Uri _uri = Uri.parse("https://ptsv2.com/t/qazus-1631623846/post"); //TODO: LİNK DÜZELT
+    Uri _uri = Uri.parse(_setInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
       "setReserved": {
@@ -636,22 +640,22 @@ class DataService {
   }
 
   Future uploadParkPhoto({int parkId,Uint8List bytes})async{
-    Uri _uri = Uri.parse(_uploadPhoto);
+    Uri _uri = Uri.parse("https://ptsv2.com/t/4xme6-1631564926/post");
+    
 
     Map<String, dynamic> _payloadBody = {
-      "uploadPhoto": {
         "parkId": parkId,
-        "photo":bytes
-      }
+        "photo": bytes
     };
+
+    print(bytes.length);
 
     var _postJson = convert.jsonEncode(_payloadBody);
 
     var _response = await http.post(_uri, body: _postJson);
 
-    var _responseJson = convert.jsonDecode(_response.body);
 
-    print(_responseJson["uploadPhoto"]);
+    print(_response.statusCode);
   }
 
   Future getReservationsHost(int hostId)async{
@@ -725,5 +729,50 @@ class DataService {
 
     print(_responseJson);
   }
+
+  Future uploadUserPhoto({int userId,Uint8List bytes}) async{
+    Uri _uri = Uri.parse(_uploadPhoto);
+
+    Map<String, dynamic> _payloadBody = {
+      "uploadPhoto": {
+        "userId": userId,
+        "photo":bytes
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    print(_responseJson["uploadPhoto"]);
+  }
+
+  Future downloadPhoto({int parkId,int photoId})async{
+    Uri _uri = Uri.parse(_downloadPhoto);
+
+    Map<String, dynamic> _payloadBody = {
+      "parkId": parkId,
+      "photoId" : photoId
+    };
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    var _intList = List<int>();
+
+    List _dynamics = _responseJson["photo"];
+
+    _dynamics.forEach((element) { 
+      _intList.add(element);
+    });
+
+    return Uint8List.fromList(_intList);
+
+  }
+
 
 }

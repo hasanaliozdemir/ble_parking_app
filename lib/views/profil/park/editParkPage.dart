@@ -13,6 +13,7 @@ import 'package:gesk_app/data_models/address.dart';
 
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/services/addressService.dart';
+import 'package:gesk_app/services/imageService.dart';
 import 'package:gesk_app/views/profil/park/addParkPage.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
@@ -24,10 +25,10 @@ class EditParkPage extends StatefulWidget {
   Address address;
   Park park;
 
-   EditParkPage({Key key, this.park, this.address}) : super(key: key);
+  EditParkPage({Key key, this.park, this.address}) : super(key: key);
 
   @override
-  _EditParkPageState createState() => _EditParkPageState(park,address);
+  _EditParkPageState createState() => _EditParkPageState(park, address);
 }
 
 class _EditParkPageState extends State<EditParkPage> {
@@ -35,6 +36,7 @@ class _EditParkPageState extends State<EditParkPage> {
   Address _address;
   var _formattedAdress = "";
   var dataService = DataService();
+    var imageService = ImageService();
 
   TextEditingController _parkNameController = TextEditingController();
   TextEditingController _tpaNumberController = TextEditingController();
@@ -49,17 +51,19 @@ class _EditParkPageState extends State<EditParkPage> {
   var _isWithSecurity = false.obs;
   var _isWithElectricity = false.obs;
 
-  List<File> _imageFileList = List<File>.generate(5, (index) => null);
+  List<XFile> _imageFileList = List<XFile>.generate(5, (index) => null);
+  List<Uint8List> _imageBytesList = List<Uint8List>.generate(5, (index) => null);
 
   final ImagePicker _picker = ImagePicker();
 
-  _EditParkPageState(this._park,this._address);
+  _EditParkPageState(this._park, this._address);
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     loadParkInfo();
     getAddress();
+    loadImageList();
   }
 
   @override
@@ -103,96 +107,96 @@ class _EditParkPageState extends State<EditParkPage> {
 
   Container _builList(BuildContext context) {
     return Container(
-              height: Get.height / 812 * 596,
-              width: Get.width,
-              child: MediaQuery.removePadding(
-                context: context,
-                removeTop: true,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Container(
-                      height: Get.height / 812 * 700,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 44,
-                            child: _buildFormattedAddress(),
-                          ),
-                          Spacer(
-                            flex: 16,
-                          ),
-                          Expanded(
-                            flex: 44,
-                            child: _buildParkName(),
-                          ),
-                          Spacer(
-                            flex: 16,
-                          ),
-                          // Expanded(flex: 44,child: _buildTpaNumber(),),
-                          Spacer(
-                            flex: 16,
-                          ),
-                          Expanded(
-                            flex: 44,
-                            child: _buildListTile1(),
-                          ),
-                          Spacer(
-                            flex: 8,
-                          ),
-                          Expanded(
-                            flex: 44,
-                            child: _buildListTile2(),
-                          ),
-                          Spacer(
-                            flex: 8,
-                          ),
-                          Expanded(
-                            flex: 44,
-                            child: _buildListTile3(),
-                          ),
-                          Spacer(
-                            flex: 8,
-                          ),
-                          Expanded(
-                            flex: 44,
-                            child: _buildListTile4(),
-                          ),
-                          Spacer(
-                            flex: 16,
-                          ),
-                          Expanded(
-                            flex: 96,
-                            child: _buildImagePicker(),
-                          ),
-                          Spacer(
-                            flex: 16,
-                          ),
-                          Expanded(
-                            flex: 44,
-                            child: TextInputSimple(
-                              controller: _parkInfoController,
-                              focusNode: _parkInfoFocus,
-                              hintText:
-                                  "Otopark hakkında ek bilgi ekleyebilirsiniz.",
-                            ),
-                          ),
-                          Spacer(flex: 16,),
-                          Expanded(
-                            flex: 56,
-                            child: Button.active(
-                                text: "Kaydet", onPressed: _savePark),
-                          ),
-                          Spacer(
-                            flex: 96,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+      height: Get.height / 812 * 596,
+      width: Get.width,
+      child: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Container(
+              height: Get.height / 812 * 700,
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 44,
+                    child: _buildFormattedAddress(),
+                  ),
+                  Spacer(
+                    flex: 16,
+                  ),
+                  Expanded(
+                    flex: 60,
+                    child: _buildParkName(),
+                  ),
+                  Spacer(
+                    flex: 16,
+                  ),
+                  // Expanded(flex: 44,child: _buildTpaNumber(),),
+                  Spacer(
+                    flex: 16,
+                  ),
+                  Expanded(
+                    flex: 44,
+                    child: _buildListTile1(),
+                  ),
+                  Spacer(
+                    flex: 8,
+                  ),
+                  Expanded(
+                    flex: 44,
+                    child: _buildListTile2(),
+                  ),
+                  Spacer(
+                    flex: 8,
+                  ),
+                  Expanded(
+                    flex: 44,
+                    child: _buildListTile3(),
+                  ),
+                  Spacer(
+                    flex: 8,
+                  ),
+                  Expanded(
+                    flex: 44,
+                    child: _buildListTile4(),
+                  ),
+                  Spacer(
+                    flex: 16,
+                  ),
+                  Expanded(
+                    flex: 96,
+                    child: _buildImagePicker(),
+                  ),
+                  Spacer(
+                    flex: 16,
+                  ),
+                  Expanded(
+                    flex: 60,
+                    child: TextInputSimple(
+                      controller: _parkInfoController,
+                      focusNode: _parkInfoFocus,
+                      hintText: "Otopark hakkında ek bilgi ekleyebilirsiniz.",
+                    ),
+                  ),
+                  Spacer(
+                    flex: 8,
+                  ),
+                  Expanded(
+                    flex: 56,
+                    child: Button.active(text: "Kaydet", onPressed: _savePark),
+                  ),
+                  Spacer(
+                    flex: 96,
+                  ),
+                ],
               ),
-            );
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Container _buildImagePicker() {
@@ -212,9 +216,12 @@ class _EditParkPageState extends State<EditParkPage> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     image: DecorationImage(
-                        image: _imageFileList[index] == null
+                        image: (_imageFileList != null)? 
+                          _imageFileList[index] == null
                             ? AssetImage("assets/images/carpark-image.png")
-                            : FileImage(File(_imageFileList[index].path)),
+                            : FileImage(File(_imageFileList[index].path)) 
+                          :
+                            AssetImage("assets/images/carpark-image.png"),
                         fit: BoxFit.fill)),
               ),
             ),
@@ -223,8 +230,6 @@ class _EditParkPageState extends State<EditParkPage> {
       ),
     );
   }
-
-
 
   Padding _buildParkName() {
     return Padding(
@@ -253,7 +258,7 @@ class _EditParkPageState extends State<EditParkPage> {
           title: Container(
             alignment: Alignment.topCenter,
             child: Text(
-              _formattedAdress, 
+              _formattedAdress,
               style: TextStyle(
                   color: gray900,
                   fontWeight: FontWeight.w500,
@@ -451,91 +456,101 @@ class _EditParkPageState extends State<EditParkPage> {
   }
 
   void _backButtonFunc() {
-    Get.to(() => AddParkPage());
+    Get.back();
   }
 
   _pickImage(index) async {
     var newImage = await _picker.pickImage(source: ImageSource.gallery);
+    var newBytes = await imageService.testCompressFile(File(newImage.path));
+
     setState(() {
-      _imageFileList[index] = File(newImage.path);
+      _imageFileList[index] = newImage;
+      _imageBytesList[index] = newBytes;
     });
-    _imageFileList.forEach((element) {
-      print(element);
-    });
+
   }
 
-  void _savePark()async {
+  void _savePark() async {
     _showLoading();
 
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var _userId = _prefs.getInt("userId");
 
-    
     var _editPark = await dataService.editPark(
       context: context,
       userId: _userId,
       parkId: _park.id,
-      isClosedPark:_isClosed.value,
-      isWithCam: _isCam.value, 
-      isWithSecurity: _isWithSecurity.value, 
-      isWithElectricity: _isWithElectricity.value, 
-      name: _parkNameController.text, 
-      
-      );
+      isClosedPark: _isClosed.value,
+      isWithCam: _isCam.value,
+      isWithSecurity: _isWithSecurity.value,
+      isWithElectricity: _isWithElectricity.value,
+      name: _parkNameController.text,
+    );
 
-    if(_editPark.name != null){
-      Get.to(()=> ProfileScreen(),fullscreenDialog: true);
-    }else{
+    if (_editPark.name != null) {
+      uploadPhotos(_editPark.id);
+      Get.to(() => ProfileScreen(), fullscreenDialog: true);
+    } else {
       Navigator.pop(context);
     }
   }
 
-  void _showLoading(){
-    showDialog(
-      barrierDismissible: false,
-      context: context, 
-    builder: (context){
-      return Center(
-        child: Container(
-          width: Get.width/375*50,
-          height: Get.width/375*50,
-          decoration: BoxDecoration(
-            color: white,
-            borderRadius: BorderRadius.circular(8)
-          ),
-          child: CircularProgressIndicator.adaptive(),
-        ),
-      );
+  uploadPhotos(int parkId)async{
+    _imageBytesList.forEach((element) {
+      if (element !=null) {
+        dataService.uploadParkPhoto(
+          parkId: parkId,
+          bytes: element
+        );
+      }
     });
   }
 
-  loadParkInfo(){
+  void _showLoading() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return Center(
+            child: Container(
+              width: Get.width / 375 * 50,
+              height: Get.width / 375 * 50,
+              decoration: BoxDecoration(
+                  color: white, borderRadius: BorderRadius.circular(8)),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          );
+        });
+  }
+
+  loadParkInfo() {
     _isCam.value = _park.isWithCam;
     _isClosed.value = _park.isClosedPark;
     _isWithElectricity.value = _park.isWithElectricity;
     _isWithSecurity.value = _park.isWithSecurity;
     _parkNameController.text = _park.name;
-    _parkInfoController.text = (_park.info !=null)? _park.info : "";
-    if(_park.imageUrls != null){
-      _imageFileList = loadImageList();
-    }
+    _parkInfoController.text = (_park.info != null) ? _park.info : "";
   }
 
-  List<File> loadImageList(){
-    List<File> _res = List<File>();
+  loadImageList() {
+    var _ids = _park.imageUrls;
 
-    var _ref = _park.imageUrls;
-
-    _ref.forEach((element) { 
-      _res.add(File.fromRawPath(element));
+    _ids.forEach((id) async {
+      dataService.downloadPhoto(parkId: _park.id, photoId: id).then((byte) {
+        _imageFileList[_ids.indexOf(id)] = XFile(File.fromRawPath(byte).path);
+      });
     });
-  }
 
-  getAddress() async{
-    var _adres = await AdressService().getFormatedAddress(LatLng(_park.latitude, _park.longitude));
     setState(() {
-          _formattedAdress = _adres.formattedAddress;
+          
         });
   }
 
+  getAddress() async {
+    var _adres = await AdressService()
+        .getFormatedAddress(LatLng(_park.latitude, _park.longitude));
+    setState(() {
+      _formattedAdress = _adres.formattedAddress;
+    });
+  }
 }
