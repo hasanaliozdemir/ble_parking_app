@@ -95,7 +95,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
         ),
         Expanded(
           child: _buildSizeDropDown(),
-          flex: 44,
+          flex: 50,
         ),
         Spacer(
           flex: 24,
@@ -231,7 +231,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
 
   Widget _buildSizeDropDown() {
     return Container(
-        height: Get.height / 812 * 44,
+        height: Get.height / 812 * 50,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: gray600),

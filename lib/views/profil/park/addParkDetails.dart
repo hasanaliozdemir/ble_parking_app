@@ -110,7 +110,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
 
   Container _builList(BuildContext context) {
     return Container(
-              height: Get.height / 812 * 596,
+              height: Get.height / 812 * 650,
               width: Get.width,
               child: MediaQuery.removePadding(
                 context: context,
@@ -130,13 +130,13 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                             flex: 16,
                           ),
                           Expanded(
-                            flex: 60,
+                            flex: 65,
                             child: _buildParkName(),
                           ),
                           Spacer(
                             flex: 16,
                           ),
-                          Expanded(flex: 60,child: _buildPrice(),),
+                          Expanded(flex: 65,child: _buildPrice(),),
                           Spacer(
                             flex: 16,
                           ),
@@ -169,7 +169,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
                             flex: 16,
                           ),
                           Expanded(
-                            flex: 84,
+                            flex: 90,
                             child: _buildImagePicker(),
                           ),
                           Spacer(

@@ -1,5 +1,4 @@
 
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -16,10 +15,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 class DataService {
-  final String _setInfoUrl = "https://www.erenkomurcu.com/setInfo/";
-  final String _getInfoUrl = "https://www.erenkomurcu.com/getInfo/";
-  final String _uploadPhoto = "https://www.erenkomurcu.com/uploadPicture/";
-  final String _downloadPhoto = "https://www.erenkomurcu.com/downloadPicture/";
+  final String _setInfoUrl = "https://evpark.gesk.tech/setInfo/";
+  final String _getInfoUrl = "https://evpark.gesk.tech/getInfo/";
+  final String _uploadPhoto = "https://evpark.gesk.tech/uploadPicture/";
+  final String _downloadPhoto = "https://evpark.gesk.tech/downloadPicture/";
   
   List<Park> parks = List<Park>();
 
@@ -239,7 +238,7 @@ class DataService {
             );
           });
     } else {
-      
+      return Park.fromJson(_responseJson["editPark"]);
     }
   }
 

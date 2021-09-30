@@ -170,7 +170,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
             flex: 16,
           ),
           Expanded(
-            flex: 60,
+            flex: 65,
             child: _buildPasswordForm(),
           ),
           Spacer(

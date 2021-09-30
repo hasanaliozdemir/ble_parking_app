@@ -70,7 +70,7 @@ class _ParkPageState extends State<ParkPage> {
             flex: 24,
           ),
           Expanded(
-            flex: 166,
+            flex: 180,
             child: _titleCard(),
           ),
           Spacer(
@@ -160,7 +160,7 @@ class _ParkPageState extends State<ParkPage> {
             height: MediaQuery.of(context).padding.top,
           ),
           SizedBox(
-            height: Get.height/812*350,
+            height: Get.height/812*370,
           ),
           Container(
             child: _buildTpaList(),

@@ -161,12 +161,21 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
   Widget _buildAddressInput() {
     
     return Container(
-      
-              width: Get.width/375*343,
-      child: TextInputSimple(
-        focusNode: addressFocus,
-        controller: addressController,
-        readOnly: true,
+      width: Get.width/375*343,
+      height: Get.height/812*65,
+      decoration: BoxDecoration(
+        border: Border.all(width: 2,color: gray500),
+        borderRadius: BorderRadius.circular(8),
+        color: white
+      ),
+      child: Center(
+        child: TextField(
+          controller: addressController,
+          readOnly: true,
+          decoration: InputDecoration(
+            border: InputBorder.none
+          ),
+        ),
       ),
     );
   }

@@ -152,7 +152,7 @@ class _SignInScreenState extends State<SignInScreen> {
               flex: 16,
             ),
             Expanded(
-              flex: 60,
+              flex: 65,
               child: _buildPasswordForm(),
             ),
             Spacer(flex: 8,),

@@ -90,20 +90,30 @@ class _PasswordInputState extends State<PasswordInput> {
       ),
       child: Stack(
         children: [
-          Obx(()=>Container(
-            width: Get.width / 375 * 343,
-            height: Get.height / 812 * 44,
-            decoration: BoxDecoration(
-            border: _focused.value
-                ? Border.all(color: blue500)
-                : Border.all(color: gray600),
-            //boxShadow: [BoxShadow(color: Color(0x33000000),blurRadius: 10,offset: Offset(0, 4),),],
-            borderRadius: BorderRadius.circular(8),
-            color: white),
-            padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 4,
+          Obx(()=>Column(
+            children: [
+              Container(
+                width: Get.width / 375 * 343,
+                height: Get.height / 812 * 44,
+                decoration: BoxDecoration(
+                border: _focused.value
+                    ? Border.all(color: blue500)
+                    : Border.all(color: gray600),
+                //boxShadow: [BoxShadow(color: Color(0x33000000),blurRadius: 10,offset: Offset(0, 4),),],
+                borderRadius: BorderRadius.circular(8),
+                color: white),
+                padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 4,
         ),
+              ),
+              Text(
+                widget.errorText,
+                style: TextStyle(
+                  color: Colors.red
+              ), 
+              )
+            ],
           ),),
           _buildObx()
         ],
@@ -149,7 +159,7 @@ class _PasswordInputState extends State<PasswordInput> {
             focusColor: blue500,
             prefixIcon: widget.prefixIcon,
             suffixIcon: _buildSuffix(),
-            errorText: widget.errorText),
+            ),
       ),
     ));
   }

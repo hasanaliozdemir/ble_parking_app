@@ -106,7 +106,7 @@ class _EditParkPageState extends State<EditParkPage> {
 
   Container _builList(BuildContext context) {
     return Container(
-      height: Get.height / 812 * 596,
+      height: Get.height / 812 * 650,
       width: Get.width,
       child: MediaQuery.removePadding(
         context: context,
@@ -126,7 +126,7 @@ class _EditParkPageState extends State<EditParkPage> {
                     flex: 16,
                   ),
                   Expanded(
-                    flex: 60,
+                    flex: 65,
                     child: _buildParkName(),
                   ),
                   Spacer(
@@ -172,7 +172,7 @@ class _EditParkPageState extends State<EditParkPage> {
                     flex: 16,
                   ),
                   Expanded(
-                    flex: 60,
+                    flex: 65,
                     child: TextInputSimple(
                       controller: _parkInfoController,
                       focusNode: _parkInfoFocus,
@@ -289,7 +289,7 @@ class _EditParkPageState extends State<EditParkPage> {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          "Otopark Ekle",
+          "Otopark Düzenle",
           textAlign: TextAlign.left,
           style: TextStyle(
               fontFamily: "SF Pro Display",
@@ -484,12 +484,10 @@ class _EditParkPageState extends State<EditParkPage> {
       name: _parkNameController.text,
     );
 
-    if (_editPark.name != null) {
+    
       uploadPhotos(_editPark.id);
       Get.to(() => ProfileScreen(), fullscreenDialog: true);
-    } else {
-      Navigator.pop(context);
-    }
+    
   }
 
   uploadPhotos(int parkId) async {

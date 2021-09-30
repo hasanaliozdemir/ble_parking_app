@@ -127,9 +127,12 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
             var _tpas = await dataService.getTpas(carList[index].parkId);
             
             var _index = _tpas.indexWhere((element) => element.tapId == carList[index].tpaId);
-            _tpas.forEach((element) {print(element.tapId);});
-            print("index: $_index , length : $_tpas");
-            var _tpa = _tpas[_index];
+
+            if (_index == -1) {
+              Navigator.pop(context);
+              Get.snackbar("Hata", "Bir hata oluştu");
+            }else{
+              var _tpa = _tpas[_index];
             if (_tpa != null && carList[index].park != null) {
               Navigator.pop(context);
               Get.to(()=> ReservationDetail(
@@ -140,6 +143,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                 end: int.parse(carList[index].end), 
                 reservation: carList[index]
                 ));
+            }
             }
           },
           child: _buildListTile(_reservation));
