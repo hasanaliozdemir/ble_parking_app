@@ -104,7 +104,16 @@ class _SplashScreenState extends State<SplashScreen> {
       if (_auth != null) {
         if (_location != null) {
           if (_firstParks != null) {
-            if (_firstParks.last!=null && _firstParks.last.distance!=null) {
+            if (_firstParks.isEmpty) {
+              if (_auth == true) {
+                  Get.off(() => MapScreen(location: _location,firstParks:_ready));
+                  timer.cancel();
+                } else {
+                  Get.off(() => MapScreenReadOnly(location: _location,firstParks:_ready));
+                  timer.cancel();
+                }
+            } else {
+              if (_firstParks.last.distance!=null) {
               if (_firstParks.last.distance !="") {
               _orderList();
               if (_fixed==true) {
@@ -121,6 +130,8 @@ class _SplashScreenState extends State<SplashScreen> {
               _distanceFix(_location.latitude,_location.longitude);
             }
             } 
+            }
+            
           }
         }else{
           _getUserLocation();
