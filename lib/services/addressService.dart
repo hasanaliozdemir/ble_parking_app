@@ -26,9 +26,16 @@ class AdressService {
     
 
     _getAdressComp(String type) {
-      return _adressComponents[_adressComponents
-              .indexWhere((element) => (element.types.contains(type)))]
+      var _index = _adressComponents
+              .indexWhere((element) => (element.types.contains(type)));
+
+
+      if (_index>-1) {
+        return _adressComponents[_index]
           .shortName;
+      }else{
+        return "";
+      }
     }
 
     

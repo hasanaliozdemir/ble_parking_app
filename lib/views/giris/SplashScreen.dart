@@ -91,7 +91,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _getAuth() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    
+
     _auth = _prefs.getBool("auth");
 
     if (_auth == null) {
@@ -106,34 +106,37 @@ class _SplashScreenState extends State<SplashScreen> {
           if (_firstParks != null) {
             if (_firstParks.isEmpty) {
               if (_auth == true) {
-                  Get.off(() => MapScreen(location: _location,firstParks:_ready));
-                  timer.cancel();
-                } else {
-                  Get.off(() => MapScreenReadOnly(location: _location,firstParks:_ready));
-                  timer.cancel();
-                }
-            } else {
-              if (_firstParks.last.distance!=null) {
-              if (_firstParks.last.distance !="") {
-              _orderList();
-              if (_fixed==true) {
-                if (_auth == true) {
-                  Get.off(() => MapScreen(location: _location,firstParks:_ready));
-                  timer.cancel();
-                } else {
-                  Get.off(() => MapScreenReadOnly(location: _location,firstParks:_ready));
-                  timer.cancel();
-                }
-              
+                Get.off(
+                    () => MapScreen(location: _location, firstParks: _ready));
+                timer.cancel();
+              } else {
+                Get.off(() =>
+                    MapScreenReadOnly(location: _location, firstParks: _ready));
+                timer.cancel();
               }
-            }else{
-              _distanceFix(_location.latitude,_location.longitude);
+            } else {
+              if (_firstParks.last.distance != null) {
+                if (_firstParks.last.distance != "") {
+                  _orderList();
+                  if (_fixed == true) {
+                    if (_auth == true) {
+                      print(_ready);
+                      Get.off(() =>
+                          MapScreen(location: _location, firstParks: _ready));
+                      timer.cancel();
+                    } else {
+                      Get.off(() => MapScreenReadOnly(
+                          location: _location, firstParks: _ready));
+                      timer.cancel();
+                    }
+                  }
+                } else {
+                  _distanceFix(_location.latitude, _location.longitude);
+                }
+              }
             }
-            } 
-            }
-            
           }
-        }else{
+        } else {
           _getUserLocation();
         }
       }
@@ -144,62 +147,54 @@ class _SplashScreenState extends State<SplashScreen> {
     var position = await GeolocatorPlatform.instance
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     _location = position;
-    _firstParks = await _getParks(lat: position.latitude, lng: position.longitude);
-
-    
+    _firstParks =
+        await _getParks(lat: position.latitude, lng: position.longitude);
   }
 
-  Future<List<Park>> _getParks({@required double lat, @required double lng}) async {
+  Future<List<Park>> _getParks(
+      {@required double lat, @required double lng}) async {
     List<Park> _referance = await dataService.getNearParks(lat: lat, lng: lng);
     var _prefs = await SharedPreferences.getInstance();
     var _userId = _prefs.getInt("userId");
     List<Park> _avaliableParks = List<Park>();
 
     if (_userId == null) {
-      
-    }else{
-      _avaliableParks= await dataService.getAdminPark(_userId); //GETPARKSBYLOCATİON
+    } else {
+      _avaliableParks =
+          await dataService.getAdminPark(_userId); //GETPARKSBYLOCATİON
     }
 
-    _avaliableParks.forEach((element) {element.status = Status.admin; });
-
-
-    _avaliableParks.forEach((aval) { 
-      _referance.removeWhere((element) => element.id  == aval.id);
+    _avaliableParks.forEach((element) {
+      element.status = Status.admin;
     });
 
-    _avaliableParks.forEach((aval2) { 
+    _avaliableParks.forEach((aval) {
+      _referance.removeWhere((element) => element.id == aval.id);
+    });
+
+    _avaliableParks.forEach((aval2) {
       _referance.add(aval2);
     });
 
-
-
-
     if (_referance is List<Park>) {
       return _referance;
-    }else{
-      
+    } else {
       List<Park> _decoy = [];
       return _decoy;
     }
-
-
   }
 
-  Future _distanceFix(lat,lng)async{
-    _firstParks.forEach((element) async{ 
+  Future _distanceFix(lat, lng) async {
+    _firstParks.forEach((element) async {
       var _dist = await DistanceService().getDistance(
-        LatLng(lat, lng), 
-        LatLng(element.latitude, element.longitude));
-        setState(() {
-                  element.distance = _dist;
-                });
+          LatLng(lat, lng), LatLng(element.latitude, element.longitude));
+      setState(() {
+        element.distance = _dist;
+      });
     });
-    
   }
 
-  _orderList(){
-    
+  _orderList() {
     //_firstParks.forEach((element) {print("orijin"+element.distance+" - "+element.name);});
     _firstParks.sort((a, b) => a.distance.compareTo(b.distance));
     //_firstParks.forEach((element) {print("sorted"+element.distance+" - "+element.name);});

@@ -288,7 +288,7 @@ class _MapScreenState extends State<MapScreen> {
     if (_filterModel == null) {
       _filterModel = FilterModel(
           minPrice: 0,
-          maxPrice: 100,
+          maxPrice: 150,
           isWithElectricity: false,
           isClosed: false,
           isWithCam: false,

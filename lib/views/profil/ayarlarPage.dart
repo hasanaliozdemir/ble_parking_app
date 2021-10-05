@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/textInput.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AyarlarPage extends StatefulWidget {
   const AyarlarPage({Key key}) : super(key: key);
@@ -35,12 +37,16 @@ class _AyarlarPageState extends State<AyarlarPage> {
   var _changed = false.obs;
   var _w = Get.width / 375;
   var _h = Get.height / 812;
-  String name = "Hasan Ali Özdemir";
-  String phoneNumber = "+90 535 069 01 77";
-  String imageUrl =
-      "https://media-exp1.licdn.com/dms/image/C4D03AQGYcK6j7HPXOA/profile-displayphoto-shrink_200_200/0/1606888856127?e=1632355200&v=beta&t=-tbOl92SK-ZO87X1OIRg5uroCA4eOLcQ_up8DFsOSyA";
-  String mail = "hasan.aliozdemir10@gmail.com";
-  String password = "123456";
+  String name = "";
+  String phoneNumber = "";
+  String mail = "";
+  String password = "";
+
+@override
+void initState() { 
+  super.initState();
+  getInfo();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -51,99 +57,110 @@ class _AyarlarPageState extends State<AyarlarPage> {
 
     return Scaffold(
       bottomNavigationBar: BottomBar(index: _index,),
-      body: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).padding.top,
+      body: CustomScrollView(
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: _body(context),
+          )
+        ],
+      ),
+    );
+  }
+
+  Column _body(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).padding.top,
+        ),
+        Spacer(
+          flex: 8,
+        ),
+        Expanded(
+          child: _buildBackButton(),
+          flex: 44,
+        ),
+        Spacer(
+          flex: 8,
+        ),
+        Expanded(
+          flex: 220,
+          child: Column(
+            children: [
+              Spacer(
+                flex: 24,
+              ),
+              Expanded(
+                child: _buildPhotoFrame(),
+                flex: 60,
+              ),
+              Spacer(
+                flex: 16,
+              ),
+              Expanded(
+                child: _buildNameBar(),
+                flex: 22,
+              ),
+              Spacer(
+                flex: 8,
+              ),
+              Expanded(
+                child: _buildPhoneNumber(),
+                flex: 22,
+              ),
+              Spacer(
+                flex: 24,
+              )
+            ],
           ),
-          Spacer(
-            flex: 8,
-          ),
-          Expanded(
-            child: _buildBackButton(),
-            flex: 44,
-          ),
-          Spacer(
-            flex: 8,
-          ),
-          Expanded(
-            flex: 220,
+        ),
+        Spacer(
+          flex: 16,
+        ),
+        Expanded(
+            flex: 393,
             child: Column(
               children: [
                 Spacer(
-                  flex: 32,
+                  flex: 8,
                 ),
                 Expanded(
-                  child: _buildPhotoFrame(),
-                  flex: 96,
+                  child: _buildName(),
+                  flex: 70,
                 ),
                 Spacer(
                   flex: 16,
                 ),
                 Expanded(
-                  child: _buildNameBar(),
-                  flex: 22,
+                  child: _buildPhone(),
+                  flex: 70,
                 ),
                 Spacer(
-                  flex: 8,
+                  flex: 16,
                 ),
                 Expanded(
-                  child: _buildPhoneNumber(),
-                  flex: 22,
+                  child: _buildMail(),
+                  flex: 70,
                 ),
                 Spacer(
-                  flex: 24,
-                )
+                  flex: 16,
+                ),
+                Expanded(
+                  child: _buildPassword(),
+                  flex: 50,
+                ),
+                Spacer(
+                  flex: 16,
+                ),
+                Expanded(
+                  child: _buildButton(),
+                  flex: 60,
+                ),
+                Spacer(flex: 200,)
               ],
-            ),
-          ),
-          Spacer(
-            flex: 16,
-          ),
-          Expanded(
-              flex: 393,
-              child: Column(
-                children: [
-                  Spacer(
-                    flex: 8,
-                  ),
-                  Expanded(
-                    child: _buildName(),
-                    flex: 60,
-                  ),
-                  Spacer(
-                    flex: 16,
-                  ),
-                  Expanded(
-                    child: _buildPhone(),
-                    flex: 60,
-                  ),
-                  Spacer(
-                    flex: 16,
-                  ),
-                  Expanded(
-                    child: _buildMail(),
-                    flex: 60,
-                  ),
-                  Spacer(
-                    flex: 16,
-                  ),
-                  Expanded(
-                    child: _buildPassword(),
-                    flex: 60,
-                  ),
-                  Spacer(
-                    flex: 16,
-                  ),
-                  Expanded(
-                    child: _buildButton(),
-                    flex: 60,
-                  ),
-                  Spacer(flex: 50,)
-                ],
-              ))
-        ],
-      ),
+            ))
+      ],
     );
   }
 
@@ -224,14 +241,8 @@ class _AyarlarPageState extends State<AyarlarPage> {
           decoration: BoxDecoration(
               border: _focused.value
                   ? Border.all(color: blue500)
-                  : Border.all(color: Colors.transparent),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x33000000),
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
-                ),
-              ],
+                  : Border.all(color: gray500,width: 2),
+
               borderRadius: BorderRadius.circular(8),
               color: white),
           padding: EdgeInsets.only(
@@ -288,10 +299,6 @@ class _AyarlarPageState extends State<AyarlarPage> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: Image(
-          fit: BoxFit.fill,
-          image: NetworkImage(imageUrl),
-        ),
       ),
     );
   }
@@ -346,6 +353,35 @@ class _AyarlarPageState extends State<AyarlarPage> {
 
   void _backButtonFunc() {
     Get.to(()=>ProfileScreen());
+  }
+
+  getInfo()async{
+    var _prefs =await SharedPreferences.getInstance();
+
+    var _userId = _prefs.getInt("userId");
+
+    var _user = await DataService().getUser(userId: _userId);
+
+    setState(() {
+          name = _user.name;
+          mail = _user.mail;
+          phoneNumber = _user.phoneNumber;
+
+        });
+  }
+
+  setInfo()async{
+        var _prefs =await SharedPreferences.getInstance();
+
+    var _userId = _prefs.getInt("userId");
+
+    var _res = DataService().editUser(
+      userId: _userId,
+      name: _nameController.text,
+      mail: _mailController.text,
+      phone: _phoneController.text
+    );
+
   }
 
   void _kaydet() {

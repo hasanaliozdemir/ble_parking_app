@@ -146,7 +146,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
             child: Column(
               children: [
                 Flexible(child: _buildAddressInput(),flex: 50,),
-                Flexible(child: _buildAddress2(),flex: 44,),
+                Flexible(child: _buildAddress2(),flex: 50,),
                 Flexible(child: _buildButton(),flex: 56,)
               ],
             ),
@@ -187,7 +187,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                height: Get.height/812*62,
+                height: Get.height/812*65,
                 width: Get.width/375*164,
           child: TextInputSimple(
             onChange: (){
@@ -206,7 +206,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                height: Get.height/812*62,
+                height: Get.height/812*65,
                 width: Get.width/375*164,
           child: TextInputSimple(
             onChange: (){

@@ -511,7 +511,7 @@ class DataService {
     Uri _uri = Uri.parse(_getInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
-      "getParksWithDistance": {"lat": lat, "lon": lng, "range": 10000}
+      "getParksWithDistance": {"lat": lat, "lon": lng, "range": 100000}
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -803,6 +803,27 @@ class DataService {
     var _responseJson = convert.jsonDecode(_response.body);
 
     print(_responseJson["setReview"]);
+  }
+
+  Future editUser({int userId, String name,String mail,String phone})async{
+    Uri _uri = Uri.parse(_setInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "editUser": {
+        "userId" : userId,
+        "name" : name,
+        "phoneNumber" : phone,
+        "mail" : mail
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    //print(_responseJson["editUser"]);
   }
 
 }
