@@ -317,7 +317,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   }
 
   void _backButtonFunc() {
-    Get.to(() => MapScreenReadOnly());
+    Get.to(() => SplashScreen());
   }
 
   void _onTapGizlilik() {

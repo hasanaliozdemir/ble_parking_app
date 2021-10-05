@@ -345,29 +345,26 @@ class _OthersScreenState extends State<OthersScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              width: Get.width / 375 * 48,
-              height: Get.height / 812 * 48,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 13,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [icon],
+            Expanded(
+              flex: 48,
+              child: Container(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [icon],
+                ),
               ),
             ),
-            SizedBox(width: 8),
-            Text(
-              text,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 17,
+            Spacer(flex: 8),
+            Expanded(
+              flex: 287,
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 17,
+                ),
               ),
             ),
           ],

@@ -295,7 +295,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void _backButtonFunc() {
-    Get.to(()=>MapScreenReadOnly());
+    Get.to(()=>SplashScreen());
   }
 
   void _validate(){
