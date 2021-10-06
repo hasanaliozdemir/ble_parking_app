@@ -153,6 +153,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   }
 
   Padding _buildListTile(Reservation _reservation) {
+    print(_reservation.parkName);
     return Padding(
         padding: EdgeInsets.all(8),
         child: Container(
@@ -164,7 +165,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
             child: ListTile(
               leading: _buildLeading(),
               title: Text(
-                _reservation.reservationId.toString(),
+                _reservation.tpaName,
                 style: TextStyle(
                     fontFamily: "SF Pro Text",
                     fontSize: 13,

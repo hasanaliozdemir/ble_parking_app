@@ -34,14 +34,13 @@ class Reservation{
     var _start = _startendList[0].split("-")[1].substring(0,2);
     var _end = _startendList[1].split("-")[1].substring(0,2);
     double _price = 0;
-    var _park;
+    Park _park;
 
-    DataService().getPark(parkId: json["parkId"]).then((park) {
-      _price = park.price * (int.parse(_end)-int.parse(_start));
-      _park = park;
-    });
+
 
     return Reservation(
+      tpaName: "",
+      parkName: "",
       reservationId: json["reservationId"],
       tpaId: json["tpaId"],
       plate: json["plate"],
