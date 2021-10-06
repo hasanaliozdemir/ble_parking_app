@@ -234,11 +234,11 @@ class DataService {
           builder: (context) {
             return Container(
               decoration: BoxDecoration(color: yellow100),
-              child: Text(_responseJson["login"]),
+              child: Text(_responseJson["editPark"]),
             );
           });
     } else {
-      return Park.fromJson(_responseJson["editPark"]);
+      return Park.fromJson(_responseJson["editPark"][0]);
     }
   }
 
@@ -511,7 +511,7 @@ class DataService {
     Uri _uri = Uri.parse(_getInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
-      "getParksWithDistance": {"lat": lat, "lon": lng, "range": 100000}
+      "getParksWithDistance": {"lat": lat, "lon": lng, "range": 100000000}
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -634,6 +634,8 @@ class DataService {
         "dateTime" : datetime
       }
     };
+
+    print(_payloadBody);
 
     var _postJson = convert.jsonEncode(_payloadBody);
 

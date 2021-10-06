@@ -108,31 +108,8 @@ class _CarPAgeState extends State<CarPAge> {
             Spacer(
               flex: 24,
             ),
-            Expanded(
-              flex: 66,
-              child: TextInputSimple(
-                readOnly: edit3.value,
-                suffixIcon: Icon(edit3.value
-                    ? CupertinoIcons.pen
-                    : CupertinoIcons.check_mark),
-                suffixFunc: () {
-                  setState(() {
-                    car.model = int.parse(_modelController.text); 
-                    edit3.value = !edit3.value;
-                    _filled.value =_filled.value+1;
-                  });
-                },
-                prefixIcon: Icon(
-                  CupertinoIcons.calendar,
-                  color: blue500,
-                ),
-                focusNode: _modelFocus,
-                controller: _modelController,
-              ),
-            ),
-            Spacer(
-              flex: 24,
-            ),
+            //_buildModelYear(),
+            //Spacer(flex: 24,),
             Expanded(
               flex: 60,
               child: _buildSizeDropDown()
@@ -171,7 +148,7 @@ class _CarPAgeState extends State<CarPAge> {
                   ),
                 )),
             Spacer(
-              flex: 40,
+              flex: 40+84,
             ),
             SizedBox(
               height: MediaQuery.of(context).padding.bottom,
@@ -180,6 +157,31 @@ class _CarPAgeState extends State<CarPAge> {
         ),
       ),
     );
+  }
+
+  Expanded _buildModelYear() {
+    return Expanded(
+            flex: 66,
+            child: TextInputSimple(
+              readOnly: edit3.value,
+              suffixIcon: Icon(edit3.value
+                  ? CupertinoIcons.pen
+                  : CupertinoIcons.check_mark),
+              suffixFunc: () {
+                setState(() {
+                  car.model = int.parse(_modelController.text); 
+                  edit3.value = !edit3.value;
+                  _filled.value =_filled.value+1;
+                });
+              },
+              prefixIcon: Icon(
+                CupertinoIcons.calendar,
+                color: blue500,
+              ),
+              focusNode: _modelFocus,
+              controller: _modelController,
+            ),
+          );
   }
 
   List<String> _colors =[

@@ -57,22 +57,14 @@ class _AddCArPageState extends State<AddCArPage> {
             )),
             
             Spacer(flex: 16,),
-            Expanded(flex:60,child: TextInputSimple(
-              onTap: (){
-                
-                _filled.value = _filled.value +1;
-              },
-              controller: modelController,
-              focusNode: modelFocus,
-              hintText: "Model",
-            )),
-            Spacer(flex: 16,),
+            //_modelYearBuilder(),
+            //Spacer(flex: 16,),
             Expanded(flex:60,child: _buildColorDropDown()),
             Spacer(flex: 16,),
             Expanded(flex:60,child: _buildSizeDropDown()),
             Spacer(flex: 40,),
             Expanded(child: _buildConfirmButton(),flex: 56,),
-            Spacer(flex: 174,),
+            Spacer(flex: 174+76,),
             SizedBox(
               height: MediaQuery.of(context).padding.bottom,
             )
@@ -82,10 +74,22 @@ class _AddCArPageState extends State<AddCArPage> {
     );
   }
 
+  Expanded _modelYearBuilder() {
+    return Expanded(flex:60,child: TextInputSimple(
+            onTap: (){
+              
+              _filled.value = _filled.value +1;
+            },
+            controller: modelController,
+            focusNode: modelFocus,
+            hintText: "Model",
+          ));
+  }
+
 
   Widget _buildConfirmButton(){
     return Obx((){
-      if (_filled.value>3) {
+      if (_filled.value>2) {
       return Button.active(text: "Kaydet", onPressed: _saveButtonFunc);
     } else {
       return Button.passive(text: "Kaydet", onPressed: null);
@@ -239,7 +243,7 @@ class _AddCArPageState extends State<AddCArPage> {
     var _res = dataService.addCar(
       userId: _prefs.getInt("userId"),
       plate: plakaController.text,
-      modelYear: modelController.text,
+      modelYear: "2021", //modelController.text,
       color: _currentSelectedColor,
       size: _currentSelectedSize
       
