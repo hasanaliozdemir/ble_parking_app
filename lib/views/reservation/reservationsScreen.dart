@@ -143,6 +143,12 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                 end: int.parse(carList[index].end), 
                 reservation: carList[index]
                 ));
+            }else{
+              print("error");
+              print(_tpa);
+              print(carList[index].park);
+              print(index);
+              Navigator.pop(context);
             }
             }
           },

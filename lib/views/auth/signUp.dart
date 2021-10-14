@@ -149,11 +149,11 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
             flex: 16,
           ),
           Expanded(
-            flex: 60,
+            flex: 66,
             child: _buildNameForm(),
           ),
           Spacer(
-            flex: 16,
+            flex: 10,
           ),
           Expanded(
             flex: 60,
@@ -163,11 +163,11 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
             flex: 16,
           ),
           Expanded(
-            flex: 60,
+            flex: 66,
             child: _buildMailForm(),
           ),
           Spacer(
-            flex: 16,
+            flex: 10,
           ),
           Expanded(
             flex: 65,

@@ -39,8 +39,8 @@ class Reservation{
 
 
     return Reservation(
-      tpaName: "",
-      parkName: "",
+      tpaName: json["tpaName"],
+      parkName: json["parkName"],
       reservationId: json["reservationId"],
       tpaId: json["tpaId"],
       plate: json["plate"],

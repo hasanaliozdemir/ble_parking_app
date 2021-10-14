@@ -1,4 +1,3 @@
-
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ class DataService {
   final String _getInfoUrl = "https://evpark.gesk.tech/getInfo/";
   final String _uploadPhoto = "https://evpark.gesk.tech/uploadPicture/";
   final String _downloadPhoto = "https://evpark.gesk.tech/downloadPicture/";
-  
+
   List<Park> parks = List<Park>();
 
   Future<User> registerUser(
@@ -135,7 +134,7 @@ class DataService {
     Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
       "addPark": {
-        "ownerId": userId, 
+        "ownerId": userId,
         "isClosedPark": isClosedPark,
         "isWithCam": isWithCam,
         "isWithSecurity": isWithSecurity,
@@ -160,16 +159,15 @@ class DataService {
     if (_responseJson.first is String) {
       print(_responseJson.first);
     } else {
-      
-    List<Park> _parks = List<Park>();
+      List<Park> _parks = List<Park>();
 
-    _responseJson.forEach((element) {
-      _parks.add(Park.fromJson(element));
-    });
+      _responseJson.forEach((element) {
+        _parks.add(Park.fromJson(element));
+      });
 
-    var _park = _parks.last;
+      var _park = _parks.last;
 
-    return _park;
+      return _park;
     }
   }
 
@@ -401,19 +399,18 @@ class DataService {
     return _result;
   }
 
-  Future<Tpa> addTpa(
-      {int parkId,
-      String tpaName,
-      double hourlyPrice,
-      String maxCarSize,
-      int startTime,
-      int endTime,
-      }) async {
+  Future<Tpa> addTpa({
+    int parkId,
+    String tpaName,
+    double hourlyPrice,
+    String maxCarSize,
+    int startTime,
+    int endTime,
+  }) async {
     Uri _uri = Uri.parse(_setInfoUrl);
 
-    var _startString = (startTime<10)? "0$startTime" : "$startTime";
-    var _endString = (endTime<10)? "0$endTime" : "$endTime";
-
+    var _startString = (startTime < 10) ? "0$startTime" : "$startTime";
+    var _endString = (endTime < 10) ? "0$endTime" : "$endTime";
 
     Map<String, dynamic> _payloadBody = {
       "addTpa": {
@@ -421,7 +418,11 @@ class DataService {
         "tpaName": tpaName,
         "hourlyPrice": hourlyPrice,
         "maxCarSize": maxCarSize,
-        "availableTimes": "2021.12.25-"+_startString+":00 2021.12.25-"+_endString+":00"
+        "availableTimes": "2021.12.25-" +
+            _startString +
+            ":00 2021.12.25-" +
+            _endString +
+            ":00"
       }
     };
 
@@ -531,7 +532,8 @@ class DataService {
     }
   }
 
-  Future getAvailableParks(int driverId)async{ // avaliable aslında
+  Future getAvailableParks(int driverId) async {
+    // avaliable aslında
     List<Park> _parks = List<Park>();
     Uri _uri = Uri.parse(_getInfoUrl);
 
@@ -547,22 +549,22 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    if (_response.body !=null) {
+    if (_response.body != null) {
       if (_responseJson["getAvailableParks"] is String) {
-      print(_responseJson["getAvailableParks"]);
+        print(_responseJson["getAvailableParks"]);
+      } else {
+        var _ref = _responseJson["getAvailableParks"] as List;
+        _ref.forEach((element) {
+          _parks.add(Park.fromJson(element));
+        });
+        return _parks;
+      }
     } else {
-      var _ref = _responseJson["getAvailableParks"] as List;
-      _ref.forEach((element) {
-        _parks.add(Park.fromJson(element));
-      });
-      return _parks;
-    }
-    }else{
-      return[];
+      return [];
     }
   }
 
-  Future getAdminPark(int userId)async{
+  Future getAdminPark(int userId) async {
     Uri _uri = Uri.parse(_getInfoUrl);
     List<Park> _parks = List<Park>();
     Map<String, dynamic> _payloadBody = {
@@ -577,11 +579,10 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    
     if (_responseJson["getAvailableParks"] is String) {
     } else {
       var _ref = _responseJson["getAvailableParks"] as List;
-      
+
       _ref.forEach((element) {
         _parks.add(Park.fromJsonForAvaliable(element));
       });
@@ -589,7 +590,8 @@ class DataService {
     }
   }
 
-  Future getFakeAvaliableTpas(int parkId,int userId,String selectedDay)async{
+  Future getFakeAvaliableTpas(
+      int parkId, int userId, String selectedDay) async {
     Uri _uri = Uri.parse(_getInfoUrl);
     List<Tpa> _tpas = List<Tpa>();
 
@@ -597,7 +599,7 @@ class DataService {
       "getAvailableTimes": {
         "driverId": userId,
         "parkId": parkId,
-        "selectedDay" : selectedDay
+        "selectedDay": selectedDay
       }
     };
 
@@ -607,7 +609,7 @@ class DataService {
 
     var _response = await http.post(_uri, body: _postJson);
 
-    var _responseJson = convert.jsonDecode(_response.body);    
+    var _responseJson = convert.jsonDecode(_response.body);
 
     if (_responseJson["getAvailableTimes"] is String) {
       print(_responseJson["getAvailableTimes"]);
@@ -620,18 +622,21 @@ class DataService {
     }
   }
 
-  
-
-  Future setReserved({int parkId,int tpaId,int userId,String plate,String datetime})async{
+  Future setReserved(
+      {int parkId,
+      int tpaId,
+      int userId,
+      String plate,
+      String datetime}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
       "setReserved": {
         "parkId": parkId,
         "tpaId": tpaId,
-        "userId" : userId,
-        "plate" : plate,
-        "dateTime" : datetime
+        "userId": userId,
+        "plate": plate,
+        "dateTime": datetime
       }
     };
 
@@ -643,7 +648,6 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-
     if (_responseJson["setReserved"] == "true") {
       return true;
     } else {
@@ -651,14 +655,10 @@ class DataService {
     }
   }
 
-  Future uploadParkPhoto({int parkId,Uint8List bytes})async{
+  Future uploadParkPhoto({int parkId, Uint8List bytes}) async {
     Uri _uri = Uri.parse(_uploadPhoto);
-    
 
-    Map<String, dynamic> _payloadBody = {
-        "parkId": parkId,
-        "photo": bytes
-    };
+    Map<String, dynamic> _payloadBody = {"parkId": parkId, "photo": bytes};
 
     print(bytes.length);
 
@@ -666,90 +666,80 @@ class DataService {
 
     var _response = await http.post(_uri, body: _postJson);
 
-
     print(_response.statusCode);
   }
 
-  Future getReservationsHost(int hostId)async{
+  Future getReservationsHost(int hostId) async {
     Uri _uri = Uri.parse(_getInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
-      "getReservations": {
-        "command": "partial",
-        "hostId":hostId
-      }
+      "getReservations": {"command": "partial", "hostId": hostId}
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
 
-    var _response = await http.post(_uri,body: _postJson);
+    var _response = await http.post(_uri, body: _postJson);
 
     var _responseJson = convert.jsonDecode(_response.body);
 
     if (_responseJson["getReservations"] is String) {
       print("error");
-    }else{
+    } else {
       List<Reservation> _reservations = List<Reservation>();
       var _ref = _responseJson["getReservations"] as List;
-      _ref.forEach((element) {_reservations.add(Reservation.fromJson(element)); });
+      _ref.forEach((element) {
+        _reservations.add(Reservation.fromJson(element));
+      });
       return _reservations;
     }
   }
 
-  Future getReservationsDriver(int driverId)async{
+  Future getReservationsDriver(int driverId) async {
     Uri _uri = Uri.parse(_getInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
-      "getReservations": {
-        "command": "partial",
-        "driverId":driverId
-      }
+      "getReservations": {"command": "partial", "driverId": driverId}
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
 
-    var _response = await http.post(_uri,body: _postJson);
+    var _response = await http.post(_uri, body: _postJson);
 
     var _responseJson = convert.jsonDecode(_response.body);
 
     if (_responseJson["getReservations"] is String) {
       print("error");
-    }else{
+    } else {
       List<Reservation> _reservations = List<Reservation>();
       var _ref = _responseJson["getReservations"] as List;
-      _ref.forEach((element) {_reservations.add(Reservation.fromJson(element)); });
+      _ref.forEach((element) {
+        _reservations.add(Reservation.fromJson(element));
+      });
       return _reservations;
     }
   }
 
-  Future lockTpa({int parkId, int tpaId, bool available})async{
+  Future lockTpa({int parkId, int tpaId, bool available}) async {
     Uri _uri = Uri.parse(_getInfoUrl);
 
     Map<String, dynamic> _payloadBody = {
-      "tpaLock": {
-        "parkId": parkId,
-        "tpaId":tpaId,
-        "available": available
-      }
+      "tpaLock": {"parkId": parkId, "tpaId": tpaId, "available": available}
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
 
-    var _response = await http.post(_uri,body: _postJson);
+    var _response = await http.post(_uri, body: _postJson);
 
     var _responseJson = convert.jsonDecode(_response.body);
 
     print(_responseJson);
   }
 
-  Future uploadUserPhoto({int userId,Uint8List bytes}) async{
+  Future uploadUserPhoto({int userId, Uint8List bytes}) async {
     Uri _uri = Uri.parse(_uploadPhoto);
 
     Map<String, dynamic> _payloadBody = {
-      "uploadPhoto": {
-        "userId": userId,
-        "photo":bytes
-      }
+      "uploadPhoto": {"userId": userId, "photo": bytes}
     };
 
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -761,11 +751,81 @@ class DataService {
     print(_responseJson["uploadPhoto"]);
   }
 
-  Future downloadPhoto({int parkId,int photoId})async{
+  Future downloadPhoto({int parkId, int photoId}) async {
+    Uri _uri = Uri.parse(_downloadPhoto);
+
+    Map<String, dynamic> _payloadBody = {"parkId": parkId, "photoId": photoId};
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    var _intList = List<int>();
+
+    List _dynamics = _responseJson["photo"];
+
+    _dynamics.forEach((element) {
+      _intList.add(element);
+    });
+
+    return Uint8List.fromList(_intList);
+  }
+
+  Future setReview(
+      {int userId, int reservationId, String comment, double point}) async {
+    Uri _uri = Uri.parse(_setInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "setReview": {
+        "userId": userId,
+        "reservationId": reservationId,
+        "comment": comment,
+        "point": point
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    print(_responseJson["setReview"]);
+  }
+
+  Future editUser(
+      {int userId,
+      String name,
+      String mail,
+      String phone,
+      String password}) async {
+    Uri _uri = Uri.parse(_setInfoUrl);
+
+    Map<String, dynamic> _payloadBody = {
+      "editUser": {
+        "userId": userId,
+        "name": name,
+        "phone": phone,
+        "mail": mail,
+        "password": password
+      }
+    };
+
+    var _postJson = convert.jsonEncode(_payloadBody);
+    print(_payloadBody);
+    var _response = await http.post(_uri, body: _postJson);
+
+    var _responseJson = convert.jsonDecode(_response.body);
+
+    print(_responseJson["editUser"]);
+  }
+
+  Future downloadUserPhoto({int userId,int photoId})async{
     Uri _uri = Uri.parse(_downloadPhoto);
 
     Map<String, dynamic> _payloadBody = {
-      "parkId": parkId,
+      "userId": userId,
       "photoId" : photoId
     };
     var _postJson = convert.jsonEncode(_payloadBody);
@@ -784,48 +844,6 @@ class DataService {
 
     return Uint8List.fromList(_intList);
 
-  }
-
-  Future setReview({int userId, int reservationId,String comment,double point})async{
-    Uri _uri = Uri.parse(_setInfoUrl);
-
-    Map<String, dynamic> _payloadBody = {
-      "setReview": {
-        "userId" : userId,
-        "reservationId" : reservationId,
-        "comment" : comment,
-        "point" : point
-      }
-    };
-
-    var _postJson = convert.jsonEncode(_payloadBody);
-
-    var _response = await http.post(_uri, body: _postJson);
-
-    var _responseJson = convert.jsonDecode(_response.body);
-
-    print(_responseJson["setReview"]);
-  }
-
-  Future editUser({int userId, String name,String mail,String phone})async{
-    Uri _uri = Uri.parse(_setInfoUrl);
-
-    Map<String, dynamic> _payloadBody = {
-      "editUser": {
-        "userId" : userId,
-        "name" : name,
-        "phoneNumber" : phone,
-        "mail" : mail
-      }
-    };
-
-    var _postJson = convert.jsonEncode(_payloadBody);
-
-    var _response = await http.post(_uri, body: _postJson);
-
-    var _responseJson = convert.jsonDecode(_response.body);
-
-    //print(_responseJson["editUser"]);
   }
 
 }

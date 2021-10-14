@@ -165,11 +165,9 @@ void initState() {
   }
 
   _buildButton() {
-    if (_changed.value) {
-      return Button.active(text: "Kaydet", onPressed: _kaydet);
-    } else {
-      return Button.passive(text: "Kaydet", onPressed: null);
-    }
+    
+    return Button.active(text: "Kaydet", onPressed: _kaydet);
+    
   }
 
   _buildName() {
@@ -366,7 +364,7 @@ void initState() {
           name = _user.name;
           mail = _user.mail;
           phoneNumber = _user.phoneNumber;
-
+          password = _user.password;
         });
   }
 
@@ -375,16 +373,18 @@ void initState() {
 
     var _userId = _prefs.getInt("userId");
 
-    var _res = DataService().editUser(
+    DataService().editUser(
       userId: _userId,
       name: _nameController.text,
       mail: _mailController.text,
-      phone: _phoneController.text
+      phone: _phoneController.text,
+      password: _passwordController.text
     );
 
   }
 
   void _kaydet() {
-    print("kaydet");
+    setInfo();
+    Get.to(()=> ProfileScreen());
   }
 }
