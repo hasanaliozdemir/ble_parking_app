@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,6 +12,7 @@ import 'package:gesk_app/models/car.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/models/reservation.dart';
 import 'package:gesk_app/models/user.dart';
+import 'package:gesk_app/services/imageService.dart';
 import 'package:gesk_app/views/giris/SplashScreen.dart';
 import 'package:gesk_app/views/profil/ayarlarPage.dart';
 import 'package:gesk_app/views/profil/car/addCArPage.dart';
@@ -16,6 +20,7 @@ import 'package:gesk_app/views/profil/car/carPage.dart';
 import 'package:gesk_app/views/profil/park/ParkPage.dart';
 import 'package:gesk_app/views/profil/park/addParkPage.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -28,6 +33,10 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   User _currentUser;
   var dataService = DataService();
+  var imageService = ImageService();
+
+  final ImagePicker _picker = ImagePicker();
+
   List<Car> cars = List<Car>();
   List<Park> parks = List<Park>();
 
@@ -45,6 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   var h = Get.height / 812;
 
   bool _loaded = false;
+  Uint8List userImage;
   @override
   Widget build(BuildContext context) {
     if (_loaded) {
@@ -130,8 +140,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
+        child: _image(),
       ),
     );
+  }
+
+  Widget _image(){
+    if(userImage == null){
+      return GestureDetector(
+        onTap: _pickUserPic,
+        child: Container(
+          color: white,
+          child: Icon(Icons.add_photo_alternate_rounded),
+        ),
+      );
+    }else{
+      return GestureDetector(
+        onTap: _pickUserPic,
+        child: Image(image: MemoryImage(userImage),fit: BoxFit.cover,));
+    }
+  }
+
+  _pickUserPic() async {
+    var newImage = await _picker.pickImage(source: ImageSource.gallery);
+    var newBytes = await imageService.testCompressFile(File(newImage.path));
+
+    setState(() {
+      userImage = newBytes;
+    });
+    
+    _uploadUserPic();
+  }
+
+  _uploadUserPic()async{
+    var _prefs = await SharedPreferences.getInstance();
+    var _userId = _prefs.getInt("userId");
+
+    await dataService.uploadUserPhoto(
+      userId: _userId,
+      bytes: userImage
+    );
+
+  }
+
+  _getUserPic()async{
+    var _prefs = await SharedPreferences.getInstance();
+    var _userId = _prefs.getInt("userId");
+
+    print(_currentUser.userImageUrl);
+    await dataService.downloadUserPhoto(
+      userId: _userId,
+      photoId: _currentUser.userImageUrl ?? 0
+    );
+
   }
 
   _buildNameBar() {
@@ -655,6 +716,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       parks = _map["parks"];
     });
 
+    _getUserPic();
     setState(() {
       _loaded = true;
     });

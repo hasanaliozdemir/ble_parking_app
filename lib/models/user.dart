@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class User{
    int userId;
    String name;
@@ -5,7 +7,7 @@ class User{
    String mail;
    String password;
 
-   String userImageUrl;
+   List userImageUrl;
 
    List<int> carsId;
    List<int> parksId;
@@ -44,7 +46,7 @@ class User{
       name: json["name"],
       phoneNumber: json["phoneNumber"],
       mail: json["mail"],
-      userImageUrl: json["userImageUrl"],
+      userImageUrl: [0],//jsonDecode(json["userImageUrl"]),
       carsId: _cars,
       parksId: _parks
     );

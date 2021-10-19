@@ -9,6 +9,7 @@ import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/models/reservation.dart';
 import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/models/user.dart';
+import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -260,14 +261,7 @@ class DataService {
 
     if (_responseJson["login"] is String) {
       Navigator.pop(context);
-      showBottomSheet(
-          context: context,
-          builder: (context) {
-            return Container(
-              decoration: BoxDecoration(color: yellow100),
-              child: Text(_responseJson["login"]),
-            );
-          });
+      Get.snackbar("Uyarı", _responseJson["login"]);
     } else {
       var _user = User.fromJson(_responseJson["login"]);
 
@@ -746,9 +740,9 @@ class DataService {
 
     var _response = await http.post(_uri, body: _postJson);
 
-    var _responseJson = convert.jsonDecode(_response.body);
+    
 
-    print(_responseJson["uploadPhoto"]);
+    print(_response);
   }
 
   Future downloadPhoto({int parkId, int photoId}) async {

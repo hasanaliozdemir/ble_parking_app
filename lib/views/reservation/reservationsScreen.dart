@@ -144,10 +144,6 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                 reservation: carList[index]
                 ));
             }else{
-              print("error");
-              print(_tpa);
-              print(carList[index].park);
-              print(index);
               Navigator.pop(context);
             }
             }
@@ -171,7 +167,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
             child: ListTile(
               leading: _buildLeading(),
               title: Text(
-                _reservation.tpaName,
+                _reservation.parkName+" "+_reservation.tpaName,
                 style: TextStyle(
                     fontFamily: "SF Pro Text",
                     fontSize: 13,
