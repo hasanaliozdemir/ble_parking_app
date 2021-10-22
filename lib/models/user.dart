@@ -46,7 +46,7 @@ class User{
       name: json["name"],
       phoneNumber: json["phoneNumber"],
       mail: json["mail"],
-      userImageUrl: [0],//jsonDecode(json["userImageUrl"]),
+      userImageUrl:jsonDecode(json["userImageUrl"]),
       carsId: _cars,
       parksId: _parks
     );
@@ -59,6 +59,7 @@ class User{
       password: json["password"],
       phoneNumber: json["phone"],
       mail: json["mail"],
+      userImageUrl:jsonDecode(json["userImageUrl"]),
     );
   }
 

@@ -206,6 +206,7 @@ class DataService {
       int filledParkSpace,
       double longitude,
       double latitude,
+      String parkInfo,
       String location}) async {
     Uri _uri = Uri.parse(_setInfoUrl);
     Map<String, dynamic> _payloadBody = {
@@ -217,6 +218,7 @@ class DataService {
         "isWithSecurity": isWithSecurity,
         "isWithElectricity": isWithElectricity,
         "name": name,
+        "parkInfo" : parkInfo
       }
     };
 

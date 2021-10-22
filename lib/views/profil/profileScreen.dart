@@ -187,12 +187,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var _prefs = await SharedPreferences.getInstance();
     var _userId = _prefs.getInt("userId");
 
-    print(_currentUser.userImageUrl);
-    await dataService.downloadUserPhoto(
+    var _newPic = await dataService.downloadUserPhoto(
       userId: _userId,
-      photoId: _currentUser.userImageUrl ?? 0
+      photoId: _currentUser.userImageUrl.last ?? 0
     );
-
+  
+    setState(() {
+      userImage = _newPic;
+    });
   }
 
   _buildNameBar() {
