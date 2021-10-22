@@ -214,7 +214,7 @@ class _AddTpaPageState extends State<AddTpaPage> {
       child: TextInputSimple(
         focusNode: _tpaNameFocus,
         controller: _tpaNameController,
-        hintText: "Otopark Alan No",
+        hintText: "Tekil Park Alan Adı",
         onTap: (){
           _filled.value = _filled.value +1;
           setState(() {

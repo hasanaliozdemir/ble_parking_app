@@ -160,7 +160,7 @@ class _ParkPageState extends State<ParkPage> {
             height: MediaQuery.of(context).padding.top,
           ),
           SizedBox(
-            height: Get.height/812*370,
+            height: Get.height/812*355,
           ),
           Container(
             child: _buildTpaList(),
