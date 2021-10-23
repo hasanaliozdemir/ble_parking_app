@@ -36,7 +36,7 @@ class NewBleService {
       //Scan one peripheral and stop scanning
       print(
           "Scanned Peripheral ${scanResult.peripheral.name}, RSSI ${scanResult.rssi}");
-      if (scanResult.peripheral.name == "GSK_001") {
+      if (scanResult.peripheral.name.substring(0,3) == "GSK") {
         peripheral = scanResult.peripheral;
         connect();
         bleManager.stopPeripheralScan();
