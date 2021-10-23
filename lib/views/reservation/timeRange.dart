@@ -234,32 +234,48 @@ class _TimeRangePageState extends State<TimeRangePage> {
         _timeRanges.indexWhere((element) => element.uniqueId == uniqId);
     var _ref = _timeRanges[_refIndex];
 
+
+
     if (_ref.selected == true) {
       setState(() {
         _timeRanges[_refIndex].selected = false;
-        _count = _count-1;
+        _count = _count -1;
       });
     } else {
-      if (_count==2) {
-        // TODO: DAHA FAZLA SEÇİLEMEZ DE
-      }else if(_count ==1){
-        
-
-      }else{
+      if (_count==0) {
         setState(() {
-        _timeRanges[_refIndex].selected = true;
-        _count = _count+1;
-      });
+          _timeRanges[_refIndex].selected = true;
+          _count = _count + 1;
+
+        });
+      } else {
+        if (_count == 1) {
+          var _selected = _timeRanges.where((element) => element.selected).first;
+          if (_selected.tpaId != _ref.tpaId) {
+            Get.snackbar("Uyarı", "Seçilen zaman aralıkları aynı Tekil Park Alanına ait olmalıdır");
+          } else {
+            if (_selected.startHour == _ref.startHour+1 || _selected.startHour == _ref.startHour-1) {
+            setState(() {
+              _timeRanges[_refIndex].selected = true;
+              _count = _count + 1;
+            });
+          } else {
+            Get.snackbar("Uyarı", "Seçilen zaman aralıkları bağlantılı olmalıdır");
+          }
+          }
+        } else {
+          Get.snackbar("Uyarı", "En fazla iki zaman aralığı seçebilirsiniz");
+        }
       }
     }
 
-    if (_count>0) {
-      setStartEnd();
-    }
   }
 
   setStartEnd() {
     var _ref = _timeRanges.where((element) => element.selected);
+
+    
+
     _startTime = _ref.first.startHour;
     _endTime = _startTime + 1;
     _ref.forEach((element) {
@@ -545,32 +561,45 @@ class _TimeRangePageState extends State<TimeRangePage> {
         });
   }
 
-  _rentTpa() async{
-    var _selectedTime = _timeRanges.where((element) => element.selected == true);
-    _showLoading();
+  _rentTpa() async{  
+    _showLoading();  
+    var _selectedOnes = _timeRanges.where((element) => element.selected);
     var _prefs = await SharedPreferences.getInstance();
 
     var _userId = _prefs.getInt("userId");
 
-    var _dateTime = "${_date.year}.${_date.month}.${_date.day}-$_startTime:00 ${_date.year}.${_date.month}.${_date.day}-$_endTime:00";
+    var dayString = "${_date.year}.${(_date.month<10)? "0"+_date.month.toString() : _date.month}.${(_date.day<10)? "0"+_date.day.toString() : _date.day}";
 
-    var _refTpa = _tpas.where((element) => element.tapId == _selectedTime.first.tpaId);
+    TimeRange _totalTime;
 
+    List<TimeRange> _ranges = List<TimeRange>();
 
-    var _res = await _dataService.setReserved(
-      parkId: _park.id,
-      tpaId: _selectedTime.first.tpaId,
-      userId: _userId,
-      plate: "10hasan105",//TODO: PLAKA NERDE ALO
-      datetime: _dateTime
-    );
+    _selectedOnes.forEach((element) { 
+      _ranges.add(element);
+    });
+
+    _ranges.sort((a,b)=>a.startHour.compareTo(b.startHour));
+
+    _totalTime.startHour = _ranges.first.startHour;
+    _totalTime.endHour = _ranges.last.endHour;
+    _totalTime.tpaId = _ranges.first.tpaId;
+
+  var _res = await _dataService.setReserved(
+        parkId: _park.id,
+        tpaId: _totalTime.tpaId,
+        userId: _userId,
+        plate: "hasan123",
+        datetime: "$dayString-${_totalTime.startHour} $dayString-${_totalTime.endHour}"
+      );
+
+    var _refTpa = _tpas.where((element) => element.tapId == _totalTime.tpaId);
 
     if (_res!=true) {
       Navigator.pop(context);
       Get.snackbar("Hata", "Bir hata oluştu lütfen tekrar deneyin");
     } else {
       Navigator.pop(context);
-      Get.to(()=>DoneReservationPage(park: _park,date: _date,start: _startTime,end: _endTime,tpa: _refTpa.first,),fullscreenDialog: true);
+      Get.to(()=>DoneReservationPage(park: _park,date: _date,start: _totalTime.startHour,end: _totalTime.endHour,tpa: _refTpa.first,),fullscreenDialog: true);
     }
 
   }

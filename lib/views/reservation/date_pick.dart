@@ -107,8 +107,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
     return _markersList;
   }
 
-  Widget _getMarkerWidget(
-      double price, Status status, bool isWithElectiricity) {
+  Widget _getMarkerWidget(double price, Status status, bool isWithElectiricity) {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
         child: Container(
@@ -318,6 +317,8 @@ class _DatePickScreenState extends State<DatePickScreen> {
   }
 
   Widget _buildDatePick() {
+    print(_startDay.toString()+"  burda başlıyor");
+    print(_endDay.toString()+"  burda bitiyor");
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
@@ -328,7 +329,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
             onTap: () {
               DatePicker.showDatePicker(context,
                   showTitleActions: true,
-                  minTime: _startDay,
+                  minTime: DateTime.now(),
                   maxTime: _endDay,
                   onChanged: (date) {
                 
@@ -384,6 +385,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
   }
 
   _parseString(){
+    print(_park.avaliableTime);
     List<String> _ref = _park.avaliableTime.split(",");
     _ref.removeAt(0);
     List<String> _days = List<String>();
