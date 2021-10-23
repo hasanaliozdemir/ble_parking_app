@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
+import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/models/park.dart';
+import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:gesk_app/views/reservation/date_pick.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class ParkDetail extends StatefulWidget {
@@ -608,8 +611,31 @@ class _ParkDetailState extends State<ParkDetail> {
 
   }
 
-  void _rentParkSpace(){
-    Get.to(()=>DatePickScreen(park: _park,));
+  void _rentParkSpace()async{
+    var _prefs = await SharedPreferences.getInstance();
+    var _plate = _prefs.getString("carPlate");
+
+    if (_plate == null) {
+      showDialog(context: context, builder: (context){
+        return PopUp(
+          realIcon: Icon(CupertinoIcons.car_detailed,size: 48,),
+          title: "Araç Ekle", 
+          content: "Kiralama yapmak için araç eklemeniz gerekmektedir. Araç eklemek ister misiniz?", 
+          yesFunc: _yesFunc, 
+          noFunc: _noFunc,
+          single: false);
+      });
+    } else {
+      Get.to(()=>DatePickScreen(park: _park,));
+    }
+  }
+
+  _yesFunc(){
+    Get.to(()=>ProfileScreen());
+  }
+
+  _noFunc(){
+    Navigator.pop(context);
   }
 
 }
