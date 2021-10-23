@@ -46,7 +46,7 @@ class _AddCArPageState extends State<AddCArPage> {
             Spacer(flex: 16,),
             Expanded(child: _buildDescription(),flex: 44,),
             Spacer(flex: 16,),
-            Expanded(flex:60,child: TextInputSimple(
+            Expanded(flex:65,child: TextInputSimple(
               onTap: (){
                 
                 _filled.value = _filled.value +1;
@@ -251,6 +251,7 @@ class _AddCArPageState extends State<AddCArPage> {
     if (_res == null) {
       Navigator.pop(context);
     } else {
+      _prefs.setString("carPlate", plakaController.text);
       Get.to(()=> ProfileScreen(),fullscreenDialog: true);
     }
   }

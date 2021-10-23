@@ -683,14 +683,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  _onPressedCar(Car car) {
+  _onPressedCar(Car car){
     Get.to(() => CarPAge(
           car: car,
         ));
   }
 
-  _onPressedAddCar() {
-    Get.to(() => AddCArPage());
+  _onPressedAddCar() async{
+    var _prefs = await SharedPreferences.getInstance();
+    var _plate = _prefs.getString("carPlate");
+    if (_plate == null) {
+      Get.to(() => AddCArPage());
+    } else {
+      Get.snackbar("Uyarı", "Sisteme sadece bir adet araç kayıt edilebilir");
+    }
+    
   }
 
   _onPressedAddPark() {

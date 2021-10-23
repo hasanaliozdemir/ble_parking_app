@@ -7,6 +7,7 @@ import 'package:gesk_app/core/components/textInput.dart';
 import 'package:gesk_app/models/car.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class CarPAge extends StatefulWidget {
@@ -413,9 +414,11 @@ class _CarPAgeState extends State<CarPAge> {
 
   void _deleteFunc() async{
     _showLoading();
+    var _prefs = await SharedPreferences.getInstance();
     var _res = dataService.deleteCar(
       carId: car.id);
     if (_res!=null) {
+      _prefs.setString("carPlate", null);
       Get.to(()=>ProfileScreen(),fullscreenDialog: true);
     }else{
       Navigator.pop(context);
@@ -424,8 +427,9 @@ class _CarPAgeState extends State<CarPAge> {
     
   }
 
-  void _saveCar(){
+  void _saveCar()async{
     _showLoading();
+    var _prefs = await SharedPreferences.getInstance();
     var _res = dataService.editCar(
       carId: car.id, 
       plate: car.plaka, 
@@ -434,6 +438,7 @@ class _CarPAgeState extends State<CarPAge> {
       carSize: _currentSelectedSize.toString()
       );
     if (_res == null) {
+      _prefs.setString("carPlate", car.plaka);
       Navigator.pop(context);
     } else {
       Get.to(()=> ProfileScreen(),fullscreenDialog: true);
