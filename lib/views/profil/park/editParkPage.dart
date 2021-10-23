@@ -243,25 +243,28 @@ class _EditParkPageState extends State<EditParkPage> {
   Padding _buildFormattedAddress() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Container(
-        decoration: BoxDecoration(border: Border.all(color: gray600)),
-        child: ListTile(
-          leading: Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: SvgPicture.asset(
-              "assets/icons/adressPin.svg",
-              color: blue500,
+      child: GestureDetector(
+        onTap: _changeLocation,
+        child: Container(
+          decoration: BoxDecoration(border: Border.all(color: gray600)),
+          child: ListTile(
+            leading: Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: SvgPicture.asset(
+                "assets/icons/adressPin.svg",
+                color: blue500,
+              ),
             ),
-          ),
-          title: Container(
-            alignment: Alignment.topCenter,
-            child: Text(
-              _formattedAdress,
-              style: TextStyle(
-                  color: gray900,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 12,
-                  fontFamily: "SF Pro Text"),
+            title: Container(
+              alignment: Alignment.topCenter,
+              child: Text(
+                _formattedAdress,
+                style: TextStyle(
+                    color: gray900,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                    fontFamily: "SF Pro Text"),
+              ),
             ),
           ),
         ),
@@ -482,6 +485,7 @@ class _EditParkPageState extends State<EditParkPage> {
       isWithSecurity: _isWithSecurity.value,
       isWithElectricity: _isWithElectricity.value,
       name: _parkNameController.text,
+      parkInfo: _parkInfoController.text
     );
 
     
@@ -522,6 +526,7 @@ class _EditParkPageState extends State<EditParkPage> {
     _isWithSecurity.value = _park.isWithSecurity;
     _parkNameController.text = _park.name;
     _parkInfoController.text = (_park.info != null) ? _park.info : "";
+    print(_park.info);
   }
 
   loadImageList() {
@@ -542,5 +547,9 @@ class _EditParkPageState extends State<EditParkPage> {
     setState(() {
       _formattedAdress = _adres.formattedAddress;
     });
+  }
+
+  _changeLocation(){
+    //TODO: Lokasyon değiştirme eklenecek
   }
 }
