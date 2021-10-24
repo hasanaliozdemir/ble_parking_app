@@ -288,7 +288,7 @@ class _MapScreenState extends State<MapScreen> {
     if (_filterModel == null) {
       _filterModel = FilterModel(
           minPrice: 0,
-          maxPrice: 150,
+          maxPrice: 100,
           isWithElectricity: false,
           isClosed: false,
           isWithCam: false,
@@ -301,7 +301,16 @@ class _MapScreenState extends State<MapScreen> {
         _ref2.add(element);
 
         if (_filterModel.isClosed == true) {
-          _ref2.removeWhere((closeElement) => closeElement.isClosedPark);
+          _ref2.removeWhere((closeElement) => !closeElement.isClosedPark);
+        }
+        if (_filterModel.isWithCam == true) {
+          _ref2.removeWhere((closeElement) => !closeElement.isWithCam);
+        }
+        if (_filterModel.isWithElectricity == true) {
+          _ref2.removeWhere((closeElement) => !closeElement.isWithElectricity);
+        }
+        if (_filterModel.isWithSecurity == true) {
+          _ref2.removeWhere((closeElement) => !closeElement.isWithSecurity);
         }
       } else {
         
@@ -359,7 +368,7 @@ class _MapScreenState extends State<MapScreen> {
                         backgroundColor: Colors.white,
                         context: context,
                         builder: (context) {
-                          return FilterDetail(location: _location,parks: _firstParks,);
+                          return FilterDetail(location: _location,parks: _firstParks,filterModel: _filterModel);
                         });
                   }))
         ],

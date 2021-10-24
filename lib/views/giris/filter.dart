@@ -10,15 +10,17 @@ import 'package:gesk_app/views/giris/SplashScreen.dart';
 import 'package:get/get.dart';
 
 class FilterDetail extends StatefulWidget {
-  const FilterDetail({Key key, this.location, this.parks}) : super(key: key);
+  const FilterDetail({Key key, this.location, this.parks,@required this.filterModel}) : super(key: key);
   final location;
   final parks;
-
+  final FilterModel filterModel;
   @override
   _FilterDetailState createState() => _FilterDetailState();
 }
 
 class _FilterDetailState extends State<FilterDetail> {
+
+
 
 
   var _isClosed = false.obs;
@@ -31,10 +33,22 @@ class _FilterDetailState extends State<FilterDetail> {
   var _maxPrice = 80.obs;
 
   RangeValues _values = RangeValues(20.0, 80.0);
+  @override
+  void initState() { 
+    super.initState();
+    _isClosed.value = widget.filterModel.isClosed;
+    _isCam.value = widget.filterModel.isWithCam;
+    _isWithSecurity.value = widget.filterModel.isWithSecurity;
+    _isWithElectricity.value = widget.filterModel.isWithElectricity;
+
+    _size = widget.filterModel.size;
+    _minPrice.value = widget.filterModel.minPrice;
+    _maxPrice.value = widget.filterModel.maxPrice;
+    _values = RangeValues(widget.filterModel.minPrice.toDouble(), widget.filterModel.maxPrice.toDouble());
+  }
 
   @override
   Widget build(BuildContext context) {
-    
     return Container(
       height: Get.height / 812 * 732,
       decoration: BoxDecoration(
