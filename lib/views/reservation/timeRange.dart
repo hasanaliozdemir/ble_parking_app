@@ -567,10 +567,11 @@ class _TimeRangePageState extends State<TimeRangePage> {
     var _prefs = await SharedPreferences.getInstance();
 
     var _userId = _prefs.getInt("userId");
+    var _plate = _prefs.getString("carPlate");
 
     var dayString = "${_date.year}.${(_date.month<10)? "0"+_date.month.toString() : _date.month}.${(_date.day<10)? "0"+_date.day.toString() : _date.day}";
 
-    TimeRange _totalTime;
+    TimeRange _totalTime = TimeRange();
 
     List<TimeRange> _ranges = List<TimeRange>();
 
@@ -579,16 +580,23 @@ class _TimeRangePageState extends State<TimeRangePage> {
     });
 
     _ranges.sort((a,b)=>a.startHour.compareTo(b.startHour));
+    _ranges.forEach((element) { 
+      element.endHour = element.startHour +1;
+    });
 
     _totalTime.startHour = _ranges.first.startHour;
     _totalTime.endHour = _ranges.last.endHour;
     _totalTime.tpaId = _ranges.first.tpaId;
 
+    print(_totalTime.endHour);
+    print(_ranges.first.endHour);
+
+
   var _res = await _dataService.setReserved(
         parkId: _park.id,
         tpaId: _totalTime.tpaId,
         userId: _userId,
-        plate: "hasan123",
+        plate: _plate,
         datetime: "$dayString-${_totalTime.startHour} $dayString-${_totalTime.endHour}"
       );
 
