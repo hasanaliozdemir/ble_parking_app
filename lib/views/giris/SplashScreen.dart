@@ -104,17 +104,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (_auth != null) {
         if (_location != null) {
           if (_firstParks != null) {
-            if (_firstParks.isEmpty) {
-              if (_auth == true) {
-                Get.off(
-                    () => MapScreen(location: _location, firstParks: _ready));
-                timer.cancel();
-              } else {
-                Get.off(() =>
-                    MapScreenReadOnly(location: _location, firstParks: _ready));
-                timer.cancel();
-              }
-            } else {
+            if (_firstParks.isEmpty == false) {
               if (_firstParks.last.distance != null) {
                 if (_firstParks.last.distance != "") {
                   _orderList();
