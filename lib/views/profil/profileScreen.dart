@@ -189,7 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     var _newPic = await dataService.downloadUserPhoto(
       userId: _userId,
-      photoId: _currentUser.userImageUrl.last ?? 0
+      photoId: _currentUser.userImageUrl.first ?? 0
     );
   
     setState(() {
