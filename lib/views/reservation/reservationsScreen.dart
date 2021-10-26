@@ -167,7 +167,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
             child: ListTile(
               leading: _buildLeading(),
               title: Text(
-                "_reservation.parkName+" "+_reservation.tpaName",
+                _reservation.parkName+" "+_reservation.tpaName,
                 style: TextStyle(
                     fontFamily: "SF Pro Text",
                     fontSize: 13,
