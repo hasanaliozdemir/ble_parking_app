@@ -132,11 +132,13 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
               Navigator.pop(context);
               Get.snackbar("Hata", "Bir hata oluştu");
             }else{
+              var _park = await dataService.getPark(parkId:carList[index].parkId);
               var _tpa = _tpas[_index];
-            if (_tpa != null && carList[index].park != null) {
+              print(carList[index].parkId);
+            if (_tpa != null && _park != null) {
               Navigator.pop(context);
               Get.to(()=> ReservationDetail(
-                park: carList[index].park, 
+                park: _park, 
                 tpa: _tpa, 
                 date: carList[index].date, 
                 start: int.parse(carList[index].start), 
@@ -155,7 +157,6 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   }
 
   Padding _buildListTile(Reservation _reservation) {
-    print(_reservation.parkName);
     return Padding(
         padding: EdgeInsets.all(8),
         child: Container(
