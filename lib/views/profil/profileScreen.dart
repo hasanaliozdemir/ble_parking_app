@@ -692,7 +692,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _onPressedAddCar() async{
     var _prefs = await SharedPreferences.getInstance();
     var _plate = _prefs.getString("carPlate");
-    if (_plate == null) {
+    if (_plate == null || _plate == "null") {
       Get.to(() => AddCArPage());
     } else {
       Get.snackbar("Uyarı", "Sisteme sadece bir adet araç kayıt edilebilir");

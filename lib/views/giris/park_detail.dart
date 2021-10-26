@@ -615,7 +615,7 @@ class _ParkDetailState extends State<ParkDetail> {
     var _prefs = await SharedPreferences.getInstance();
     var _plate = _prefs.getString("carPlate");
 
-    if (_plate == null) {
+    if (_plate == "null" || _plate == null) {
       showDialog(context: context, builder: (context){
         return PopUp(
           realIcon: Icon(CupertinoIcons.car_detailed,size: 48,),

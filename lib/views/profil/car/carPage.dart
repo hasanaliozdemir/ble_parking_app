@@ -418,7 +418,7 @@ class _CarPAgeState extends State<CarPAge> {
     var _res = dataService.deleteCar(
       carId: car.id);
     if (_res!=null) {
-      _prefs.setString("carPlate", null);
+      _prefs.setString("carPlate", "null");
       Get.to(()=>ProfileScreen(),fullscreenDialog: true);
     }else{
       Navigator.pop(context);
