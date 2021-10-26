@@ -94,7 +94,7 @@ class _ParkCardState extends State<ParkCard> {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              widget.park.isClosedPark ? iconBox(1) : iconBox(2),
+              widget.park.isClosedPark ? iconBox(1) : SizedBox(),
               widget.park.isWithElectricity ? iconBox(3) : SizedBox(),
               widget.park.isWithCam ? iconBox(4) : SizedBox(),
             ],
