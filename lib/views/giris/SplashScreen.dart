@@ -110,7 +110,6 @@ class _SplashScreenState extends State<SplashScreen> {
                   _orderList();
                   if (_fixed == true) {
                     if (_auth == true) {
-                      print(_ready);
                       Get.off(() =>
                           MapScreen(location: _location, firstParks: _ready));
                       timer.cancel();
