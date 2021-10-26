@@ -448,11 +448,21 @@ class _ReservationDetailState extends State<ReservationDetail> {
   }
 
   Widget _buildButtonOpenBarrier() {
+
+    var _startingTime = _reservation.date.add(Duration(hours: int.parse(_reservation.start)));
+    var _difference = DateTime.now().difference(_startingTime).inMinutes;
     return Obx(() {
-      if (_near.value == true) {
+      if (_near.value == true && _difference >5) {
         return Button.active(text: "Bariyeri Aç", onPressed: _openBarrier);
       } else {
-        return Button.backHover(text: "Bariyeri Aç", onPressed: null);
+        return Button.backHover(text: "Bariyeri Aç", onPressed: (){
+          if (_difference <5) {
+            Get.snackbar("Uyarı", "Rezervasyon saati gelmeden bariyeri açamazsınız !");
+          }else{
+            print(_difference);
+            Get.snackbar("Uyarı", "Bariyeri açabilmek için en az 800 metre yakında olmalısınız.");
+          }
+        });
       }
     });
   }
@@ -496,6 +506,7 @@ class _ReservationDetailState extends State<ReservationDetail> {
   }
 
   _backButtonFunc() {
+    _timer.cancel();
     Get.to(() => ReservationsScreen(), fullscreenDialog: true);
   }
 
