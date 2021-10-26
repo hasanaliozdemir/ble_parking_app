@@ -29,15 +29,19 @@ var width = Get.width / 375;
 var height = Get.height / 812;
 
 class MapScreen extends StatefulWidget {
-  MapScreen({this.filterModel,this.location,this.firstParks});
+  MapScreen({this.filterModel, this.location, this.firstParks});
   FilterModel filterModel;
   var location;
   List<Park> firstParks;
   @override
-  _MapScreenState createState() => _MapScreenState(filterModel,location,firstParks);
+  _MapScreenState createState() =>
+      _MapScreenState(filterModel, location, firstParks);
 }
 
 class _MapScreenState extends State<MapScreen> {
+  Location _userLocation = Location();
+  Timer _timer;
+
   var _location;
   FilterModel _filterModel;
   List<Park> _firstParks;
@@ -54,7 +58,7 @@ class _MapScreenState extends State<MapScreen> {
 
   StreamSubscription locationSubscription;
 
-  _MapScreenState(this._filterModel,this._location,this._firstParks);
+  _MapScreenState(this._filterModel, this._location, this._firstParks);
 
   DataService dataService = DataService();
 
@@ -64,7 +68,7 @@ class _MapScreenState extends State<MapScreen> {
     _currentPosition.lat = _location.latitude;
     _currentPosition.lng = _location.longitude;
     _getUserLocation();
-    _distanceFix(_currentPosition.lat,_currentPosition.lng);
+    _distanceFix(_currentPosition.lat, _currentPosition.lng);
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
     locationSubscription = applicationBloc.selectedLocation.stream
         .asBroadcastStream()
@@ -74,25 +78,36 @@ class _MapScreenState extends State<MapScreen> {
       }
     });
 
+    @override
+    void dispose() { 
+      _timer.cancel();
+      super.dispose();
+    }
+
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
         _markers = mapBitmapsToMarkers(bitmaps);
       });
     }).generate(context);
 
-    
-
     listParks();
+    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      _getUserLocation();
+
+    });
     super.initState();
   }
 
   void _getUserLocation() async {
+
     var _position = await GeolocatorPlatform.instance
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     setState(() {
       _currentPosition.lat = _position.latitude;
       _currentPosition.lng = _position.longitude;
+      _userLocation.lat = _position.latitude;
+      _userLocation.lng = _position.longitude;
     });
 
     //getParks(lat: _currentPosition.lat,lng: _currentPosition.lng); bunu açınca uzaklığa göre sıralama bozuluyor
@@ -139,42 +154,66 @@ class _MapScreenState extends State<MapScreen> {
                 height: h * 128,
               ),
               itemBuilder: (context, itemIndex, pageIndex) {
-                
-                  return Container(
+                return Container(
                   height: h * 128,
                   width: w * 264,
                   child: GestureDetector(
-                    onTap: () {
-                      
-                      showModalBottomSheet(
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          backgroundColor: Colors.white,
-                          context: context,
-                          builder: (context) {
-                            return ParkDetail(
-                              park: _parks[itemIndex],
-                            );
-                          });
-                    },
-                    child: ParkCard(
-                      park: _parks[itemIndex],
-                    )
-                  ),
+                      onTap: () {
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            backgroundColor: Colors.white,
+                            context: context,
+                            builder: (context) {
+                              return ParkDetail(
+                                park: _parks[itemIndex],
+                              );
+                            });
+                      },
+                      child: ParkCard(
+                        park: _parks[itemIndex],
+                      )),
                 );
-                
               },
             ),
           ),
-          _buildSwitch(context)
+          _buildSwitch(context),
+          _buildCurrentLoc()
         ],
       ),
       bottomNavigationBar: BottomBar(
         index: _index,
       ),
     );
+  }
+
+  _buildCurrentLoc() {
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + (h * 148),
+      left: w * 315,
+        child:GestureDetector(
+          onTap: ()async{
+            final GoogleMapController _controller = await _mapcontroller.future;
+            _controller
+              ..animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+                  target: LatLng(_userLocation.lat, _userLocation.lng), zoom: 17)));
+          },
+          child: Container(
+            width: w*32,
+            height: h*32,
+            decoration: BoxDecoration(
+              color: white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: gray800)
+            ),
+            child: Center(
+              child: Icon(CupertinoIcons.location),
+            ),
+          ),
+        )
+            );
   }
 
   Positioned _buildSwitch(BuildContext context) {
@@ -258,14 +297,13 @@ class _MapScreenState extends State<MapScreen> {
     return _markersList;
   }
 
-  _distanceFix(lat,lng)async{
-    _parks.forEach((element) async{ 
+  _distanceFix(lat, lng) async {
+    _parks.forEach((element) async {
       var _dist = await DistanceService().getDistance(
-        LatLng(lat, lng), 
-        LatLng(element.latitude, element.longitude));
-        setState(() {
-                  element.distance = _dist;
-                });
+          LatLng(lat, lng), LatLng(element.latitude, element.longitude));
+      setState(() {
+        element.distance = _dist;
+      });
     });
   }
 
@@ -277,12 +315,9 @@ class _MapScreenState extends State<MapScreen> {
         zoom: 17)));
   }
 
-  
-
   Future<void> listParks() async {
     List<Park> _ref2 = List<Park>();
 
-    
     _ref2.clear();
 
     if (_filterModel == null) {
@@ -312,9 +347,7 @@ class _MapScreenState extends State<MapScreen> {
         if (_filterModel.isWithSecurity == true) {
           _ref2.removeWhere((closeElement) => !closeElement.isWithSecurity);
         }
-      } else {
-        
-      }
+      } else {}
     });
 
     _parks = _ref2;
@@ -327,54 +360,56 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   _buildSearchBar(context) {
-  return Positioned(
-      top: MediaQuery.of(context).padding.top + (h * 36),
-      left: 16,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-              //height: Get.height / 812 * 56,
-              width: Get.width / 375 * 279,
-              child: SearchBar()),
-          SizedBox(
-            width: 8,
-          ),
-          Container(
-              width: Get.height / 812 * 56,
-              height: Get.height / 812 * 56,
-              decoration: BoxDecoration(
-                  color: white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x33000000),
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
+    return Positioned(
+        top: MediaQuery.of(context).padding.top + (h * 36),
+        left: 16,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                //height: Get.height / 812 * 56,
+                width: Get.width / 375 * 279,
+                child: SearchBar()),
+            SizedBox(
+              width: 8,
+            ),
+            Container(
+                width: Get.height / 812 * 56,
+                height: Get.height / 812 * 56,
+                decoration: BoxDecoration(
+                    color: white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x33000000),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(8)),
+                child: IconButton(
+                    icon: Icon(
+                      CupertinoIcons.slider_horizontal_3,
+                      color: blue500,
+                      size: 22,
                     ),
-                  ],
-                  borderRadius: BorderRadius.circular(8)),
-              child: IconButton(
-                  icon: Icon(
-                    CupertinoIcons.slider_horizontal_3,
-                    color: blue500,
-                    size: 22,
-                  ),
-                  onPressed: () {
-                    showModalBottomSheet(
-                        isScrollControlled: true,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        backgroundColor: Colors.white,
-                        context: context,
-                        builder: (context) {
-                          return FilterDetail(location: _location,parks: _firstParks,filterModel: _filterModel);
-                        });
-                  }))
-        ],
-      ));
-}
-
+                    onPressed: () {
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          backgroundColor: Colors.white,
+                          context: context,
+                          builder: (context) {
+                            return FilterDetail(
+                                location: _location,
+                                parks: _firstParks,
+                                filterModel: _filterModel);
+                          });
+                    }))
+          ],
+        ));
+  }
 }
 
 // Example of marker widget
@@ -436,8 +471,6 @@ Widget _getMarkerWidget(double price, Status status, bool isWithElectiricity) {
 
 // Example of backing data
 List<Park> _parks = List<Park>();
-
-
 
 Widget _buildMarkerText(Status status, price) {
   if (status == Status.owner) {
@@ -506,8 +539,6 @@ Widget _electricityIcon(bool active) {
     return SizedBox();
   }
 }
-
-
 
 Future<Uint8List> getPerson(context) async {
   ByteData byteData =
