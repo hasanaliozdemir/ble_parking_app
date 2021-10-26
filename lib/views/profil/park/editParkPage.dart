@@ -69,37 +69,48 @@ class _EditParkPageState extends State<EditParkPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).padding.top,
-            ),
-            Expanded(
-              flex: 44,
-              child: _buildBackButton(),
-            ),
-            Spacer(
-              flex: 8,
-            ),
-            Expanded(
-              flex: 41,
-              child: _buildtitle(),
-            ),
-            Expanded(
-              flex: 44,
-              child: _buildDesc(),
-            ),
-            Spacer(
-              flex: 8,
-            ),
-            Expanded(
-              flex: 480,
-              child: _builList(context),
-            ),
-          ],
-        ),
+      body: CustomScrollView(
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: _buildBody(context),
+          )
+        ],
+      ),
+    );
+  }
+
+  Padding _buildBody(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).padding.top,
+          ),
+          Expanded(
+            flex: 44,
+            child: _buildBackButton(),
+          ),
+          Spacer(
+            flex: 8,
+          ),
+          Expanded(
+            flex: 41,
+            child: _buildtitle(),
+          ),
+          Expanded(
+            flex: 44,
+            child: _buildDesc(),
+          ),
+          Spacer(
+            flex: 8,
+          ),
+          Expanded(
+            flex: 480,
+            child: _builList(context),
+          ),
+        ],
       ),
     );
   }
