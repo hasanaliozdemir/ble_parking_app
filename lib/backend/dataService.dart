@@ -40,7 +40,7 @@ class DataService {
 
     var _responseJson = convert.jsonDecode(_response.body);
 
-    var _user = User.fromJson(_responseJson["register"]);
+    var _user = User.forLoginJson(_responseJson["register"]);
 
     return _user;
   }
@@ -265,7 +265,7 @@ class DataService {
       Navigator.pop(context);
       Get.snackbar("Uyarı", _responseJson["login"]);
     } else {
-      var _user = User.fromJson(_responseJson["login"]);
+      var _user = User.forLoginJson(_responseJson["login"]);
 
       return _user;
     }

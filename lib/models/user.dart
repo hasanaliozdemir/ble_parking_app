@@ -63,4 +63,42 @@ class User{
     );
   }
 
+  factory User.forLoginJson(Map<String,dynamic> json){
+    List _refcars = json["carsId"] as List;
+    List _refparks = json["parksId"] as List;
+    List<int> _cars = List<int>();
+    List<int> _parks= List<int>();;
+    if (_refcars.isEmpty) {
+      _cars = [];
+    }else{
+      _refcars.forEach((element) { 
+        _cars.add(element);
+      });
+    }
+    if (_refparks.isEmpty) {
+      _parks = [];
+    }else{
+      _refparks.forEach((element) { 
+        _parks.add(element);
+      });
+    }
+
+    idCheck(val){
+      if(val is String){
+        return int.parse(val);
+      }else{
+        return val;
+      }
+    }
+
+    return User(
+      userId: idCheck(json["userId"]),
+      name: json["name"],
+      phoneNumber: json["phoneNumber"],
+      mail: json["mail"],
+      carsId: _cars,
+      parksId: _parks
+    );
+  }
+
 }
