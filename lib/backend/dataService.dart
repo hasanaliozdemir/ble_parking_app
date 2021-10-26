@@ -686,6 +686,7 @@ class DataService {
       _ref.forEach((element) {
         _reservations.add(Reservation.fromJson(element));
       });
+      _reservations.removeWhere((element)=> element.parkName == null);
       return _reservations;
     }
   }
@@ -711,6 +712,8 @@ class DataService {
       _ref.forEach((element) {
         _reservations.add(Reservation.fromJson(element));
       });
+
+      _reservations.removeWhere((element)=> element.parkName == null);
       return _reservations;
     }
   }
