@@ -8,6 +8,7 @@ import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/funcs/triangleCreator.dart';
 import 'package:gesk_app/data_models/time_range.dart';
 import 'package:gesk_app/models/park.dart';
+import 'package:gesk_app/models/reservation.dart';
 import 'package:gesk_app/models/tpa.dart';
 import 'package:gesk_app/services/markerCreator.dart';
 import 'package:gesk_app/views/giris/MapScreen.dart';
@@ -607,7 +608,15 @@ class _TimeRangePageState extends State<TimeRangePage> {
       Get.snackbar("Hata", "Bir hata oluştu lütfen tekrar deneyin");
     } else {
       Navigator.pop(context);
-      Get.to(()=>DoneReservationPage(park: _park,date: _date,start: _totalTime.startHour,end: _totalTime.endHour,tpa: _refTpa.first,),fullscreenDialog: true);
+      Get.to(()=>DoneReservationPage(park: _park,date: _date,start: _totalTime.startHour,end: _totalTime.endHour,tpa: _refTpa.first,reservation: Reservation(
+        park: _park,
+        tpaId: _refTpa.first.tapId,
+        tpaName: _refTpa.first.tpaName,
+        parkName: _park.name,
+        start: (_totalTime.startHour<10)? "0"+_totalTime.startHour.toString() : _totalTime.startHour.toString(),
+        date: _date,
+        
+      ),),fullscreenDialog: true);
     }
 
   }
