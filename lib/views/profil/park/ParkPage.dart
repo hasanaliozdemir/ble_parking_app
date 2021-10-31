@@ -14,6 +14,7 @@ import 'package:gesk_app/services/addressService.dart';
 import 'package:gesk_app/views/profil/park/editParkPage.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:gesk_app/views/profil/tpa/addTpa.dart';
+import 'package:gesk_app/views/profil/tpa/editTpa.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -349,7 +350,14 @@ class _ParkPageState extends State<ParkPage> {
                           );
                         },
                         itemBuilder: (context, index) {
+                          print(tpaList[index].availableTimes);
+                          var _referList = tpaList[index].availableTimes.split(" ");
+                          var _start = _referList.first.split("-").last;
+                          var _end = _referList.last.split("-").last;
                           return ListTile(
+                            onTap: (){
+                              Get.to(()=>EditTpaPage(park:park, tpa: tpaList[index]));
+                            },
                             leading: SvgPicture.asset(
                                 "assets/icons/park_icon.svg"),
                             title: Text(
@@ -360,24 +368,37 @@ class _ParkPageState extends State<ParkPage> {
                                   fontWeight: FontWeight.w400),
                             ),
                             trailing: Container(
-                              width: Get.width / 375 * 50,
-                              child: CustomSwitch(
-                                value: tpaList[index].avaliable,
-                                activeIcon: Icon(
-                                  CupertinoIcons.lock_open,
-                                  color: blue500,
-                                ),
-                                passiveIcon: Icon(
-                                  CupertinoIcons.lock,
-                                  color: blue500,
-                                ),
-                                func: () {
-                                  dataService.lockTpa(
-                                    parkId: park.id,
-                                    tpaId: tpaList[index].tapId,
-                                    available: tpaList[index].avaliable.value
-                                  );
-                                },
+                              width: Get.width / 375 * 150,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: Get.width / 375 * 100,
+                                    child: Text(
+                                      _start+" - "+_end
+                                    ),
+                                  ),
+                                  Container(
+                                    width: Get.width / 375 * 50,
+                                    child: CustomSwitch(
+                                      value: tpaList[index].avaliable,
+                                      activeIcon: Icon(
+                                        CupertinoIcons.lock_open,
+                                        color: blue500,
+                                      ),
+                                      passiveIcon: Icon(
+                                        CupertinoIcons.lock,
+                                        color: blue500,
+                                      ),
+                                      func: () {
+                                        dataService.lockTpa(
+                                          parkId: park.id,
+                                          tpaId: tpaList[index].tapId,
+                                          available: tpaList[index].avaliable.value
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           );

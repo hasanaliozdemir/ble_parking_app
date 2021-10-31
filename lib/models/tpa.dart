@@ -9,10 +9,10 @@ class Tpa{
   bool isWithElectricity;
   String maxCarSize; 
   List reservedTimes;
-  List avaliableTimes;
-  
+  String availableTimes;
+  List availableInts;
 
-  Tpa({this.avaliableTimes,this.reservedTimes,this.parkId,this.maxCarSize,this.tapId, this.avaliable, this.tpaName, this.hourlyPrice, this.isWithElectricity});
+  Tpa({this.availableInts,this.availableTimes,this.reservedTimes,this.parkId,this.maxCarSize,this.tapId, this.avaliable, this.tpaName, this.hourlyPrice, this.isWithElectricity});
 
   factory Tpa.fromJson(Map<String,dynamic> json){
     fixReservedTimes(val){
@@ -26,6 +26,7 @@ class Tpa{
 
 
     return Tpa(
+      availableTimes: json['availableTimes'],
       tapId: json["tpaId"],
       parkId: json["parkId"],
       tpaName: json["tpaName"],
@@ -33,7 +34,8 @@ class Tpa{
       //isWithElectricity: false, //TODO: data ?
       avaliable: true.obs, //TODO: data ?
       maxCarSize: "SUV", //TODO: ekle seçimini
-      reservedTimes : fixReservedTimes(json["reservedTimes"])
+      reservedTimes : fixReservedTimes(json["reservedTimes"]
+      )
     );
   }
 
@@ -41,7 +43,7 @@ class Tpa{
     return Tpa(
       tapId: json["tpaId"],
       tpaName: json["tpaName"],
-      avaliableTimes: json["times"]
+      availableInts: json["times"]
     );
   }
 

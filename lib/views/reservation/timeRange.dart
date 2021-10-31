@@ -162,11 +162,11 @@ class _TimeRangePageState extends State<TimeRangePage> {
   Widget _buildRowModel(Tpa tpa) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: tpa.avaliableTimes.length,
+      itemCount: tpa.availableInts.length,
       itemBuilder: (context, index) {
         var _newtimeRange = TimeRange(
           uniqueId: tpa.tapId.toString() + index.toString(),
-          startHour: tpa.avaliableTimes[index],
+          startHour: tpa.availableInts[index],
           selected: false,
           tpaId: tpa.tapId
         );
@@ -185,7 +185,7 @@ class _TimeRangePageState extends State<TimeRangePage> {
                   borderRadius: BorderRadius.circular(8)),
               child: Center(
                 child: Text(
-                  fixRowString(tpa.avaliableTimes[index]),
+                  fixRowString(tpa.availableInts[index]),
                   style: TextStyle(color: white),
                 ),
               ),
@@ -614,6 +614,7 @@ class _TimeRangePageState extends State<TimeRangePage> {
         tpaName: _refTpa.first.tpaName,
         parkName: _park.name,
         start: (_totalTime.startHour<10)? "0"+_totalTime.startHour.toString() : _totalTime.startHour.toString(),
+        end: (_totalTime.endHour<10)? "0"+_totalTime.endHour.toString() : _totalTime.endHour.toString(),
         date: _date,
         
       ),),fullscreenDialog: true);
