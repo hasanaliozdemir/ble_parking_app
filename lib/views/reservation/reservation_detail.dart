@@ -451,15 +451,19 @@ class _ReservationDetailState extends State<ReservationDetail> {
 
     var _startingTime = _reservation.date.add(Duration(hours: int.parse(_reservation.start)));
     var _difference = DateTime.now().difference(_startingTime).inMinutes;
+    bool _timeOut = 0 > DateTime.now().compareTo(_reservation.date.add(Duration(hours: int.tryParse(_reservation.end)-int.parse(_reservation.start))));
     return Obx(() {
-      if (_near.value == true && _difference >5) {
+      
+      if (_near.value == true && _difference >-2 && !_timeOut) {
         return Button.active(text: "Bariyeri Aç", onPressed: _openBarrier);
       } else {
         return Button.backHover(text: "Bariyeri Aç", onPressed: (){
-          if (_difference <5) {
-            Get.snackbar("Uyarı", "Rezervasyon saati gelmeden bariyeri açamazsınız !");
-          }else{
+          if (_difference <-2) {
             print(_difference);
+            Get.snackbar("Uyarı", "Rezervasyon saati gelmeden bariyeri açamazsınız !");
+          }else if(_timeOut){
+            Get.snackbar("Uyarı", "Rezervasyon saatiniz bittikten sonra otoparka giremezsiniz");
+          }else{
             Get.snackbar("Uyarı", "Bariyeri açabilmek için en az 800 metre yakında olmalısınız.");
           }
         });
