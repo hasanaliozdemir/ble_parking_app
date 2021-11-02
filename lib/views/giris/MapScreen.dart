@@ -260,7 +260,7 @@ class _MapScreenState extends State<MapScreen> {
             },
             zoomControlsEnabled: false,
             myLocationEnabled: true,
-            mapType: MapType.terrain,
+            mapType: MapType.satellite,
             mapToolbarEnabled: false,
             initialCameraPosition: CameraPosition(
                 target: LatLng(_currentPosition.lat, _currentPosition.lng),
