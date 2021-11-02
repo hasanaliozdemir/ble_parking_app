@@ -110,6 +110,9 @@ class _EditParkPageState extends State<EditParkPage> {
             flex: 480,
             child: _builList(context),
           ),
+          Spacer(
+            flex: 200,
+          )
         ],
       ),
     );
@@ -123,6 +126,7 @@ class _EditParkPageState extends State<EditParkPage> {
         context: context,
         removeTop: true,
         child: ListView(
+          physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           children: [
             Container(

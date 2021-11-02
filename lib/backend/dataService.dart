@@ -529,7 +529,7 @@ class DataService {
   }
 
   Future getAvailableParks(int driverId) async {
-    // avaliable aslında
+    // available aslında
     List<Park> _parks = List<Park>();
     Uri _uri = Uri.parse(_getInfoUrl);
 
