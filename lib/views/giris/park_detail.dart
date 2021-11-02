@@ -464,7 +464,7 @@ class _ParkDetailState extends State<ParkDetail> {
                         ),
         ),
         title: Text(
-          "Kapalı Otopark",
+          "Elektrikli Şarj İstasyonu",
           style: TextStyle(
             color: _park.isWithElectricity ? black : gray700,
             fontSize: 17,
@@ -505,7 +505,7 @@ class _ParkDetailState extends State<ParkDetail> {
                         ),
         ),
         title: Text(
-          "Kapalı Otopark",
+          "Güvenlik Personeli",
           style: TextStyle(
             color: _park.isWithSecurity ? black : gray700,
             fontSize: 17,
