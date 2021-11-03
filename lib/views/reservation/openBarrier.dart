@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gesk_app/ble/bleService.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/BtPopUp.dart';
 import 'package:gesk_app/core/components/bottomBar.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/models/reservation.dart';
-import 'package:gesk_app/services/bleFunc.dart';
-import 'package:gesk_app/services/bleService.dart';
+
 import 'package:gesk_app/views/reservation/reviewScreen.dart';
 import 'package:get/get.dart';
 
@@ -26,9 +26,8 @@ class OpenBarrierPage extends StatefulWidget {
 }
 
 class _OpenBarrierPageState extends State<OpenBarrierPage> {
-  NewBleService _bleService = NewBleService();
-  BleFunc _bleFunc = BleFunc();
 
+  BleService _bleService = BleService();
   final DateTime _end;
   final Reservation _reservation;
   Timer _coundownTimer;
@@ -309,27 +308,8 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
     Get.back();
   }
 
-  _openBarrier() async {
-    _bleFunc.checkBT().then((btOn) {
-      if (btOn) {
-        if (_first == true) {
-          _bleService.start();
-          print("bariyer açıldı");
-          setState(() {
-            _opened = true;
-          });
-        } else {
-          _bleService.start();
-          print("bariyer açıldı");
-        }
-      } else {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return BtPopUp();
-            });
-      }
-    });
+  _openBarrier(){
+    _bleService.startScan();
   }
 
   _finishPark() {
