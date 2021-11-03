@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/ble/bleService.dart';
 import 'package:gesk_app/core/colors.dart';
@@ -26,6 +27,8 @@ class OpenBarrierPage extends StatefulWidget {
 }
 
 class _OpenBarrierPageState extends State<OpenBarrierPage> {
+  final _ble = FlutterReactiveBle();
+  StreamSubscription _subscription;
 
   BleService _bleService = BleService();
   final DateTime _end;
@@ -35,7 +38,7 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
   bool _first = true;
   bool _opened = false;
   bool _finished = false;
-
+  bool _btOpen = false;
   int pin1 = 0;
   int pin2 = 0;
   int pin3 = 0;
@@ -47,10 +50,20 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
     super.initState();
     _setPins();
     _coundownTimer = Timer.periodic(Duration(minutes: 1), (timer) => _setPins);
+    _subscription= _ble.statusStream.listen((status) {
+      if (status == BleStatus.ready) {
+        setState(() {
+          _btOpen = true;
+        });
+      } else {
+        _btOpen = false;
+      }
+    });
   }
 
   @override
   void dispose() {
+    _subscription?.cancel();
     _coundownTimer.cancel();
     super.dispose();
   }
@@ -309,7 +322,20 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
   }
 
   _openBarrier(){
-    _bleService.startScan();
+    if (_btOpen) {
+      if (_first == true) {
+        _bleService.startScan();
+        setState(() {
+          _opened= true;
+        });
+      } else{
+        _bleService.startScan();
+      }
+    }else{
+      showDialog(context: context, builder: (context){
+        return BtPopUp();
+      });
+    }
   }
 
   _finishPark() {
