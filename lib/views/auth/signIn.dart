@@ -6,6 +6,8 @@ import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/passwordInput.dart';
 
 import 'package:gesk_app/core/widgets.dart';
+import 'package:gesk_app/models/car.dart';
+import 'package:gesk_app/models/user.dart';
 import 'package:gesk_app/services/validationService.dart';
 
 import 'package:gesk_app/views/auth/forgot_password.dart';
@@ -313,13 +315,17 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _signIn() async{
     _showLoading();
-    var _newUser = await dataService.login(context: context,phoneNumber:phoneNumber.phoneNumber, password:passwordController.text);
+    User _newUser = await dataService.login(context: context,phoneNumber:phoneNumber.phoneNumber, password:passwordController.text);
     if (_newUser == null) {
       print("helo");
       Widgets().showAlert(context, "Bir hata oluştu");
     } else {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setInt("userId", _newUser.userId);
+    if (_newUser.carsId.isEmpty == false) {
+      List<Car>_ref = await dataService.getCars(carsId: [_newUser.carsId.first]);
+      _prefs.setString("carPlate", _ref.first.plaka);
+    }
 
     var _conf = await dataService.confirm(userId: _newUser.userId);
     if (_conf) {
