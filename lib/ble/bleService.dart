@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:gesk_app/core/colors.dart';
 import 'package:get/get.dart';
 
 class BleService{
@@ -14,23 +16,27 @@ class BleService{
   
   StreamSubscription<ConnectionStateUpdate> _connection;
 
-  startScan(){
-    _devices.clear();
+  startScan(BuildContext context){
+    _showLoading(context);
     _subscription?.cancel();
-    _subscription=
+    if (_devices.isEmpty) {
+      _subscription=
     flutterReactiveBle.scanForDevices(withServices: []).listen((device) {
       if (device.name != null && device.name.length >2) {
         if (device.name.substring(0,3) == "GSK") {
         _devices.add(device);
-        connectDevice(device);
+        connectDevice(device,context);
         stopScan();
       }
       }
       
     });
+    }else{
+      connectDevice(_devices.first,context);
+    }
   }
 
-  connectDevice(DiscoveredDevice device){
+  connectDevice(DiscoveredDevice device,BuildContext context){
     _connection = flutterReactiveBle.connectToAdvertisingDevice(
       id: device.id, 
       withServices: [], 
@@ -39,24 +45,21 @@ class BleService{
       ).listen((connectionState) {
         print(connectionState);
         if (connectionState.connectionState == DeviceConnectionState.connected) {
-          writeWithResponse(device);
+          writeWithResponse(device,context);
         }
       },onError: (error){
         Get.snackbar("Uyarı", error.toString());
       });
-
-
-      Timer(Duration(seconds: 10), (){
-        disConnect(device);
-      });
   }
 
-  writeWithResponse(DiscoveredDevice device)async{
+  writeWithResponse(DiscoveredDevice device,BuildContext context)async{
     final characteristic = QualifiedCharacteristic(
       serviceId: Uuid.parse("de8a5aac-a99b-c315-0c80-60d4cbb51224"), 
       characteristicId: Uuid.parse("5b026510-4088-c297-46d8-be6c736a087a"), 
       deviceId: device.id);
     await flutterReactiveBle.writeCharacteristicWithResponse(characteristic, value: [1]);
+    disConnect(device);
+    Navigator.pop(context);
   }
 
   stopScan()async{
@@ -65,11 +68,31 @@ class BleService{
   }
 
   disConnect(DiscoveredDevice device)async{
+    _devices.clear();
     try{
       await _connection.cancel(); 
     }on Exception catch(e,_){
       print("Error disconnecting from a device: $e");
     }
+  }
+
+  void _showLoading(context){
+    showDialog(
+      barrierDismissible: false,
+      context: context, 
+    builder: (context){
+      return Center(
+        child: Container(
+          width: Get.width/375*50,
+          height: Get.width/375*50,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    });
   }
 
 }

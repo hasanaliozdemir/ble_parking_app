@@ -324,12 +324,12 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
   _openBarrier(){
     if (_btOpen) {
       if (_first == true) {
-        _bleService.startScan();
+        _bleService.startScan(context);
         setState(() {
           _opened= true;
         });
       } else{
-        _bleService.startScan();
+        _bleService.startScan(context);
       }
     }else{
       showDialog(context: context, builder: (context){
