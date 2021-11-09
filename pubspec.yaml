@@ -45,7 +45,7 @@ dependencies:
   intl_phone_number_input:
   map_launcher: '2.0.0'
   email_validator:
-  flutter_reactive_ble: ^5.0.1
+  flutter_reactive_ble: ^5.0.2
 
 dev_dependencies:
   flutter_test:
