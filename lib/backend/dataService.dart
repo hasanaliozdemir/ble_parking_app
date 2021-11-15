@@ -286,9 +286,16 @@ class DataService {
     var _responseJson = convert.jsonDecode(_response.body);
 
     var _carsJson = _responseJson["getuserCars"] as List;
-
-    List<Car> _cars =
+    List<Car> _cars = List<Car>();
+    try {
+       _cars =
         _carsJson.map((carJson) => Car.fromJson(carJson)).toList();
+    } catch (e) {
+      print(e);
+      _cars = [
+        Car(size: null, plaka: "null", renk: null, model: null, id: null, userID: null)
+      ];
+    }
 
     return _cars;
   }
