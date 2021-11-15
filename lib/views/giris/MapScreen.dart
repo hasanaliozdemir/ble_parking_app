@@ -42,6 +42,9 @@ class _MapScreenState extends State<MapScreen> {
   Location _userLocation = Location();
   Timer _timer;
 
+  var _mapType = MapType.satellite;
+  bool _sat = false;
+
   var _location;
   FilterModel _filterModel;
   List<Park> _firstParks;
@@ -180,12 +183,48 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
           _buildSwitch(context),
-          _buildCurrentLoc()
+          _buildCurrentLoc(),
+          _buildSwitchMapStyle()
         ],
       ),
       bottomNavigationBar: BottomBar(
         index: _index,
       ),
+    );
+  }
+
+  _buildSwitchMapStyle(){
+    
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + (h * 188),
+      left: w *315,
+      child: Container(
+        width: w*32,
+            height: h*32,
+            decoration: BoxDecoration(
+              color: white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: gray800)
+            ),
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: IconButton(
+            onPressed: (){
+              if (_sat==false) {
+                setState(() {
+                  _mapType = MapType.satellite;
+                  _sat = true;
+                });
+              } else {
+                setState(() {
+                  _mapType = MapType.normal;
+                  _sat = false;
+                });
+              }
+            }, 
+            icon: Icon(_sat ? CupertinoIcons.map : CupertinoIcons.map_fill,size: 18,)
+            ),
+        ),)
     );
   }
 
@@ -260,7 +299,7 @@ class _MapScreenState extends State<MapScreen> {
             },
             zoomControlsEnabled: false,
             myLocationEnabled: true,
-            mapType: MapType.satellite,
+            mapType: _mapType,
             mapToolbarEnabled: false,
             initialCameraPosition: CameraPosition(
                 target: LatLng(_currentPosition.lat, _currentPosition.lng),
