@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
+import 'package:gesk_app/core/components/dateSelector.dart';
 import 'package:gesk_app/core/funcs/triangleCreator.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:gesk_app/services/markerCreator.dart';
@@ -33,9 +34,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
   var selectedDayString = "Tarih".obs;
   var _startDay;
   var _endDay;
-
-  
-
+  List<DateTime> _activeDays = List<DateTime>();
 
   int index = 0;
 
@@ -72,7 +71,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
           Spacer(
             flex: 24,
           ),
-          Expanded(flex: 50, child: _buildButton()),
+          Expanded(flex: 50, child: SizedBox()),
           Spacer(
             flex: 240,
           ),
@@ -327,18 +326,10 @@ class _DatePickScreenState extends State<DatePickScreen> {
               border: Border.all(color: gray600)),
           child: ListTile(
             onTap: () {
-              DatePicker.showDatePicker(context,
-                  showTitleActions: true,
-                  minTime: DateTime.now(),
-                  maxTime: _endDay,
-                  onChanged: (date) {
-                
-              }, onConfirm: (date) {
-                setState(() {
-                  selectedDay = date;
-                  selectedDayString.value = dayFormatter.format(selectedDay);
-                });
-              }, currentTime: DateTime.now(), locale: LocaleType.tr);
+              showModalBottomSheet(context: context, builder: (context){
+                return DateSelector(days: _activeDays,park: _park,);
+            });
+              
             },
             title: Text(
               selectedDayString.value,
@@ -409,6 +400,8 @@ class _DatePickScreenState extends State<DatePickScreen> {
   
     _dateTimes.sort((a, b) => a.compareTo(b));
 
+    _activeDays = _dateTimes;
+    _activeDays.removeWhere((element) => 0>=element.compareTo(DateTime.now()));
     _startDay = _dateTimes.first;
     _endDay = _dateTimes.last;
     print(_startDay);
