@@ -401,11 +401,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
     _dateTimes.sort((a, b) => a.compareTo(b));
 
     _activeDays = _dateTimes;
-    _activeDays.removeWhere((element) => 0>=element.compareTo(DateTime.now()));
-    _startDay = _dateTimes.first;
-    _endDay = _dateTimes.last;
-    print(_startDay);
-    print(_endDay);
+    _activeDays.removeWhere((element) => 0>=element.add(Duration(days: 1)).compareTo(DateTime.now()));
   }
 
   _searchReservation(){
