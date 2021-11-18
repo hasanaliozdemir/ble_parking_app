@@ -323,8 +323,9 @@ class _SignInScreenState extends State<SignInScreen> {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setInt("userId", _newUser.userId);
     if (_newUser.carsId.isEmpty == false) {
-      List<Car>_ref = await dataService.getCars(carsId: [_newUser.carsId.first]);
-      _prefs.setString("carPlate", _ref.first.plaka);
+      List<Car>_ref = await dataService.getCars(carsId: [_newUser.carsId.last]);
+      print(_ref.last.plaka);
+      _prefs.setString("carPlate", _ref.last.plaka);
     }
 
     var _conf = await dataService.confirm(userId: _newUser.userId);

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 class PlaceServices{
-  final String _apiKey = "AIzaSyAm5L6H-LaUyOUlHNt_nMwy7b_VNRxPPLM";
+  final String _apiKey = "AIzaSyCN6F8cD7cwSoJ5h8Cl5c1U7EKG_oU5XZw";
 
   Future<List<PlaceSearch>> getAutoComplete(String search) async{
     var url = Uri.parse("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&types=(regions)&language=tr_TR&components=country:tr&key=$_apiKey");

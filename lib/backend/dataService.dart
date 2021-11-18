@@ -278,18 +278,20 @@ class DataService {
         "carsId": carsId,
       }
     };
-
+    print(carsId);
     var _postJson = convert.jsonEncode(_payloadBody);
 
     var _response = await http.post(_uri, body: _postJson);
-
+    
     var _responseJson = convert.jsonDecode(_response.body);
-
-    var _carsJson = _responseJson["getuserCars"] as List;
+    
+    var _carsJson = _responseJson["getUserCars"] as List;
     List<Car> _cars = List<Car>();
+    print(_carsJson);
     try {
-       _cars =
-        _carsJson.map((carJson) => Car.fromJson(carJson)).toList();
+      _carsJson.forEach((element) { 
+        _cars.add(Car.fromJson(element));
+      });
     } catch (e) {
       print(e);
       _cars = [
