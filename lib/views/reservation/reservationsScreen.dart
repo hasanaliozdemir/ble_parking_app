@@ -219,9 +219,10 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     var _userId = _prefs.getInt("userId");
 
     carList= await dataService.getReservationsDriver(_userId);
+    carList.removeWhere((element) => element.date.add(Duration(hours: int.parse(element.end), minutes: 1)).compareTo(DateTime.now()) < 0 );
 
     ownerList = await dataService.getReservationsHost(_userId);
-
+    ownerList.removeWhere((element) => element.date.add(Duration(hours: int.parse(element.end), minutes: 1)).compareTo(DateTime.now()) < 0 );
     Navigator.pop(context);
     setState(() {
           
