@@ -181,11 +181,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       bytes: userImage
     );
 
+    _getInfo();
+
   }
 
   _getUserPic()async{
     var _prefs = await SharedPreferences.getInstance();
     var _userId = _prefs.getInt("userId");
+
+    print(_currentUser.userImageUrl.toString());
 
     var _newPic = await dataService.downloadUserPhoto(
       userId: _userId,

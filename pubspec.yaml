@@ -46,6 +46,7 @@ dependencies:
   map_launcher: '2.0.0'
   email_validator:
   flutter_reactive_ble: ^5.0.2
+  flutter_image_compress: ^1.1.0
 
 dev_dependencies:
   flutter_test:
