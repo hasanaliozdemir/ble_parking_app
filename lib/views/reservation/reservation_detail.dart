@@ -162,13 +162,22 @@ class _ReservationDetailState extends State<ReservationDetail> {
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Text(
-          "${_park.name} Otopark", //TODO: get park name from api
-          style: TextStyle(
-              fontFamily: "SF Pro Display",
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              color: blue500),
+        child: Row(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  "${_park.name} Otopark", //TODO: get park name from api
+                  style: TextStyle(
+                      fontFamily: "SF Pro Display",
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: blue500),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -218,7 +227,13 @@ class _ReservationDetailState extends State<ReservationDetail> {
             CupertinoIcons.bell_circle_fill,
             color: blue500,
           ),
-          title: Text("${_park.name} Otopark, ${_tpa.tpaName}"),
+          title: Row(
+            children: [
+              Expanded(child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text("${_park.name} Otopark, ${_tpa.tpaName}",maxLines: 1,))),
+            ],
+          ),
           subtitle: Text(
               "${_date.day}.${_date.month}.${_date.year}    $_start:00-$_end:00"),
         ),
