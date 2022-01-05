@@ -42,7 +42,7 @@ class _MapScreenState extends State<MapScreen> {
   Location _userLocation = Location();
   Timer _timer;
 
-  var _mapType = MapType.satellite;
+  var _mapType = MapType.normal;
   bool _sat = false;
 
   var _location;

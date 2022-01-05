@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
         
       ],
       child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: 'SF Pro Text'),
         home:SplashScreen(),
       ),

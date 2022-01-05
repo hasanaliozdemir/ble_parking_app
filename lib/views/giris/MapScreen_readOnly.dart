@@ -222,7 +222,7 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
             },
             zoomControlsEnabled: false,
             myLocationEnabled: true,
-            mapType: MapType.satellite,
+            mapType: MapType.normal,
             mapToolbarEnabled: false,
             initialCameraPosition: CameraPosition(
                 target: LatLng(_currentPosition.lat, _currentPosition.lng),
