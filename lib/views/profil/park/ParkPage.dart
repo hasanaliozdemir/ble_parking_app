@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -32,6 +34,7 @@ class _ParkPageState extends State<ParkPage> {
   final Park park;
   Address parkAddress;
   String formattedAddress;
+  bool _isExpanded = true;
 
   List<Tpa> tpaList = List<Tpa>();
 
@@ -49,7 +52,6 @@ class _ParkPageState extends State<ParkPage> {
       body: Stack(
         children: [
           _layerOne(context),
-          _layerTwo(context)
         ],
       ),
     );
@@ -85,7 +87,7 @@ class _ParkPageState extends State<ParkPage> {
             flex: 32,
           ),
           Expanded(
-            flex:  60,
+            flex:  _isExpanded ? 260 :80,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -93,11 +95,12 @@ class _ParkPageState extends State<ParkPage> {
                   border: Border.all(color: gray600),
                   borderRadius: BorderRadius.circular(8)
                 ),
+                child: _buildTpaList(),
               ),
             ),
           ),
           Spacer(
-            flex: 190,
+            flex: _isExpanded ? 8 : 190,
           ),
           Expanded(
             flex: 56,
@@ -147,25 +150,6 @@ class _ParkPageState extends State<ParkPage> {
           SizedBox(
             height: MediaQuery.of(context).padding.bottom,
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _layerTwo(BuildContext context){
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).padding.top,
-          ),
-          SizedBox(
-            height: Get.height/812*355,
-          ),
-          Container(
-            child: _buildTpaList(),
-          )
         ],
       ),
     );
@@ -271,6 +255,21 @@ class _ParkPageState extends State<ParkPage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8),
         child: ExpansionTile(
+          onExpansionChanged: (val){
+              if (!_isExpanded) {
+                setState(() {
+                  _isExpanded = val;
+                });
+              } else {
+                Timer(Duration(milliseconds:300), (){
+                  print("s");
+                  setState(() {
+                    _isExpanded = val;
+                  });
+                });
+              }
+
+          },
           initiallyExpanded: true,
           title: Text(
             "Tekil Park Alanı",
