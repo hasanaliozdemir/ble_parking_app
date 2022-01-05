@@ -87,7 +87,7 @@ class _DatePickScreenState extends State<DatePickScreen> {
   void initState() {
     super.initState();
     _parseString();
-    MarkerGenerator(markerWidgets(), (bitmaps) {
+    MarkerGenerator(markerWidget(), (bitmaps) {
       setState(() {
         _markers = mapBitmapsToMarkers(bitmaps);
       });
@@ -181,8 +181,8 @@ class _DatePickScreenState extends State<DatePickScreen> {
     }
   }
 
-  Widget markerWidget() {
-    return _getMarkerWidget(0, Status.owner, false);
+  List<Widget> markerWidget() {
+    return [_getMarkerWidget(widget.park.price, Status.admin, widget.park.isWithElectricity)];
   }
 
   Color _markerColor(Status status) {
