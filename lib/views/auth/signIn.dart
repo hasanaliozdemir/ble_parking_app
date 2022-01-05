@@ -317,7 +317,6 @@ class _SignInScreenState extends State<SignInScreen> {
     _showLoading();
     User _newUser = await dataService.login(context: context,phoneNumber:phoneNumber.phoneNumber, password:passwordController.text);
     if (_newUser == null) {
-      print("helo");
       Widgets().showAlert(context, "Bir hata oluştu");
     } else {
       SharedPreferences _prefs = await SharedPreferences.getInstance();

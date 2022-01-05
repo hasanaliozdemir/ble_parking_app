@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -752,11 +753,15 @@ class DataService {
 
     var _postJson = convert.jsonEncode(_payloadBody);
 
-    var _response = await http.post(_uri, body: _postJson);
+    var _response = await http.post(_uri,headers: {
+      HttpHeaders.contentTypeHeader: "application/json",
+      "Connection": "Keep-Alive",
+      "Keep-Alive": "timeout=5, max=1000"
+  }, body: _postJson);
 
     
 
-    print(_response);
+    print(_response.body);
   }
 
   Future downloadPhoto({int parkId, int photoId}) async {
