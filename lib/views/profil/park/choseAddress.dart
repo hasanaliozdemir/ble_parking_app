@@ -226,7 +226,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
   }
 
   Widget _buildButton() {
-    if (numberController.text!=null && numberController.text!="" && floorController.text!=null && floorController.text != "") {
+    if (numberController.text!=null && numberController.text!="") {
       return Container(
       child: Button.active(text: "Kaydet", onPressed: _confirmFunc),
     );
@@ -365,7 +365,7 @@ class _ChoseAddressPageState extends State<ChoseAddressPage> {
         formattedAddress: address.formattedAddress,
         mahalle: address.mahalle,
         numara: numberController.text,
-        kat: floorController.text
+        kat: (floorController.text == null && floorController.text == "") ? "" : floorController.text
       ),
       
     ));
