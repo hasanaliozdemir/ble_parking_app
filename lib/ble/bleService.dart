@@ -20,7 +20,8 @@ class BleService{
     _showLoading(context);
     _subscription?.cancel();
     if (_devices.isEmpty) {
-      _subscription=
+      try {
+        _subscription=
     flutterReactiveBle.scanForDevices(withServices: []).listen((device) {
       if (device.name != null && device.name.length >2) {
         if (device.name.substring(0,3) == "GSK") {
@@ -29,8 +30,10 @@ class BleService{
         stopScan();
       }
       }
-      
     });
+      } catch (e) {
+        Get.snackbar("Hata", e);
+      }
     }else{
       connectDevice(_devices.first,context);
     }
@@ -59,7 +62,6 @@ class BleService{
       deviceId: device.id);
     await flutterReactiveBle.writeCharacteristicWithResponse(characteristic, value: [1]);
     disConnect(device);
-    Navigator.pop(context);
   }
 
   stopScan()async{
@@ -93,6 +95,9 @@ class BleService{
         ),
       );
     });
+        Timer(Duration(seconds: 7), (){
+          Navigator.pop(context);
+        });
   }
 
 }

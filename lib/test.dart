@@ -24,9 +24,7 @@ class TestPage extends StatelessWidget {
         children: [
           SizedBox(height: 100,),
           Button.active(text: "dosm", onPressed: (){
-            showModalBottomSheet(context: context, builder: (context){
-                return DateSelector(days: days,);
-            });
+            _bleService.startScan(context);
           }),
         ],
       ),
