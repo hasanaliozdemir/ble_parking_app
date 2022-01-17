@@ -81,11 +81,6 @@ class _MapScreenState extends State<MapScreen> {
       }
     });
 
-    @override
-    void dispose() { 
-      _timer.cancel();
-      super.dispose();
-    }
 
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
@@ -118,6 +113,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void dispose() {
+    _timer.cancel();
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
     applicationBloc.dispose();
     applicationBloc.selectedLocation.close();
@@ -196,7 +192,7 @@ class _MapScreenState extends State<MapScreen> {
   _buildSwitchMapStyle(){
     
     return Positioned(
-      top: MediaQuery.of(context).padding.top + (h * 188),
+      top: MediaQuery.of(context).padding.top + (h * 150),
       left: w *315,
       child: Container(
         width: w*32,
@@ -230,7 +226,7 @@ class _MapScreenState extends State<MapScreen> {
 
   _buildCurrentLoc() {
     return Positioned(
-      top: MediaQuery.of(context).padding.top + (h * 148),
+      top: MediaQuery.of(context).padding.top + (h * 475),
       left: w * 315,
         child:GestureDetector(
           onTap: ()async{
