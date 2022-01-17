@@ -44,7 +44,7 @@ class _BtPopUpState extends State<BtPopUp> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Bluetooh Devredışı",
+                    "Bluetooth Devredışı",
                     style: TextStyle(
                       color: black,
                       fontSize: 17,
