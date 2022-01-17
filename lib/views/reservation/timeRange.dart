@@ -49,7 +49,7 @@ class _TimeRangePageState extends State<TimeRangePage> {
     super.initState();
 
     _getTimes();
-    
+
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
         _markers = mapBitmapsToMarkers(bitmaps);
@@ -160,38 +160,45 @@ class _TimeRangePageState extends State<TimeRangePage> {
   }
 
   Widget _buildRowModel(Tpa tpa) {
+    tpa.availableInts =tpa.availableInts.toSet().toList();
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: tpa.availableInts.length,
       itemBuilder: (context, index) {
         var _newtimeRange = TimeRange(
-          uniqueId: tpa.tapId.toString() + index.toString(),
-          startHour: tpa.availableInts[index],
-          selected: false,
-          tpaId: tpa.tapId
-        );
+            uniqueId: tpa.tapId.toString() + index.toString(),
+            startHour: tpa.availableInts[index],
+            selected: false,
+            tpaId: tpa.tapId);
 
         _timeRanges.add(_newtimeRange);
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: GestureDetector(
-            onTap: () => onTapFunc(_newtimeRange.uniqueId),
-            child: Container(
-              width: Get.width / 375 * 100,
-              height: Get.height / 812 * 36,
-              decoration: BoxDecoration(
-                  color: fixColor(_newtimeRange.uniqueId),
-                  borderRadius: BorderRadius.circular(8)),
-              child: Center(
-                child: Text(
-                  fixRowString(tpa.availableInts[index]),
-                  style: TextStyle(color: white),
+        if (_newtimeRange.startHour < DateTime.now().hour &&
+            _date.day == DateTime.now().day &&
+            _date.month == DateTime.now().month &&
+            _date.year == DateTime.now().year) {
+          return SizedBox();
+        } else {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: GestureDetector(
+                onTap: () => onTapFunc(_newtimeRange.uniqueId),
+                child: Container(
+                  width: Get.width / 375 * 100,
+                  height: Get.height / 812 * 36,
+                  decoration: BoxDecoration(
+                      color: fixColor(_newtimeRange.uniqueId),
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Center(
+                    child: Text(
+                      fixRowString(tpa.availableInts[index]),
+                      style: TextStyle(color: white),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        );
+            );
+          }
       },
     );
   }
@@ -235,47 +242,45 @@ class _TimeRangePageState extends State<TimeRangePage> {
         _timeRanges.indexWhere((element) => element.uniqueId == uniqId);
     var _ref = _timeRanges[_refIndex];
 
-
-
     if (_ref.selected == true) {
       setState(() {
         _timeRanges[_refIndex].selected = false;
-        _count = _count -1;
+        _count = _count - 1;
       });
     } else {
-      if (_count==0) {
+      if (_count == 0) {
         setState(() {
           _timeRanges[_refIndex].selected = true;
           _count = _count + 1;
-
         });
       } else {
         if (_count == 1) {
-          var _selected = _timeRanges.where((element) => element.selected).first;
+          var _selected =
+              _timeRanges.where((element) => element.selected).first;
           if (_selected.tpaId != _ref.tpaId) {
-            Get.snackbar("Uyarı", "Seçilen zaman aralıkları aynı Tekil Park Alanına ait olmalıdır");
+            Get.snackbar("Uyarı",
+                "Seçilen zaman aralıkları aynı Tekil Park Alanına ait olmalıdır");
           } else {
-            if (_selected.startHour == _ref.startHour+1 || _selected.startHour == _ref.startHour-1) {
-            setState(() {
-              _timeRanges[_refIndex].selected = true;
-              _count = _count + 1;
-            });
-          } else {
-            Get.snackbar("Uyarı", "Seçilen zaman aralıkları bağlantılı olmalıdır");
-          }
+            if (_selected.startHour == _ref.startHour + 1 ||
+                _selected.startHour == _ref.startHour - 1) {
+              setState(() {
+                _timeRanges[_refIndex].selected = true;
+                _count = _count + 1;
+              });
+            } else {
+              Get.snackbar(
+                  "Uyarı", "Seçilen zaman aralıkları bağlantılı olmalıdır");
+            }
           }
         } else {
           Get.snackbar("Uyarı", "En fazla iki zaman aralığı seçebilirsiniz");
         }
       }
     }
-
   }
 
   setStartEnd() {
     var _ref = _timeRanges.where((element) => element.selected);
-
-    
 
     _startTime = _ref.first.startHour;
     _endTime = _startTime + 1;
@@ -308,7 +313,9 @@ class _TimeRangePageState extends State<TimeRangePage> {
             ),
           ),
           Text(
-            (_count==0)?"":"$_startTime.00-$_endTime.00", //TODO: Burayı ayarla
+            (_count == 0)
+                ? ""
+                : "$_startTime.00-$_endTime.00", //TODO: Burayı ayarla
             style: TextStyle(
               color: Colors.black,
               fontSize: 13,
@@ -557,32 +564,31 @@ class _TimeRangePageState extends State<TimeRangePage> {
         _park.id, _userId, _selectedDayString);
 
     _tpas = _ref;
-    setState(() {
-          
-        });
+    setState(() {});
   }
 
-  _rentTpa() async{  
-    _showLoading();  
+  _rentTpa() async {
+    _showLoading();
     var _selectedOnes = _timeRanges.where((element) => element.selected);
     var _prefs = await SharedPreferences.getInstance();
 
     var _userId = _prefs.getInt("userId");
     var _plate = _prefs.getString("carPlate");
 
-    var dayString = "${_date.year}.${(_date.month<10)? "0"+_date.month.toString() : _date.month}.${(_date.day<10)? "0"+_date.day.toString() : _date.day}";
+    var dayString =
+        "${_date.year}.${(_date.month < 10) ? "0" + _date.month.toString() : _date.month}.${(_date.day < 10) ? "0" + _date.day.toString() : _date.day}";
 
     TimeRange _totalTime = TimeRange();
 
     List<TimeRange> _ranges = List<TimeRange>();
 
-    _selectedOnes.forEach((element) { 
+    _selectedOnes.forEach((element) {
       _ranges.add(element);
     });
 
-    _ranges.sort((a,b)=>a.startHour.compareTo(b.startHour));
-    _ranges.forEach((element) { 
-      element.endHour = element.startHour +1;
+    _ranges.sort((a, b) => a.startHour.compareTo(b.startHour));
+    _ranges.forEach((element) {
+      element.endHour = element.startHour + 1;
     });
 
     _totalTime.startHour = _ranges.first.startHour;
@@ -592,55 +598,62 @@ class _TimeRangePageState extends State<TimeRangePage> {
     print(_totalTime.endHour);
     print(_ranges.first.endHour);
 
-
-  var _res = await _dataService.setReserved(
+    var _res = await _dataService.setReserved(
         parkId: _park.id,
         tpaId: _totalTime.tpaId,
         userId: _userId,
         plate: _plate,
-        datetime: "$dayString-${_totalTime.startHour} $dayString-${_totalTime.endHour}"
-      );
+        datetime:
+            "$dayString-${_totalTime.startHour} $dayString-${_totalTime.endHour}");
 
     var _refTpa = _tpas.where((element) => element.tapId == _totalTime.tpaId);
 
-    if (_res!=true) {
+    if (_res != true) {
       Navigator.pop(context);
       Get.snackbar("Hata", "Bir hata oluştu lütfen tekrar deneyin");
     } else {
       Navigator.pop(context);
-      Get.to(()=>DoneReservationPage(park: _park,date: _date,start: _totalTime.startHour,end: _totalTime.endHour,tpa: _refTpa.first,reservation: Reservation(
-        park: _park,
-        tpaId: _refTpa.first.tapId,
-        tpaName: _refTpa.first.tpaName,
-        parkName: _park.name,
-        start: (_totalTime.startHour<10)? "0"+_totalTime.startHour.toString() : _totalTime.startHour.toString(),
-        end: (_totalTime.endHour<10)? "0"+_totalTime.endHour.toString() : _totalTime.endHour.toString(),
-        date: _date,
-        
-      ),),fullscreenDialog: true);
+      Get.to(
+          () => DoneReservationPage(
+                park: _park,
+                date: _date,
+                start: _totalTime.startHour,
+                end: _totalTime.endHour,
+                tpa: _refTpa.first,
+                reservation: Reservation(
+                  park: _park,
+                  tpaId: _refTpa.first.tapId,
+                  tpaName: _refTpa.first.tpaName,
+                  parkName: _park.name,
+                  start: (_totalTime.startHour < 10)
+                      ? "0" + _totalTime.startHour.toString()
+                      : _totalTime.startHour.toString(),
+                  end: (_totalTime.endHour < 10)
+                      ? "0" + _totalTime.endHour.toString()
+                      : _totalTime.endHour.toString(),
+                  date: _date,
+                ),
+              ),
+          fullscreenDialog: true);
     }
-
   }
 
-  void _showLoading()async{
-
-    Future.delayed(Duration.zero,(){
+  void _showLoading() async {
+    Future.delayed(Duration.zero, () {
       showDialog(
-      barrierDismissible: false,
-      context: context, 
-    builder: (context){
-      return Center(
-        child: Container(
-          width: Get.width/375*50,
-          height: Get.width/375*50,
-          decoration: BoxDecoration(
-            color: white,
-            borderRadius: BorderRadius.circular(8)
-          ),
-          child: CircularProgressIndicator.adaptive(),
-        ),
-      );
-    });
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return Center(
+              child: Container(
+                width: Get.width / 375 * 50,
+                height: Get.width / 375 * 50,
+                decoration: BoxDecoration(
+                    color: white, borderRadius: BorderRadius.circular(8)),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            );
+          });
     });
   }
 }
