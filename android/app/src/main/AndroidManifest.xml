@@ -4,6 +4,7 @@
         android:label="HomePark"
         android:icon="@mipmap/ic_launcher">
         <activity
+            android:exported="true"
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
