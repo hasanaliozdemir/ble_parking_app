@@ -49,7 +49,7 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
   void initState() {
     super.initState();
     _setPins();
-    _coundownTimer = Timer.periodic(Duration(minutes: 1), (timer) => _setPins);
+    _coundownTimer = Timer.periodic(Duration(seconds: 15), (timer) => _setPins());
     _subscription= _ble.statusStream.listen((status) {
       if (status == BleStatus.ready) {
         setState(() {
@@ -345,7 +345,7 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
           return PopUp(
               title: "Park Sonlandırılacak",
               content:
-                  "Park sonlandırıldıktan sonra bariyer açılamaz. Parkı sonlandırmak istediğinize emin misiniz?",
+                  "Park sonlandırıldıktan sonra bariyer açılamaz. Sonlandırmak istediğinize emin misiniz?",
               yesFunc: _yesFunc,
               realIcon: Icon(
                 CupertinoIcons.drop_triangle,
