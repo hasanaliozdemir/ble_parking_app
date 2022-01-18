@@ -54,7 +54,8 @@ class _OthersScreenState extends State<OthersScreen> {
             ),
             Spacer(
               flex: 87,
-            )
+            ),
+            Expanded(child: Text("1.1.9"))
           ],
         ),
       ),
