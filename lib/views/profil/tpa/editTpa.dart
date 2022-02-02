@@ -387,7 +387,7 @@ class _EditTpaPageState extends State<EditTpaPage> {
 
 
   _buildButton() {
-    if (_tpaNameController.text !=null && timeRanges.length>0 && _currentSelectedSize != null  && _tpaNameController.text != "") {
+    if (_tpaNameController.text !=null && _currentSelectedSize != null  && _tpaNameController.text != "") {
       return Button.active(text: "Kaydet", onPressed: _saveTpa);
     }else{
       return Button.passive(text: "Kaydet", onPressed: null);
@@ -612,26 +612,15 @@ class _EditTpaPageState extends State<EditTpaPage> {
     return _widgetList;
   }
 
-  _fixStart(){
-    timeRanges.sort( (a,b) => a.startHour.compareTo(b.startHour));
-    return timeRanges.first.startHour;
-  }
-
-  _fixEnd(){
-    timeRanges.sort( (a,b) => a.endHour.compareTo(b.endHour));
-    return timeRanges.first.endHour;
-  }
 
   _saveTpa()async{
     _showLoading();
 
-    var _res = await _dataService.addTpa( 
+    var _res = await _dataService.editTpa( 
       parkId: park.id, 
       tpaName: _tpaNameController.text,
       hourlyPrice: 0,
       maxCarSize: _currentSelectedSize.toString(),
-      startTime: _fixStart(),
-      endTime: _fixEnd()
       );
 
     if(_res.parkId!=null){

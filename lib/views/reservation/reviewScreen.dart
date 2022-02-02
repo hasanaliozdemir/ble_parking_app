@@ -139,7 +139,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
         controller: _infoController,
         maxLines: null,
         decoration: InputDecoration(
-          hintText: "Otopark hakkında düşünceleriniz.",
+          hintText: "Otopark açıklaması/detayları",
           border: InputBorder.none
         ),
       ),

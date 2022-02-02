@@ -191,7 +191,7 @@ class _EditParkPageState extends State<EditParkPage> {
                     child: TextInputSimple(
                       controller: _parkInfoController,
                       focusNode: _parkInfoFocus,
-                      hintText: "Otopark hakkında ek bilgi ekleyebilirsiniz.",
+                      hintText: "Otopark açıklaması/detayları",
                     ),
                   ),
                   Spacer(
@@ -291,7 +291,7 @@ class _EditParkPageState extends State<EditParkPage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
-        "Sahip olduğunuz otopark alanını hakkında gerekli bilgileri doldurunuz.",
+        "Sahip olduğunuz otopark alanı hakkında gerekli bilgileri doldurunuz.",
         style: TextStyle(
             fontFamily: "SF Pro Text",
             fontSize: 17,

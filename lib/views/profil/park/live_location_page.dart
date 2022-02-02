@@ -271,7 +271,7 @@ class _LiveLocationPageState extends State<LiveLocationPage> {
     showDialog(context: context, builder: (context){
       return PopUp(
       title: "Otopark Konumunun Belirlenmesi", 
-      content: "Otoparkınız Evpark sistemine bu adres ile kaydedilecektir. Onaylıyor musunuz ?", 
+      content: "Otopark adres/konum belirlenmesinde bu nokta baz alınacaktır. Onaylıyor musunuz ?", 
       yesFunc: (){
         _yesFunc();
       }, 

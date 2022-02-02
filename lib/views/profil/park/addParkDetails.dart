@@ -292,7 +292,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
-        "Sahip olduğunuz otopark alanını hakkında gerekli bilgileri doldurunuz.",
+        "Sahip olduğunuz otopark alanı hakkında gerekli bilgileri doldurunuz.",
         style: TextStyle(
             fontFamily: "SF Pro Text",
             fontSize: 17,
@@ -487,7 +487,7 @@ class _AddParkDetailsState extends State<AddParkDetails> {
           controller: _parkInfoController,
           maxLines: null,
           decoration: InputDecoration(
-            hintText: "Otopark hakkında düşünceleriniz.",
+            hintText: "Otopark açıklaması/detayları",
             border: InputBorder.none
           ),
         ),

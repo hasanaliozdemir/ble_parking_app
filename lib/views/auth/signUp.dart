@@ -303,7 +303,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Mevcur bir hesabınız var mı ? "),
+          Text("Mevcut bir hesabınız var mı ? "),
           InkWell(
             onTap: _turnSignIn,
             child: Text(
