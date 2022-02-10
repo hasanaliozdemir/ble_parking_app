@@ -476,13 +476,17 @@ class _EditParkPageState extends State<EditParkPage> {
   }
 
   _pickImage(index) async {
-    var newImage = await _picker.pickImage(source: ImageSource.gallery);
+    try {
+          var newImage = await _picker.pickImage(source: ImageSource.gallery);
     var newBytes = await imageService.testCompressFile(File(newImage.path));
 
     setState(() {
       _imageFileList[index] = newImage;
       _imageBytesList[index] = newBytes;
     });
+    } catch (e) {
+      Get.snackbar("Error", e);
+    }
   }
 
   void _savePark() async {

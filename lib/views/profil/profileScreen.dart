@@ -162,7 +162,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   _pickUserPic() async {
-    var newImage = await _picker.pickImage(source: ImageSource.gallery);
+    try {
+      var newImage = await _picker.pickImage(source: ImageSource.gallery);
     var newBytes = await imageService.testCompressFile(File(newImage.path));
 
     setState(() {
@@ -170,6 +171,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
     
     _uploadUserPic();
+    } catch (e) {
+      Get.snackbar("Error", e);
+    }
   }
 
   _uploadUserPic()async{

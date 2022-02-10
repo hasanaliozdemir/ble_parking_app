@@ -41,7 +41,6 @@ dependencies:
   geolocator: ^7.7.1
   shared_preferences:
   image_picker:
-  flutter_datetime_picker:
   intl_phone_number_input:
   map_launcher: '2.0.0'
   email_validator:

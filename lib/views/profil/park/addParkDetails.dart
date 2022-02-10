@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/backend/dataService.dart';
 import 'package:gesk_app/core/colors.dart';
@@ -500,8 +501,8 @@ class _AddParkDetailsState extends State<AddParkDetails> {
   }
 
   _pickImage(index) async {
-    
-    var newImage = await _picker.pickImage(source: ImageSource.gallery);
+    try {
+      var newImage = await _picker.pickImage(source: ImageSource.gallery);
     var newBytes = await imageService.testCompressFile(File(newImage.path));
 
     setState(() {
@@ -509,6 +510,9 @@ class _AddParkDetailsState extends State<AddParkDetails> {
       _imageBytesList[index] = newBytes;
     });
 
+    } on PlatformException catch (e) {
+      Get.snackbar("Error", e.message);
+    }
   }
 
   uploadPhotos(int parkId)async{
