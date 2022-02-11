@@ -186,10 +186,16 @@ class _CarPAgeState extends State<CarPAge> {
   }
 
   List<String> _colors =[
+    "Siyah",
+    "Beyaz",
+    "Gri",
     "Kırmızı",
     "Mavi",
-    "Siyah",
-    "Beyaz"
+    "Sarı",
+    "Yeşil",
+    "Mor",
+    "Kahverengi",
+    "Turuncu"
   ];
 
   List<String> _sizes =[

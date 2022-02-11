@@ -18,6 +18,8 @@ class AddCArPage extends StatefulWidget {
 class _AddCArPageState extends State<AddCArPage> {
   var dataService = DataService();
   var _filled = 0.obs;
+  String validatedPlate = "";
+  String plateError = "";
 
   TextEditingController plakaController = TextEditingController();
   TextEditingController modelController = TextEditingController();
@@ -51,6 +53,7 @@ class _AddCArPageState extends State<AddCArPage> {
                 
                 _filled.value = _filled.value +1;
               },
+              errorText: (plateError=="") ? null : plateError,
               controller: plakaController,
               focusNode: plakaFocus,
               hintText: "Araç Plakası",
@@ -85,6 +88,42 @@ class _AddCArPageState extends State<AddCArPage> {
             hintText: "Model",
           ));
   }
+
+  bool validatePlate(String plate){
+  plate = plate.replaceAll(' ', '');
+  plate = plate.toUpperCase();
+  print(plate);
+  if(plate.length<4){
+    return false;
+  }else{
+  var _everyChar = plate.split("");
+   if(int.tryParse(_everyChar[0]) is int && int.tryParse(_everyChar[1]) is int && !(int.tryParse(_everyChar[2]) is int)){
+    try{
+    
+   var _refLetter = _everyChar.toList();
+   List<int> _refInts = [];
+   _everyChar.forEach((element){
+      if(int.tryParse(element) is int){
+        _refInts.add(int.tryParse(element));
+      }
+   });
+   _refInts.forEach((element){
+    _refLetter.remove(element.toString());
+   });
+  var _regionPart = "${_refInts[0]}${_refInts[1]}";
+  var _letterPart = _refLetter.join();
+  var _lastPart = _refInts.sublist(2).join();
+  validatedPlate = _regionPart+" "+ _letterPart + " " + _lastPart;
+  return true;
+   } catch(e){
+   print(e);
+   return false;
+   }
+   }else{
+    return false;
+   }
+}
+}
 
 
   Widget _buildConfirmButton(){
@@ -152,10 +191,16 @@ class _AddCArPageState extends State<AddCArPage> {
   }
 
   List<String> _colors =[
+    "Siyah",
+    "Beyaz",
+    "Gri",
     "Kırmızı",
     "Mavi",
-    "Siyah",
-    "Beyaz"
+    "Sarı",
+    "Yeşil",
+    "Mor",
+    "Kahverengi",
+    "Turuncu"
   ];
 
   List<String> _sizes =[
@@ -238,11 +283,11 @@ class _AddCArPageState extends State<AddCArPage> {
 
   void _saveButtonFunc()async{
     _showLoading();
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-
+    if (validatePlate(plakaController.text)) {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
     var _res = dataService.addCar(
       userId: _prefs.getInt("userId"),
-      plate: plakaController.text,
+      plate: validatedPlate,
       modelYear: "2021", //modelController.text,
       color: _currentSelectedColor,
       size: _currentSelectedSize
@@ -251,8 +296,14 @@ class _AddCArPageState extends State<AddCArPage> {
     if (_res == null) {
       Navigator.pop(context);
     } else {
-      _prefs.setString("carPlate", plakaController.text);
+      _prefs.setString("carPlate",validatedPlate);
       Get.to(()=> ProfileScreen(),fullscreenDialog: true);
+    }
+    } else {
+      setState(() {
+        plateError = "Lütfen geçerli bir plaka giriniz";
+      });
+      Navigator.pop(context);
     }
   }
 
