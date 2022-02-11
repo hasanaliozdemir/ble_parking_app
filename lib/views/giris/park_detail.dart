@@ -8,6 +8,7 @@ import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/core/components/button.dart';
 import 'package:gesk_app/core/components/popUp.dart';
 import 'package:gesk_app/models/park.dart';
+import 'package:gesk_app/views/giris/fullScreenImage.dart';
 import 'package:gesk_app/views/profil/profileScreen.dart';
 import 'package:gesk_app/views/reservation/date_pick.dart';
 import 'package:get/get.dart';
@@ -292,16 +293,24 @@ class _ParkDetailState extends State<ParkDetail> {
     return CarouselSlider.builder(
         itemCount: (_park.imageUrls==null)?0:_park.imageUrls.length,
         itemBuilder: (context, itemIndex, pageIndex) {
-          return Container(
-            margin: EdgeInsets.only(
-              right: 32,
+          return GestureDetector(
+            onTap: (){
+              Get.to(()=>FullScreenWidget(parkImage:_imageBytesList[itemIndex]));
+            },
+            child: Hero(
+              tag: "detailParkImage",
+              child: Container(
+                margin: EdgeInsets.only(
+                  right: 32,
+                ),
+                width: Get.width / 375 * 240,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image:(_imageBytesList[itemIndex]==null)? null: DecorationImage(
+                        image: MemoryImage(_imageBytesList[itemIndex]),
+                        fit: BoxFit.cover)),
+              ),
             ),
-            width: Get.width / 375 * 240,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image:(_imageBytesList[itemIndex]==null)? null: DecorationImage(
-                    image: MemoryImage(_imageBytesList[itemIndex]),
-                    fit: BoxFit.cover)),
           );
         },
         options: CarouselOptions(
