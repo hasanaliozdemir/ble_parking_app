@@ -1,5 +1,5 @@
-
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,11 +35,13 @@ class _ParkPageState extends State<ParkPage> {
   Address parkAddress;
   String formattedAddress;
   bool _isExpanded = true;
+  var _imageByte;
 
   List<Tpa> tpaList = List<Tpa>();
 
   @override
   void initState() {
+    _getFirstImage();
     _getAddress();
     _getTpas();
     super.initState();
@@ -87,14 +89,13 @@ class _ParkPageState extends State<ParkPage> {
             flex: 32,
           ),
           Expanded(
-            flex:  _isExpanded ? 260 :80,
+            flex: _isExpanded ? 260 : 80,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: gray600),
-                  borderRadius: BorderRadius.circular(8)
-                ),
+                    border: Border.all(color: gray600),
+                    borderRadius: BorderRadius.circular(8)),
                 child: _buildTpaList(),
               ),
             ),
@@ -104,46 +105,46 @@ class _ParkPageState extends State<ParkPage> {
           ),
           Expanded(
             flex: 56,
-            child: Button.backHover(text: "Otoparkı Düzenle", onPressed: _onTapButton),
+            child: Button.backHover(
+                text: "Otoparkı Düzenle", onPressed: _onTapButton),
           ),
           Spacer(
             flex: 24,
           ),
           Expanded(
-            flex: 18,
-            child: InkWell(
-              onTap: _deletePark,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Bu otoparkı kalıcı olarak",
-              style: TextStyle(
-                fontFamily: "SF Pro Text",
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-                color: gray900
-              ),
-              ),
-              Text(" silmek ",
-              style: TextStyle(
-                fontFamily: "SF Pro Text",
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: gray900
-              ),
-              ),
-              Text("istiyorum.",
-              style: TextStyle(
-                fontFamily: "SF Pro Text",
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-                color: gray900
-              ),
-              ),
-                ],
-              ),
-            )
-          ),
+              flex: 18,
+              child: InkWell(
+                onTap: _deletePark,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Bu otoparkı kalıcı olarak",
+                      style: TextStyle(
+                          fontFamily: "SF Pro Text",
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: gray900),
+                    ),
+                    Text(
+                      " silmek ",
+                      style: TextStyle(
+                          fontFamily: "SF Pro Text",
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: gray900),
+                    ),
+                    Text(
+                      "istiyorum.",
+                      style: TextStyle(
+                          fontFamily: "SF Pro Text",
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: gray900),
+                    ),
+                  ],
+                ),
+              )),
           Spacer(
             flex: 40,
           ),
@@ -154,7 +155,6 @@ class _ParkPageState extends State<ParkPage> {
       ),
     );
   }
-
 
   Padding _titleCard() {
     return Padding(
@@ -167,18 +167,24 @@ class _ParkPageState extends State<ParkPage> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: Get.width / 375 * 96,
-                height: Get.width / 375 * 96,
-                decoration: BoxDecoration(
-                    color: blue500, borderRadius: BorderRadius.circular(8)),
-                child: Padding(
-                    padding: EdgeInsets.all(24),
-                    child: SvgPicture.asset(
-                      "assets/icons/park_icon.svg",
-                      color: white,
-                    )),
-              ),
+              child: (_imageByte == null)
+                  ? Container(
+                      width: Get.width / 375 * 96,
+                      height: Get.width / 375 * 96,
+                      decoration: BoxDecoration(
+                          color: gray400,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: CircularProgressIndicator.adaptive(),
+                    )
+                  : Container(
+                      width: Get.width / 375 * 96,
+                      height: Get.width / 375 * 96,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          image: DecorationImage(
+                              image: MemoryImage(_imageByte),
+                              fit: BoxFit.cover)),
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -193,6 +199,21 @@ class _ParkPageState extends State<ParkPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Container _buildBlueIconCard() {
+    return Container(
+      width: Get.width / 375 * 96,
+      height: Get.width / 375 * 96,
+      decoration:
+          BoxDecoration(color: blue500, borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+          padding: EdgeInsets.all(24),
+          child: SvgPicture.asset(
+            "assets/icons/park_icon.svg",
+            color: white,
+          )),
     );
   }
 
@@ -255,20 +276,19 @@ class _ParkPageState extends State<ParkPage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8),
         child: ExpansionTile(
-          onExpansionChanged: (val){
-              if (!_isExpanded) {
+          onExpansionChanged: (val) {
+            if (!_isExpanded) {
+              setState(() {
+                _isExpanded = val;
+              });
+            } else {
+              Timer(Duration(milliseconds: 300), () {
+                print("s");
                 setState(() {
                   _isExpanded = val;
                 });
-              } else {
-                Timer(Duration(milliseconds:300), (){
-                  print("s");
-                  setState(() {
-                    _isExpanded = val;
-                  });
-                });
-              }
-
+              });
+            }
           },
           initiallyExpanded: true,
           title: Text(
@@ -289,10 +309,14 @@ class _ParkPageState extends State<ParkPage> {
               height: Get.height / 812 * 165,
               child: Column(
                 children: [
-                  Expanded(flex: 4,
-                  child: _tpaListesi(),
+                  Expanded(
+                    flex: 4,
+                    child: _tpaListesi(),
                   ),
-                  Expanded(child: _tpaEklemeButton(),flex: 2,)
+                  Expanded(
+                    child: _tpaEklemeButton(),
+                    flex: 2,
+                  )
                 ],
               ),
             ),
@@ -304,107 +328,101 @@ class _ParkPageState extends State<ParkPage> {
 
   Container _tpaEklemeButton() {
     return Container(
-                  decoration: BoxDecoration(
-                      color: blue500,
-                      borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(8))),
-                  child: ListTile(
-                    title: Text(
-                      "Tekil Park Alanı Ekle",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          fontFamily: "SF Pro Text",
-                          color: white),
-                    ),
-                    leading: Icon(
-                      CupertinoIcons.add_circled,
-                      color: white,
-                    ),
-                    trailing: Icon(
-                      CupertinoIcons.chevron_right,
-                      color: white,
-                    ),
-                    onTap: () {
-                      _addTpaFunc();
-                    },
-                  ),
-                );
+      decoration: BoxDecoration(
+          color: blue500,
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(8))),
+      child: ListTile(
+        title: Text(
+          "Tekil Park Alanı Ekle",
+          style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 17,
+              fontFamily: "SF Pro Text",
+              color: white),
+        ),
+        leading: Icon(
+          CupertinoIcons.add_circled,
+          color: white,
+        ),
+        trailing: Icon(
+          CupertinoIcons.chevron_right,
+          color: white,
+        ),
+        onTap: () {
+          _addTpaFunc();
+        },
+      ),
+    );
   }
 
   Container _tpaListesi() {
     return Container(
-                  
-                  child: MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    removeBottom: true,
-                    child: ListView.separated(
-                        shrinkWrap: true,
-                        separatorBuilder: (context, i) {
-                          return Container(
-                            height: Get.height / 812 * 1,
-                            width: Get.width / 375 * 343,
-                            color: gray400,
-                          );
-                        },
-                        itemBuilder: (context, index) {
-                          print(tpaList[index].availableTimes);
-                          var _referList = tpaList[index].availableTimes.split(" ");
-                          var _start = _referList.first.split("-").last;
-                          var _end = _referList.last.split("-").last;
-                          return ListTile(
-                            onTap: (){
-                              Get.to(()=>EditTpaPage(park:park, tpa: tpaList[index]));
-                            },
-                            leading: SvgPicture.asset(
-                                "assets/icons/park_icon.svg"),
-                            title: Text(
-                              tpaList[index].tpaName,
-                              style: TextStyle(
-                                  fontFamily: "SF Pro Text",
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            trailing: Container(
-                              width: Get.width / 375 * 150,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: Get.width / 375 * 100,
-                                    child: Text(
-                                      _start+" - "+_end
-                                    ),
-                                  ),
-                                  Container(
-                                    width: Get.width / 375 * 50,
-                                    child: CustomSwitch(
-                                      value: tpaList[index].avaliable,
-                                      activeIcon: Icon(
-                                        CupertinoIcons.lock_open,
-                                        color: blue500,
-                                      ),
-                                      passiveIcon: Icon(
-                                        CupertinoIcons.lock,
-                                        color: blue500,
-                                      ),
-                                      func: () {
-                                        dataService.lockTpa(
-                                          parkId: park.id,
-                                          tpaId: tpaList[index].tapId,
-                                          available: tpaList[index].avaliable.value
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                        itemCount: (tpaList.length==null)?0:tpaList.length),
+      child: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        removeBottom: true,
+        child: ListView.separated(
+            shrinkWrap: true,
+            separatorBuilder: (context, i) {
+              return Container(
+                height: Get.height / 812 * 1,
+                width: Get.width / 375 * 343,
+                color: gray400,
+              );
+            },
+            itemBuilder: (context, index) {
+              print(tpaList[index].availableTimes);
+              var _referList = tpaList[index].availableTimes.split(" ");
+              var _start = _referList.first.split("-").last;
+              var _end = _referList.last.split("-").last;
+              return ListTile(
+                onTap: () {
+                  Get.to(() => EditTpaPage(park: park, tpa: tpaList[index]));
+                },
+                leading: SvgPicture.asset("assets/icons/park_icon.svg"),
+                title: Text(
+                  tpaList[index].tpaName,
+                  style: TextStyle(
+                      fontFamily: "SF Pro Text",
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400),
+                ),
+                trailing: Container(
+                  width: Get.width / 375 * 150,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: Get.width / 375 * 100,
+                        child: Text(_start + " - " + _end),
+                      ),
+                      Container(
+                        width: Get.width / 375 * 50,
+                        child: CustomSwitch(
+                          value: tpaList[index].avaliable,
+                          activeIcon: Icon(
+                            CupertinoIcons.lock_open,
+                            color: blue500,
+                          ),
+                          passiveIcon: Icon(
+                            CupertinoIcons.lock,
+                            color: blue500,
+                          ),
+                          func: () {
+                            dataService.lockTpa(
+                                parkId: park.id,
+                                tpaId: tpaList[index].tapId,
+                                available: tpaList[index].avaliable.value);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                );
+                ),
+              );
+            },
+            itemCount: (tpaList.length == null) ? 0 : tpaList.length),
+      ),
+    );
   }
 
   void _backButtonFunc() {
@@ -421,69 +439,78 @@ class _ParkPageState extends State<ParkPage> {
   }
 
   _addTpaFunc() {
-    Get.to(()=>AddTpaPage(park: park,));
+    Get.to(() => AddTpaPage(
+          park: park,
+        ));
   }
 
-  _onTapButton(){
-    Get.to(()=>EditParkPage(park: park,address:parkAddress));
+  _onTapButton() {
+    Get.to(() => EditParkPage(park: park, address: parkAddress));
   }
 
-  _deletePark(){
-    showDialog(context: context, builder: (context) {
-      return PopUp(title: "Park Silinecek", 
-      content: "Seçtiğiniz Otopark silinecektir, devam etmek istiyor musunuz ?", 
-      yesFunc: ()async{
-        Navigator.pop(context);
-        _showLoading();
-        var _res = await dataService.deletePark(
-          context: context,
-          parkId: park.id
-        );
-        if (_res!=null) {
-          Get.to(()=>ProfileScreen(),fullscreenDialog: true);
-        }else{
-          Navigator.pop(context);
-          print("error at parks page delete");
-        }
-      }, 
-      noFunc: (){
-        Navigator.pop(context);
-      },
-      single: false, 
-      realIcon: Icon(CupertinoIcons.trash,size: 60,),
-      );
-    });
-  }
-
-  void _showLoading()async{
-
-    Future.delayed(Duration.zero,(){
-      showDialog(
-      barrierDismissible: false,
-      context: context, 
-    builder: (context){
-      return Center(
-        child: Container(
-          width: Get.width/375*50,
-          height: Get.width/375*50,
-          decoration: BoxDecoration(
-            color: white,
-            borderRadius: BorderRadius.circular(8)
-          ),
-          child: CircularProgressIndicator.adaptive(),
-        ),
-      );
-    });
-    });
-  }
-
-  _getTpas()async{
-    
-    tpaList= await dataService.getTpas(park.id);
-    setState(() {
-          
+  _deletePark() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return PopUp(
+            title: "Park Silinecek",
+            content:
+                "Seçtiğiniz Otopark silinecektir, devam etmek istiyor musunuz ?",
+            yesFunc: () async {
+              Navigator.pop(context);
+              _showLoading();
+              var _res = await dataService.deletePark(
+                  context: context, parkId: park.id);
+              if (_res != null) {
+                Get.to(() => ProfileScreen(), fullscreenDialog: true);
+              } else {
+                Navigator.pop(context);
+                print("error at parks page delete");
+              }
+            },
+            noFunc: () {
+              Navigator.pop(context);
+            },
+            single: false,
+            realIcon: Icon(
+              CupertinoIcons.trash,
+              size: 60,
+            ),
+          );
         });
   }
 
+  void _showLoading() async {
+    Future.delayed(Duration.zero, () {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return Center(
+              child: Container(
+                width: Get.width / 375 * 50,
+                height: Get.width / 375 * 50,
+                decoration: BoxDecoration(
+                    color: white, borderRadius: BorderRadius.circular(8)),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            );
+          });
+    });
+  }
 
+  _getTpas() async {
+    tpaList = await dataService.getTpas(park.id);
+    setState(() {});
+  }
+
+  _getFirstImage() async {
+    Uint8List _bytes = await dataService.downloadPhoto(
+        parkId: park.id, photoId: park.imageUrls[0]);
+
+    setState(() {
+      _imageByte = _bytes;
+    });
+    print(_bytes);
+  }
 }
