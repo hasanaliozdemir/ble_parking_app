@@ -283,7 +283,6 @@ class _ParkPageState extends State<ParkPage> {
               });
             } else {
               Timer(Duration(milliseconds: 300), () {
-                print("s");
                 setState(() {
                   _isExpanded = val;
                 });
@@ -371,7 +370,6 @@ class _ParkPageState extends State<ParkPage> {
               );
             },
             itemBuilder: (context, index) {
-              print(tpaList[index].availableTimes);
               var _referList = tpaList[index].availableTimes.split(" ");
               var _start = _referList.first.split("-").last;
               var _end = _referList.last.split("-").last;
@@ -465,7 +463,6 @@ class _ParkPageState extends State<ParkPage> {
                 Get.to(() => ProfileScreen(), fullscreenDialog: true);
               } else {
                 Navigator.pop(context);
-                print("error at parks page delete");
               }
             },
             noFunc: () {
@@ -511,6 +508,5 @@ class _ParkPageState extends State<ParkPage> {
     setState(() {
       _imageByte = _bytes;
     });
-    print(_bytes);
   }
 }
