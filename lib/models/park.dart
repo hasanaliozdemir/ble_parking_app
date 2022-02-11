@@ -172,6 +172,7 @@ class Park {
         isWithSecurity: json['isWithSecurity'],
         parkSpace: json['parkSpace'],
         filledParkSpace: json['filledParkSpace'],
+        info: json["parkInfo"],
         distance: _distance);
   }
 

@@ -207,7 +207,8 @@ class _ParkDetailState extends State<ParkDetail> {
               _buildListTile1(),
               _buildListTile2(),
               _buildListTile3(),
-              _buildListTile4()
+              _buildListTile4(),
+              (_park.info !=null)?_buildDescriptionTile():SizedBox()
               ],
           ),
         ),
@@ -238,6 +239,33 @@ class _ParkDetailState extends State<ParkDetail> {
           height: Get.height/812*24,
         ),
       ],
+    );
+  }
+
+  Container _buildDescriptionTile(){
+    return Container(
+      child: Column(
+        children: [
+          _buildTitle3(),
+          SizedBox(height:16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal:24.0),
+            child: Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                border: Border.all(color: gray600),
+                borderRadius: BorderRadius.circular(8)
+              ),
+              child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.start,
+                children: [
+                  Text(_park.info+_park.info+_park.info+_park.info+_park.info)
+                ],
+              ),
+            ),
+          )
+        ]
+      ),
     );
   }
 
@@ -341,6 +369,41 @@ class _ParkDetailState extends State<ParkDetail> {
             width: 343,
             child: Text(
               "Tekil Park Alanı",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 17,
+                fontFamily: "SF Pro Text",
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          SizedBox(height: 13),
+          Container(
+            width: 375,
+            height: 1,
+          ),
+        ],
+      ),
+    );
+  }
+
+   _buildTitle3() {
+    return Container(
+      width: 375,
+
+      color: Colors.white,
+      padding: const EdgeInsets.only(
+        top: 13,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 343,
+            child: Text(
+              "Otopark Sahibinin Açıklaması",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 17,
