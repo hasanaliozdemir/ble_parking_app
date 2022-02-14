@@ -188,7 +188,7 @@ class _OpenBarrierPageState extends State<OpenBarrierPage> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Text(
-          "Aracınızı belirlediğiniz tekil park alanına park etmek için bariyeri aktif hale getiriniz.",
+          "Aracınızı park etmek için bariyeri aktif hale getiriniz.",
           style: TextStyle(color: black, fontSize: 17),
         ),
       ),
