@@ -32,12 +32,13 @@ var width = Get.width / 375;
 var height = Get.height / 812;
 
 class MapScreenReadOnly extends StatefulWidget {
-  MapScreenReadOnly({this.filterModel,this.location,this.firstParks});
+  MapScreenReadOnly({this.filterModel, this.location, this.firstParks});
   FilterModel filterModel;
   var location;
   List<Park> firstParks;
   @override
-  _MapScreenReadOnlyState createState() => _MapScreenReadOnlyState(filterModel,location,firstParks);
+  _MapScreenReadOnlyState createState() =>
+      _MapScreenReadOnlyState(filterModel, location, firstParks);
 }
 
 class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
@@ -57,7 +58,7 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
 
   StreamSubscription locationSubscription;
 
-  _MapScreenReadOnlyState(this._filterModel,this._location,this._firstParks);
+  _MapScreenReadOnlyState(this._filterModel, this._location, this._firstParks);
 
   DataService dataService = DataService();
 
@@ -67,7 +68,7 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
     _currentPosition.lat = _location.latitude;
     _currentPosition.lng = _location.longitude;
     _getUserLocation();
-    _distanceFix(_currentPosition.lat,_currentPosition.lng);
+    _distanceFix(_currentPosition.lat, _currentPosition.lng);
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
     locationSubscription = applicationBloc.selectedLocation.stream
         .asBroadcastStream()
@@ -82,8 +83,6 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
         _markers = mapBitmapsToMarkers(bitmaps);
       });
     }).generate(context);
-
-    
 
     //listParks();
     super.initState();
@@ -113,69 +112,65 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          _buildMap(),
-          _buildSearchBar(context),
-          Container(
-            alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.only(bottom: 24),
-            child: CarouselSlider.builder(
-              carouselController: carouselController,
-              itemCount: _markers.length ?? 0,
-              options: CarouselOptions(
-                enableInfiniteScroll: false,
-                onPageChanged: (index, reason) async {
-                  setState(() {
-                    _caroselIndex = index;
-                    _selectedIndex = _caroselIndex;
-                  });
-                  final GoogleMapController _controller =
-                      await _mapcontroller.future;
-                  _controller.animateCamera(CameraUpdate.newCameraPosition(
-                      CameraPosition(
-                          target: LatLng(
-                              _parks[index].latitude, _parks[index].longitude),
-                          zoom: 16)));
-                },
-                height: h * 128,
-              ),
-              itemBuilder: (context, itemIndex, pageIndex) {
-                
-                  return Container(
+        resizeToAvoidBottomInset: false,
+        body: Stack(
+          children: [
+            _buildMap(),
+            _buildSearchBar(context),
+            Container(
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.only(bottom: 24),
+              child: CarouselSlider.builder(
+                carouselController: carouselController,
+                itemCount: _markers.length ?? 0,
+                options: CarouselOptions(
+                  enableInfiniteScroll: false,
+                  onPageChanged: (index, reason) async {
+                    setState(() {
+                      _caroselIndex = index;
+                      _selectedIndex = _caroselIndex;
+                    });
+                    final GoogleMapController _controller =
+                        await _mapcontroller.future;
+                    _controller.animateCamera(CameraUpdate.newCameraPosition(
+                        CameraPosition(
+                            target: LatLng(_parks[index].latitude,
+                                _parks[index].longitude),
+                            zoom: 16)));
+                  },
                   height: h * 128,
-                  width: w * 264,
-                  child: GestureDetector(
-                    onTap: () {
-                      openPopUp(context);
-                      // showModalBottomSheet(
-                      //     isScrollControlled: true,
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(10.0),
-                      //     ),
-                      //     backgroundColor: Colors.white,
-                      //     context: context,
-                      //     builder: (context) {
-                      //       return ParkDetail(
-                      //         park: _parks[itemIndex],
-                      //       );
-                      //     });
-                    },
-                    child: ParkCard(
-                      park: _parks[itemIndex],
-                    )
-                  ),
-                );
-                
-              },
+                ),
+                itemBuilder: (context, itemIndex, pageIndex) {
+                  return Container(
+                    height: h * 140,
+                    width: w * 264,
+                    child: GestureDetector(
+                        onTap: () {
+                          openPopUp(context);
+                          // showModalBottomSheet(
+                          //     isScrollControlled: true,
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(10.0),
+                          //     ),
+                          //     backgroundColor: Colors.white,
+                          //     context: context,
+                          //     builder: (context) {
+                          //       return ParkDetail(
+                          //         park: _parks[itemIndex],
+                          //       );
+                          //     });
+                        },
+                        child: ParkCard(
+                          park: _parks[itemIndex],
+                        )),
+                  );
+                },
+              ),
             ),
-          ),
-          _buildSwitch(context)
-        ],
-      ),
-      bottomNavigationBar: BottomBarRead(index: _index)
-    );
+            _buildSwitch(context)
+          ],
+        ),
+        bottomNavigationBar: BottomBarRead(index: _index));
   }
 
   Positioned _buildSwitch(BuildContext context) {
@@ -259,14 +254,13 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
     return _markersList;
   }
 
-  _distanceFix(lat,lng)async{
-    _parks.forEach((element) async{ 
+  _distanceFix(lat, lng) async {
+    _parks.forEach((element) async {
       var _dist = await DistanceService().getDistance(
-        LatLng(lat, lng), 
-        LatLng(element.latitude, element.longitude));
-        setState(() {
-                  element.distance = _dist;
-                });
+          LatLng(lat, lng), LatLng(element.latitude, element.longitude));
+      setState(() {
+        element.distance = _dist;
+      });
     });
   }
 
@@ -278,18 +272,18 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
         zoom: 17)));
   }
 
-  Future<void> getParks({@required double lat,@required double lng})async{
-    var _referance = await dataService.getNearParks(lat: lat,lng: lng);
+  Future<void> getParks({@required double lat, @required double lng}) async {
+    var _referance = await dataService.getNearParks(lat: lat, lng: lng);
 
     if (_referance is List<Park>) {
       _ref.clear();
 
-      _referance.forEach((_element) { _ref.add(_element); });
+      _referance.forEach((_element) {
+        _ref.add(_element);
+      });
 
       listParks();
     }
-
-    
   }
 
   Future<void> listParks() async {
@@ -316,12 +310,12 @@ class _MapScreenReadOnlyState extends State<MapScreenReadOnly> {
         if (_filterModel.isClosed == true) {
           _ref2.removeWhere((closeElement) => closeElement.isClosedPark);
         }
-      } else {
-        
-      }
+      } else {}
     });
 
-    _ref2.forEach((item) {_parks.add(item); });
+    _ref2.forEach((item) {
+      _parks.add(item);
+    });
 
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
@@ -530,7 +524,6 @@ _buildSearchBar(context) {
                     size: 22,
                   ),
                   onPressed: () {
-
                     openPopUp(context);
 
                     // showModalBottomSheet(
@@ -548,20 +541,23 @@ _buildSearchBar(context) {
       ));
 }
 
-openPopUp(context){
-  showDialog(context: context, builder: (context){
-    return PopUp(
-      title: "Devam etmek için giriş yapmalısınız.", 
-      content: "Otopark alanını kiralamak ve otopark bariyer sistemini aktif hale getirmek için üye olunuz.", 
-      yesFunc: yesFunc, 
-      single: true,
-      icon: "assets/icons/singin-popup-people.svg",
-      );
-  });
+openPopUp(context) {
+  showDialog(
+      context: context,
+      builder: (context) {
+        return PopUp(
+          title: "Devam etmek için giriş yapmalısınız.",
+          content:
+              "Otopark alanını kiralamak ve otopark bariyer sistemini aktif hale getirmek için üye olunuz.",
+          yesFunc: yesFunc,
+          single: true,
+          icon: "assets/icons/singin-popup-people.svg",
+        );
+      });
 }
 
-yesFunc(){
-  Get.to(()=>SignInScreen());
+yesFunc() {
+  Get.to(() => SignInScreen());
 }
 
 Future<Uint8List> getPerson(context) async {

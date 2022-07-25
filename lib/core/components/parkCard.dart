@@ -1,9 +1,4 @@
-
-
-
 import 'package:gesk_app/backend/dataService.dart';
-
-
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +6,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gesk_app/core/colors.dart';
 import 'package:gesk_app/models/park.dart';
 import 'package:get/get.dart';
-
 
 var h = Get.height / 812;
 var w = Get.width / 375;
@@ -30,18 +24,15 @@ class _ParkCardState extends State<ParkCard> {
   var _dataService = DataService();
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     _getImage();
   }
 
   @override
   Widget build(BuildContext context) {
-    
-    
-
     return Container(
-      height: h * 128,
+      height: h * 140,
       width: w * 264,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -55,7 +46,7 @@ class _ParkCardState extends State<ParkCard> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(w * 16.0),
         child: Row(
           children: [
             Flexible(
@@ -105,7 +96,7 @@ class _ParkCardState extends State<ParkCard> {
           widget.park.price.toString() + " ₺",
           style: TextStyle(
             color: Colors.black,
-            fontSize: 12,
+            fontSize: w * 12,
             fontFamily: "SF Pro Text",
             fontWeight: FontWeight.w600,
           ),
@@ -116,7 +107,7 @@ class _ParkCardState extends State<ParkCard> {
 
   Padding iconBox(int variant) {
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: EdgeInsets.only(right: w * 8),
       child: Container(
         width: w * 24,
         height: h * 24,
@@ -133,27 +124,34 @@ class _ParkCardState extends State<ParkCard> {
     );
   }
 
-  
-
   icon(index) {
     switch (index) {
       case 1:
         return Icon(
           CupertinoIcons.square_grid_3x2_fill,
-          size: 18,
+          size: w * 18,
         );
 
         break;
       case 2:
-        return Icon(CupertinoIcons.square_grid_3x2);
+        return Icon(
+          CupertinoIcons.square_grid_3x2,
+          size: w * 18,
+        );
 
         break;
       case 3:
-        return Icon(CupertinoIcons.bolt_fill);
+        return Icon(
+          CupertinoIcons.bolt_fill,
+          size: w * 18,
+        );
 
         break;
       case 4:
-        return Icon(CupertinoIcons.video_camera_solid);
+        return Icon(
+          CupertinoIcons.video_camera_solid,
+          size: w * 18,
+        );
 
         break;
       case 5:
@@ -176,7 +174,8 @@ class _ParkCardState extends State<ParkCard> {
             widget.park.name,
             style: TextStyle(
               color: blue500,
-              fontSize: 12,
+              fontSize: w * 12,
+              height: 0.9,
               fontFamily: "SF Pro Text",
               fontWeight: FontWeight.w600,
             ),
@@ -188,8 +187,9 @@ class _ParkCardState extends State<ParkCard> {
           child: Text(
             widget.park.location,
             style: TextStyle(
+              height: 0.9,
               color: gray900,
-              fontSize: 12,
+              fontSize: w * 12,
             ),
           ),
         ),
@@ -198,10 +198,10 @@ class _ParkCardState extends State<ParkCard> {
           flex: 16,
           child: Text(
             widget.park.distance,
-            
             style: TextStyle(
               color: gray900,
-              fontSize: 12,
+              height: 0.9,
+              fontSize: w * 12,
               fontFamily: "SF Pro Text",
               fontWeight: FontWeight.w600,
             ),
@@ -220,7 +220,7 @@ class _ParkCardState extends State<ParkCard> {
           widget.park.point.toString(),
           style: TextStyle(
             color: Colors.black,
-            fontSize: 11,
+            fontSize: w * 11,
           ),
         )),
         height: h * 24,
@@ -238,31 +238,29 @@ class _ParkCardState extends State<ParkCard> {
   }
 
   Container imageContainer() {
-
-    if (_imageByte!=null) {
-      return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          image: DecorationImage(
-              image: MemoryImage(_imageByte), fit: BoxFit.cover)),
-    );
-    } else {
+    if (_imageByte != null) {
       return Container(
         decoration: BoxDecoration(
-          color: gray400
-        ),
+            borderRadius: BorderRadius.circular(8),
+            image: DecorationImage(
+                image: MemoryImage(_imageByte), fit: BoxFit.cover)),
+      );
+    } else {
+      return Container(
+        decoration: BoxDecoration(color: gray400),
         child: Center(child: Icon(CupertinoIcons.arrow_2_circlepath)),
       );
     }
-
-    
   }
 
-  _getImage()async{
-    _dataService.downloadPhoto(parkId: widget.park.id, photoId: widget.park.imageUrls.first).then((value) {
+  _getImage() async {
+    _dataService
+        .downloadPhoto(
+            parkId: widget.park.id, photoId: widget.park.imageUrls.first)
+        .then((value) {
       setState(() {
-              _imageByte = value;
-            });
+        _imageByte = value;
+      });
     });
   }
 }

@@ -81,7 +81,6 @@ class _MapScreenState extends State<MapScreen> {
       }
     });
 
-
     MarkerGenerator(markerWidgets(), (bitmaps) {
       setState(() {
         _markers = mapBitmapsToMarkers(bitmaps);
@@ -91,13 +90,11 @@ class _MapScreenState extends State<MapScreen> {
     listParks();
     _timer = Timer.periodic(Duration(seconds: 2), (timer) {
       _getUserLocation();
-
     });
     super.initState();
   }
 
   void _getUserLocation() async {
-
     var _position = await GeolocatorPlatform.instance
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
@@ -154,7 +151,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
               itemBuilder: (context, itemIndex, pageIndex) {
                 return Container(
-                  height: h * 128,
+                  height: h * 140,
                   width: w * 264,
                   child: GestureDetector(
                       onTap: () {
@@ -189,66 +186,65 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  _buildSwitchMapStyle(){
-    
+  _buildSwitchMapStyle() {
     return Positioned(
-      top: MediaQuery.of(context).padding.top + (h * 150),
-      left: w *315,
-      child: Container(
-        width: w*32,
-            height: h*32,
-            decoration: BoxDecoration(
+        top: MediaQuery.of(context).padding.top + (h * 150),
+        left: w * 315,
+        child: Container(
+          width: w * 32,
+          height: h * 32,
+          decoration: BoxDecoration(
               color: white,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: gray800)
-            ),
-        child: Align(
-          alignment: Alignment.topLeft,
-          child: IconButton(
-            onPressed: (){
-              if (_sat==false) {
-                setState(() {
-                  _mapType = MapType.satellite;
-                  _sat = true;
-                });
-              } else {
-                setState(() {
-                  _mapType = MapType.normal;
-                  _sat = false;
-                });
-              }
-            }, 
-            icon: Icon(_sat ? CupertinoIcons.map : CupertinoIcons.map_fill,size: 18,)
-            ),
-        ),)
-    );
+              border: Border.all(color: gray800)),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: IconButton(
+                onPressed: () {
+                  if (_sat == false) {
+                    setState(() {
+                      _mapType = MapType.satellite;
+                      _sat = true;
+                    });
+                  } else {
+                    setState(() {
+                      _mapType = MapType.normal;
+                      _sat = false;
+                    });
+                  }
+                },
+                icon: Icon(
+                  _sat ? CupertinoIcons.map : CupertinoIcons.map_fill,
+                  size: 18,
+                )),
+          ),
+        ));
   }
 
   _buildCurrentLoc() {
     return Positioned(
-      top: MediaQuery.of(context).padding.top + (h * 475),
-      left: w * 315,
-        child:GestureDetector(
-          onTap: ()async{
+        top: MediaQuery.of(context).padding.top + (h * 475),
+        left: w * 315,
+        child: GestureDetector(
+          onTap: () async {
             final GoogleMapController _controller = await _mapcontroller.future;
             _controller
               ..animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-                  target: LatLng(_userLocation.lat, _userLocation.lng), zoom: 17)));
+                  target: LatLng(_userLocation.lat, _userLocation.lng),
+                  zoom: 17)));
           },
           child: Container(
-            width: w*32,
-            height: h*32,
+            width: w * 32,
+            height: h * 32,
             decoration: BoxDecoration(
-              color: white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: gray800)
-            ),
+                color: white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: gray800)),
             child: Center(
               child: Icon(CupertinoIcons.location),
             ),
           ),
-        )
-            );
+        ));
   }
 
   Positioned _buildSwitch(BuildContext context) {

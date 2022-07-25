@@ -133,22 +133,23 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  _userValidator(){
-    Timer.periodic(Duration(seconds: 30), (userTimer) async { 
+  _userValidator() {
+    Timer.periodic(Duration(seconds: 30), (userTimer) async {
       var _prefs = await SharedPreferences.getInstance();
       var _userId = _prefs.getInt("userId");
       var _status = await dataService.confirm(userId: _userId);
-      if (_prefs.getBool("auth")) {
+      var _authStatus = _prefs.getBool("auth");
+      if (_authStatus ?? false) {
         if (_status == false) {
-        _logOut();
-      } else {
-        print("user FINE");
-      }
+          _logOut();
+        } else {
+          print("user FINE");
+        }
       }
     });
   }
 
-  _logOut()async{
+  _logOut() async {
     var _prefs = await SharedPreferences.getInstance();
     _prefs.setBool("auth", false);
     Get.to(() => SplashScreen(), fullscreenDialog: true);
