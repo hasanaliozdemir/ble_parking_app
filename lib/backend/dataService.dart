@@ -16,10 +16,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 class DataService {
-  final String _setInfoUrl = "https://evpark.gesk.tech/setInfo/";
-  final String _getInfoUrl = "https://evpark.gesk.tech/getInfo/";
-  final String _uploadPhoto = "https://evpark.gesk.tech/uploadPicture/";
-  final String _downloadPhoto = "https://evpark.gesk.tech/downloadPicture/";
+  final String _setInfoUrl = "https://****/setInfo/";
+  final String _getInfoUrl = "https://*****/getInfo/";
+  final String _uploadPhoto = "https://*****/uploadPicture/";
+  final String _downloadPhoto = "https://*****/downloadPicture/";
 
   List<Park> parks = List<Park>();
 
